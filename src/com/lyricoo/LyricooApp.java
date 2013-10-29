@@ -9,6 +9,9 @@ import android.app.Application;
  */
 
 public class LyricooApp extends Application {
+	// The currently logged in user. Null if the app is logged out	
+	private User mUser = null;
+	
 	@Override
 	  public void onCreate()
 	  {
