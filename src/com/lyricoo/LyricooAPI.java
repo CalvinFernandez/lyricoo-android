@@ -7,13 +7,15 @@ import com.loopj.android.http.*;
  * Implementation provided by Loopj Android Asynchronous Http Client See:
  * http://loopj.com/android-async-http/ for more documentation
  * 
+ * Usage: LyricooAPI.get("users/all", params, responseHandler)
+ * 
  * For params: RequestParams params = new RequestParams();
  * params.put("username", "james"); params.put("password", "123456");
  * http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html
  * 
  * For response handler: new JsonHttpResponseHandler() {
  * 
- * @Override public void onSuccess(JSONArray timeline)
+ * @Override public void onSuccess(JSONObject json)
  * @Override public void onFailure(java.lang.String responseBody,
  *           java.lang.Throwable error) }); * 
  * 
