@@ -1,8 +1,7 @@
 package com.lyricoo.activity;
 
+
 import com.lyricoo.R;
-import com.lyricoo.R.layout;
-import com.lyricoo.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;

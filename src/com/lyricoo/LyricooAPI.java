@@ -1,5 +1,7 @@
 package com.lyricoo;
 
+import android.util.Log;
+
 import com.loopj.android.http.*;
 
 /**
@@ -10,7 +12,7 @@ import com.loopj.android.http.*;
  * Usage: LyricooAPI.get("users/all", params, responseHandler)
  * 
  * For params: RequestParams params = new RequestParams();
- * params.put("username", "james"); params.put("password", "123456");
+ * params.put("username", "james"); 
  * http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html
  * 
  * For response handler: new JsonHttpResponseHandler() {
@@ -24,7 +26,7 @@ import com.loopj.android.http.*;
  * 
  */
 public class LyricooAPI {
-	private static final String BASE_URL = "http://www.lyricoo.com:8080/";
+	private static final String BASE_URL = "http://lyricoo.com:8080/";
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
 
