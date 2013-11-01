@@ -12,39 +12,28 @@ import org.json.JSONObject;
  */
 public class Conversation {
 	private ArrayList<Message> mMessages;
+	private User mContact;
 	private int mUserId;
-	private int mContactId;
-	private String mContactName;
 	
-	public Conversation(ArrayList<Message> messages, int userId,
-			int contactId, String contactName) {
+	public Conversation(ArrayList<Message> messages, User contact) {
 		this.mMessages = messages;
-		this.mUserId = userId;
-		this.mContactId = contactId;
-		this.mContactName = contactName;
-	}
-	
+		mContact = contact;
+	}	
 
 	public int getUserId() {
 		return mUserId;
 	}
-
-
-
-	public int getContactId() {
-		return mContactId;
+	
+	public User getContact(){
+		return mContact;
 	}
-
-
-
-	public String getContactName() {
-		return mContactName;
-	}
-
-
 
 	public ArrayList<Message> getMessages() {
 		return mMessages;
+	}
+	
+	public Message getMostRecentMessage(){
+		return mMessages.get(mMessages.size() - 1);
 	}
 	
 	/** Takes a JSONArray from api/messages/all and returns a
@@ -53,10 +42,11 @@ public class Conversation {
 	 * @return
 	 */
 	public static ArrayList<Conversation> parseMessagesJson(JSONArray json){
+		ArrayList<Conversation> conversations = new ArrayList<Conversation>();
 		int numContacts = json.length();
 		for(int i = 0; i < numContacts; i++){
 			JSONObject entry = null;
-			JSONObject contact = null;
+			JSONObject contactJson = null;
 			JSONArray conversation = null;
 			// TODO: Handle json exceptions
 			
@@ -69,7 +59,7 @@ public class Conversation {
 			
 			// Get contact info
 			try {
-				contact = entry.getJSONObject("contact");
+				contactJson = entry.getJSONObject("contact");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,9 +88,11 @@ public class Conversation {
 				messages.add(new Message(msg));				
 			}
 			
-			
-			
+		
+			User contact = new User(contactJson);
+			conversations.add(new Conversation(messages, contact));		
 		}
-		return null;		
+		
+		return conversations;		
 	}
 }

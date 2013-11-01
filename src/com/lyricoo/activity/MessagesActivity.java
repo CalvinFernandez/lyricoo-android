@@ -15,19 +15,23 @@ import com.lyricoo.R;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 public class MessagesActivity extends Activity {
 	private ArrayList<Conversation> mConversations;
 	private ProgressBar mProgress;
+	private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
+		mContext = this;
 
 		// start progress bar to indicate loading
 		mProgress = (ProgressBar) findViewById(R.id.messages_loading_progress);
@@ -45,7 +49,9 @@ public class MessagesActivity extends Activity {
 				mProgress.setVisibility(View.GONE);				
 
 				// Create adapter for the list view
-				Log.v("Messages", json.toString());
+				MessageListAdapter adapter = new MessageListAdapter(mContext, mConversations);
+				ListView list = (ListView) findViewById(R.id.messages_list);
+				list.setAdapter(adapter);
 			}
 
 			@Override
