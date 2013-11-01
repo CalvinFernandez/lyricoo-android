@@ -12,6 +12,8 @@ public class LyricooApp extends Application {
 	// The currently logged in user. Null if the app is logged out	
 	private User mUser = null;
 	
+	public Conversation conversationToDisplay = null;
+	
 	@Override
 	  public void onCreate()
 	  {
