@@ -29,5 +29,10 @@ public class MenuActivity extends Activity {
 		Intent i = new Intent(this, MessagesActivity.class);
 		startActivity(i);
 	}
+	
+	public void lyricoosClicked(View v){
+		Intent i = new Intent(this, LyricooSelectionActivity.class);
+		startActivity(i);
+	}
 
 }
