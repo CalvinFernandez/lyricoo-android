@@ -27,11 +27,16 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 
+/** List all available songs and allow playback on click
+ * 
+ *
+ */
 public class LyricooSelectionActivity extends Activity {
 	private ArrayList<Song> mSongs;
 	private ProgressBar mProgress;
 	private Context mContext;
 	private LyricooApp mApp;
+	private LyricooPlayer mPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class LyricooSelectionActivity extends Activity {
 
 		mContext = this;
 		mApp = (LyricooApp) getApplication();
+		mPlayer = new LyricooPlayer();
 
 		// start progress bar to indicate loading
 		mProgress = (ProgressBar) findViewById(R.id.songs_loading_progress);
@@ -68,12 +74,19 @@ public class LyricooSelectionActivity extends Activity {
 							int position, long id) {
 						// Play song
 						Song song = mSongs.get(position);
-						LyricooPlayer player = new LyricooPlayer(song.getUrl(),
+						mPlayer.loadSongFromUrl(song.getUrl(),
+								// listener for when song has loaded
 								new MediaPlayer.OnPreparedListener() {
-
 									@Override
 									public void onPrepared(MediaPlayer mp) {
-										mp.start();
+										mPlayer.play(new MediaPlayer.OnCompletionListener() {
+											// listener for when song has finished playing
+											@Override
+											public void onCompletion(MediaPlayer mp) {
+												// TODO Auto-generated method stub
+												
+											}
+										});
 									}
 								});
 					}
