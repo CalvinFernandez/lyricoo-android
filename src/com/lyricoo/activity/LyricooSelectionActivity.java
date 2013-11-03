@@ -37,6 +37,8 @@ public class LyricooSelectionActivity extends Activity {
 	private Context mContext;
 	private LyricooApp mApp;
 	private LyricooPlayer mPlayer;
+	
+	// TODO: Stop music playing when activity is paused or stopped
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
