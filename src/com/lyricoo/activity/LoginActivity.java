@@ -1,13 +1,18 @@
 package com.lyricoo.activity;
 
 
+import org.json.JSONObject;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.lyricoo.R;
+import com.lyricoo.Session;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 
 public class LoginActivity extends Activity {
 
@@ -25,8 +30,38 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void login(View v){
-		Intent i = new Intent(this, MenuActivity.class);
-		startActivity(i);
+		final Intent i = new Intent(this, MenuActivity.class);
+	
+		EditText usernameView = (EditText) findViewById(R.id.username_field);
+		EditText passwordView = (EditText) findViewById(R.id.password_field);
+		
+		String username = usernameView.getText().toString();
+		String password = passwordView.getText().toString();
+
+		Session.login(username, password, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONObject response) {
+				startActivity(i);
+				System.out.println(response.toString());
+			}
+			
+			@Override
+			public void onFailure(Throwable error, JSONObject response) {
+				System.out.println(response.toString());
+			}
+			
+			@Override
+			public void onStart() {
+				System.out.println("started");
+			}
+			@Override 
+			public void onFinish() {
+				System.out.println("ended");
+			}
+		});
+		
+		
+		
 	}
 
 }
