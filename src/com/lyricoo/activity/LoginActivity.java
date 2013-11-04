@@ -9,6 +9,7 @@ import com.lyricoo.Session;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 
 public class LoginActivity extends Activity {
 
+	private ProgressDialog progress;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,7 +34,9 @@ public class LoginActivity extends Activity {
 	
 	public void login(View v){
 		final Intent i = new Intent(this, MenuActivity.class);
-	
+		
+		final LoginActivity _this = this;
+		
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
 		
@@ -41,22 +46,25 @@ public class LoginActivity extends Activity {
 		Session.login(username, password, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
+				progress.dismiss();
 				startActivity(i);
-				System.out.println(response.toString());
 			}
 			
 			@Override
 			public void onFailure(Throwable error, JSONObject response) {
-				System.out.println(response.toString());
+				progress.dismiss();
 			}
 			
 			@Override
-			public void onStart() {
-				System.out.println("started");
+			public void onStart() {	
+				progress = ProgressDialog.show(_this, "Loggin in...", 
+						"Please Wait", true);
+				
 			}
 			@Override 
 			public void onFinish() {
-				System.out.println("ended");
+				progress.dismiss();
+				
 			}
 		});
 		
