@@ -12,7 +12,6 @@
             android:id="@+id/menu_button_messages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:onClick="messagesClicked"
             android:text="Messages" />
 
@@ -20,7 +19,6 @@
             android:id="@+id/menu_button_lyricoos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:onClick="lyricoosClicked"
             android:text="Lyricoos" />
 
@@ -28,14 +26,13 @@
             android:id="@+id/menu_button_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:onClick="contactsClicked"
             android:text="Contacts" />
 
         <Button
             android:id="@+id/menu_button_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:text="Log Out" />
         
     </LinearLayout>

@@ -34,5 +34,10 @@ public class MenuActivity extends Activity {
 		Intent i = new Intent(this, LyricooSelectionActivity.class);
 		startActivity(i);
 	}
+	
+	public void contactsClicked(View v){
+		Intent i = new Intent(this, ContactsActivity.class);
+		startActivity(i);
+	}
 
 }
