@@ -13,5 +13,6 @@
 	<string name="username_field">Email</string>
 	<string name="password_field">Password</string>
 	<string name="login_label">Login</string>
+	<string name="signup_label">Signup</string>
 	<!-- /Login -->
 </resources>

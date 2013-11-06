@@ -9,6 +9,8 @@ import com.lyricoo.Session;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -52,8 +54,8 @@ public class LoginActivity extends Activity {
 			}
 			
 			@Override
-			public void onFailure(Throwable error, JSONObject response) {
-				System.out.println(response.toString());
+			public void onFailure(Throwable error, JSONObject response) {				
+				handleLoginFailure(response);
 			}
 			
 			@Override
@@ -64,10 +66,30 @@ public class LoginActivity extends Activity {
 			public void onFinish() {
 				System.out.println("ended");
 			}
-		});
+		});		
 		
-		
-		
+	}
+
+	private void handleLoginFailure(JSONObject response) {
+		new AlertDialog.Builder(this)
+	    .setTitle("Login Error")
+	    .setMessage("Sorry, there was a problem logging you in")
+	    .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // Close and do nothing
+	        }
+	     })
+	    .setNegativeButton("Reset Password", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // Send reset email
+	        	resetPassword();
+	        }
+	     })
+	     .show();		
+	}
+	
+	private void resetPassword(){
+		// TODO: Send a reset password email and provide some user feedback about it
 	}
 
 }
