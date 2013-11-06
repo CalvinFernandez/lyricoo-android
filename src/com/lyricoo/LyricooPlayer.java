@@ -2,6 +2,7 @@ package com.lyricoo;
 
 import java.io.IOException;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
@@ -17,13 +18,21 @@ public class LyricooPlayer {
 
 	private String mUrl;
 	private MediaPlayer mPlayer;
+	private Context mContext;
 
 	/**
 	 * Initialize a player without loading any songs
 	 */
-	public LyricooPlayer() {
+	public LyricooPlayer(Context context) {
+		mContext = context;
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		
+		// set volume to half max
+		// TODO: Allow the user to adjust the volume somehow
+		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 2, 0);
 	}
 
 	public void loadSongFromUrl(String url,

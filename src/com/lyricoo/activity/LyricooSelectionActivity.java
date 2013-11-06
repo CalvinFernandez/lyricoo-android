@@ -47,7 +47,7 @@ public class LyricooSelectionActivity extends Activity {
 
 		mContext = this;
 		mApp = (LyricooApp) getApplication();
-		mPlayer = new LyricooPlayer();
+		mPlayer = new LyricooPlayer(this);
 
 		// start progress bar to indicate loading
 		mProgress = (ProgressBar) findViewById(R.id.songs_loading_progress);
@@ -63,36 +63,8 @@ public class LyricooSelectionActivity extends Activity {
 				// hide progress bar
 				mProgress.setVisibility(View.GONE);
 
-				// Create adapter for the list view
-				SongListAdapter adapter = new SongListAdapter(mContext, mSongs);
-				ListView list = (ListView) findViewById(R.id.songs_list);
-				list.setAdapter(adapter);
-
-				// When a message is clicked load the whole conversation
-				list.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// Play song
-						Song song = mSongs.get(position);
-						mPlayer.loadSongFromUrl(song.getUrl(),
-								// listener for when song has loaded
-								new MediaPlayer.OnPreparedListener() {
-									@Override
-									public void onPrepared(MediaPlayer mp) {
-										mPlayer.play(new MediaPlayer.OnCompletionListener() {
-											// listener for when song has finished playing
-											@Override
-											public void onCompletion(MediaPlayer mp) {
-												// TODO Auto-generated method stub
-												
-											}
-										});
-									}
-								});
-					}
-				});
+				// Show the songs to the user
+				displaySongs();
 			}
 
 			@Override
@@ -108,6 +80,41 @@ public class LyricooSelectionActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.lyricoo_selection, menu);
 		return true;
+	}
+
+	private void playSong(Song song) {
+		System.out.println("Playing song");
+		mPlayer.loadSongFromUrl(song.getUrl(),
+				// listener for when song has loaded
+				new MediaPlayer.OnPreparedListener() {
+					@Override
+					public void onPrepared(MediaPlayer mp) {
+						mPlayer.play(new MediaPlayer.OnCompletionListener() {
+							// listener for when song has finished playing
+							@Override
+							public void onCompletion(MediaPlayer mp) {
+								System.out.println("Song finished playing");
+								
+							}
+						});
+					}
+				});
+	}
+
+	private void displaySongs() {
+		SongListAdapter adapter = new SongListAdapter(mContext, mSongs);
+		ListView list = (ListView) findViewById(R.id.songs_list);
+		list.setAdapter(adapter);
+
+		// When a song is clicked play it
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				playSong(mSongs.get(position));
+			}
+		});
 	}
 
 }

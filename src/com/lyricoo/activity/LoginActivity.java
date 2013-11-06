@@ -37,6 +37,12 @@ public class LoginActivity extends Activity {
 		
 		String username = usernameView.getText().toString();
 		String password = passwordView.getText().toString();
+		
+		// debug helper for testing
+		if(username.equals("") && password.equals("")){
+			username = "konakid@gmail.com";
+			password = "asdfasdf";
+		}
 
 		Session.login(username, password, new JsonHttpResponseHandler() {
 			@Override
