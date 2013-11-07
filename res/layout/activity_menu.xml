@@ -23,11 +23,11 @@
             android:text="Lyricoos" />
 
         <Button
-            android:id="@+id/menu_button_contacts"
+            android:id="@+id/menu_button_friends"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="contactsClicked"
-            android:text="Contacts" />
+            android:onClick="friendsClicked"
+            android:text="Friends" />
 
         <Button
             android:id="@+id/menu_button_logout"

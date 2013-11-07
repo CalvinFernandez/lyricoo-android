@@ -8,11 +8,14 @@
     <string name="title_activity_conversation">ConversationActivity</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_messages">MessagesActivity</string>
-	
-	<!-- Login resources -->
-	<string name="username_field">Email</string>
-	<string name="password_field">Password</string>
-	<string name="login_label">Login</string>
-	<string name="signup_label">Signup</string>
-	<!-- /Login -->
+
+    <!-- Login resources -->
+    <string name="username_field">Email</string>
+    <string name="password_field">Password</string>
+    <string name="login_label">Login</string>
+    <string name="signup_label">Signup</string>
+    <!-- /Login -->
+    <string name="title_activity_friends">Friends</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

@@ -2,6 +2,7 @@ package com.lyricoo.activity;
 
 
 
+import com.lyricoo.FriendsActivity;
 import com.lyricoo.R;
 
 import android.os.Bundle;
@@ -35,8 +36,8 @@ public class MenuActivity extends Activity {
 		startActivity(i);
 	}
 	
-	public void contactsClicked(View v){
-		Intent i = new Intent(this, ContactsActivity.class);
+	public void friendsClicked(View v){
+		Intent i = new Intent(this, FriendsActivity.class);
 		startActivity(i);
 	}
 

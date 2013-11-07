@@ -1,5 +1,8 @@
 package com.lyricoo;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +34,16 @@ public class User {
 	
 	public String getEmail(){
 		return mEmail;
+	}
+	
+	public String getUsername(){
+		return mUsername;
+	}
+	
+	public static ArrayList<User> parseUserJson(JSONArray json){
+		ArrayList<User> result = new ArrayList<User>();
+		// TODO: implementation
+		return result;		
 	}
 
 }
