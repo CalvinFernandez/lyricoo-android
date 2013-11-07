@@ -49,6 +49,7 @@ public class LoginActivity extends Activity {
 		Session.login(username, password, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
+				System.out.println(response.toString());
 				Session.create(response);
 				startActivity(i);
 			}

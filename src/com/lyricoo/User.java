@@ -30,6 +30,12 @@ public class User {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			mAuthToken = json.getString("auth_token");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String getEmail(){
@@ -38,6 +44,15 @@ public class User {
 	
 	public String getUsername(){
 		return mUsername;
+	}	
+	
+
+	public int getUserId() {
+		return mUserId;
+	}
+
+	public String getAuthToken() {
+		return mAuthToken;
 	}
 	
 	public static ArrayList<User> parseUserJson(JSONArray json){
@@ -45,5 +60,4 @@ public class User {
 		// TODO: implementation
 		return result;		
 	}
-
 }
