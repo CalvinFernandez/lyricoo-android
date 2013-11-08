@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.activity;
 
 import java.util.ArrayList;
 
@@ -7,10 +7,15 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.lyricoo.activity.ContactsActivity;
-import com.lyricoo.activity.ConversationActivity;
-import com.lyricoo.activity.FriendsListAdapter;
-import com.lyricoo.activity.MessageListAdapter;
+import com.lyricoo.Conversation;
+import com.lyricoo.LyricooAPI;
+import com.lyricoo.LyricooApp;
+import com.lyricoo.R;
+import com.lyricoo.Session;
+import com.lyricoo.User;
+import com.lyricoo.R.id;
+import com.lyricoo.R.layout;
+import com.lyricoo.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;

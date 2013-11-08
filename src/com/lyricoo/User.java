@@ -14,6 +14,7 @@ public class User {
 	private String mUsername;
 	private String mEmail;
 	private int mUserId;
+	private String mPhoneNumber;
 	private String mAuthToken;
 	
 	public User(JSONObject json){
@@ -59,5 +60,23 @@ public class User {
 		ArrayList<User> result = new ArrayList<User>();
 		// TODO: implementation
 		return result;		
+	}
+
+	/** Check if the given contact has matching user credentials to this user
+	 * 
+	 * @param contact
+	 * @return
+	 */
+	public boolean isContactMatch(PhoneContact contact) {
+		// only checking phone numbers. Could check email addresses if we wanted to. 
+		
+		// Check each phone number of the contact
+		for(String number : contact.getNumbers()){
+			if(Utility.isPhoneNumberEqual(mPhoneNumber, number)){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

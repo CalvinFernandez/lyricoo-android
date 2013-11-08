@@ -8,14 +8,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ContactsActivity" >
     
-    <ListView
-        android:id="@+id/contacts_list"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/username_field"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        >
-    </ListView>
+        android:layout_toLeftOf="@id/add_friend_button"
+        android:hint="Friend's Username"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+    
+    <Button
+        android:id="@+id/add_friend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/username_field"
+        android:text="Add" />
     
     <ProgressBar
         android:id="@+id/contacts_loading_progress"
@@ -24,6 +36,15 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    
 
+    <ListView
+        android:id="@+id/contacts_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username_field">
+    </ListView>
+
+    
 
 </RelativeLayout>

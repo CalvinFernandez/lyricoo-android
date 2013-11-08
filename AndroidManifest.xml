@@ -48,7 +48,7 @@
             android:label="@string/title_activity_messages" >
         </activity>
         <activity
-            android:name="com.lyricoo.FriendsActivity"
+            android:name="com.lyricoo.activity.FriendsActivity"
             android:label="@string/title_activity_friends" >
         </activity>
     </application>

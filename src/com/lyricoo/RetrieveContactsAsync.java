@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -103,26 +104,29 @@ public class RetrieveContactsAsync extends
 
 			// Only retreive the addresses, we don't need the types or
 			// labels
-			String[] projection = { ContactsContract.CommonDataKinds.Email.ADDRESS };
-
-			Cursor emailCursor = cr.query(
-					ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-					projection,
-					ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-					new String[] { id }, null);
-
-			while (emailCursor.moveToNext()) {
-				// we only have one column since the projection only gets the address
-				// so just grab the first column
-				email = emailCursor.getString(0);
-
-				contact.addEmail(email);
-			}
-
-			emailCursor.close();
+//			String[] projection = { ContactsContract.CommonDataKinds.Email.ADDRESS };
+//
+//			Cursor emailCursor = cr.query(
+//					ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+//					projection,
+//					ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+//					new String[] { id }, null);
+//
+//			while (emailCursor.moveToNext()) {
+//				// we only have one column since the projection only gets the address
+//				// so just grab the first column
+//				email = emailCursor.getString(0);
+//
+//				contact.addEmail(email);
+//			}
+//
+//			emailCursor.close();
 
 			// add contact to result list
-			result.add(contact);
+			// only add them if they have a phone number
+			if(!contact.getNumbers().isEmpty()){
+				result.add(contact);
+			}			
 		}
 		return result;
 	}

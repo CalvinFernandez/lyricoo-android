@@ -2,7 +2,6 @@ package com.lyricoo.activity;
 
 
 
-import com.lyricoo.FriendsActivity;
 import com.lyricoo.R;
 
 import android.os.Bundle;
