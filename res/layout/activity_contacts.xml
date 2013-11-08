@@ -14,19 +14,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/add_friend_button"
-        android:hint="Friend's Username"
-        android:ems="10" >
+        android:layout_toLeftOf="@+id/add_friend_button"
+        android:ems="10"
+        android:maxLines="1"
+        android:hint="Friend&apos;s Username" >
 
-        <requestFocus />
     </EditText>
     
     <Button
         android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/username_field"
+        android:layout_alignParentRight="true"
+        android:onClick="addFriend"
         android:text="Add" />
     
     <ProgressBar

@@ -25,12 +25,29 @@ public class User {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		try {
 			mEmail = json.getString("email");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+			mUsername = json.getString("username");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			// TODO: Probably need to use getInt. Need to decide which form to use on server.
+			mPhoneNumber = json.getString("phone_number");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		try {
 			mAuthToken = json.getString("auth_token");
 		} catch (JSONException e) {
@@ -56,9 +73,32 @@ public class User {
 		return mAuthToken;
 	}
 	
-	public static ArrayList<User> parseUserJson(JSONArray json){
+	/** Parse a json array of users into an ArrayList<User>
+	 * 
+	 * @param json
+	 * @return
+	 */
+	public static ArrayList<User> parseUserJsonArray(JSONArray json){
+		// initialize arraylist to hold results
 		ArrayList<User> result = new ArrayList<User>();
-		// TODO: implementation
+		
+		// loop through json array
+		int userCount = json.length();
+		for(int i = 0; i < userCount; i++){
+			JSONObject userJson = null;
+			try {
+				userJson = json.getJSONObject(i);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(userJson != null){
+				User user = new User(userJson);
+				result.add(user);
+			}			
+		}
+		
 		return result;		
 	}
 

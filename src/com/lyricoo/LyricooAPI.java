@@ -45,10 +45,8 @@ public class LyricooAPI {
 		client.put(getAbsoluteUrl(url), params, responseHandler);
 	}
 	
-	public static void destroy(String url, RequestParams params,
-			AsyncHttpResponseHandler responseHandler) {
-		// TODO: implement this
-		//client.delete(getAbsoluteUrl(url), params, responseHandler);
+	public static void delete(String url, AsyncHttpResponseHandler responseHandler) {
+		client.delete(getAbsoluteUrl(url), responseHandler);
 	}
 
 	private static String getAbsoluteUrl(String relativeUrl) {
