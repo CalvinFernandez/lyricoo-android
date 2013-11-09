@@ -19,8 +19,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.ContactsListViewEntry;
 import com.lyricoo.LyricooAPI;
 import com.lyricoo.OnTaskCompleted;
 import com.lyricoo.PhoneContact;
@@ -28,16 +30,14 @@ import com.lyricoo.R;
 import com.lyricoo.RetrieveContactsAsync;
 import com.lyricoo.Session;
 import com.lyricoo.User;
+import com.lyricoo.Utility;
 
 public class ContactsActivity extends Activity {
 	private ProgressBar mProgress;
 	// contacts list from our phone
 	private ArrayList<PhoneContact> mPhoneContacts;
-	// people from our contacts list with existing lyricoo accounts. We can add
-	// them as friends
-	private ArrayList<User> mExistingFriends;
-	// contacts without accounts that we can invite
-	private ArrayList<PhoneContact> mContactsToInvite;
+	// Sorted and list of contacts ready to be displayed
+	private ArrayList<ContactsListViewEntry> mContacts;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +84,9 @@ public class ContactsActivity extends Activity {
 				// parse json into users
 				ArrayList<User> lyricooUsers = User.parseUserJsonArray(json);
 
-				// sort our contacts
-				mExistingFriends = new ArrayList<User>();
-				mContactsToInvite = new ArrayList<PhoneContact>();
+				// initialize list
+				mContacts = new ArrayList<ContactsListViewEntry>();
+
 				for (PhoneContact contact : mPhoneContacts) {
 					// check if our contact already has an account
 					User user = findUser(lyricooUsers, contact);
@@ -94,9 +94,17 @@ public class ContactsActivity extends Activity {
 					// sort the contact into the corresponding list based on the
 					// result
 					if (user != null) {
-						mExistingFriends.add(user);
+						mContacts.add(new ContactsListViewEntry(contact
+								.getName(), null, user.getUsername()));
 					} else {
-						mContactsToInvite.add(contact);
+						// if they have more than one phone number create a
+						// separate entry for each number. This makes the
+						// display simpler and places the burden of choosing
+						// which number to send the invite to on the user
+						for (String number : contact.getNumbers()) {
+							mContacts.add(new ContactsListViewEntry(contact
+									.getName(), number, null));
+						}
 					}
 				}
 
@@ -127,8 +135,7 @@ public class ContactsActivity extends Activity {
 
 	private void populateContactsList() {
 		// Create adapter for the list view
-		ContactsListAdapter adapter = new ContactsListAdapter(this,
-				mContactsToInvite, mExistingFriends);
+		ContactsListAdapter adapter = new ContactsListAdapter(this, mContacts);
 		ListView list = (ListView) findViewById(R.id.contacts_list);
 		list.setAdapter(adapter);
 
@@ -138,39 +145,52 @@ public class ContactsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				ContactsListViewEntry contact = mContacts.get(position);
+				String number = contact.getNumber();
+				String username = contact.getUsername();
 				// if it is an existing user then add them as a friend
-				// addFriend()
-
+				if(username != null){
+					addFriend(username);
+					// TODO: Show visual cue in list that friend can/has been added
+				}
+				
 				// if the contact doesn't have an account send them an invite
-				// inviteFriend()
-
+				else if(number != null){
+					inviteFriend(number);
+				}
 			}
 		});
 	}
 
 	// send an invite to a phone number
 	// TODO: make this work
-	private void inviteFriend() {
-		String inviteText = "You're invited to join lyricoo";
+	private void inviteFriend(String number) {
+		String inviteText = "Add me on Lyricoo! Username: " + Session.currentUser().getUsername() + " www.lyricoo.com/download";
 
 		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
 
 		smsIntent.putExtra("sms_body", inviteText);
-		smsIntent.putExtra("address", "0123456789");
+		smsIntent.putExtra("address", number);
 		smsIntent.setType("vnd.android-dir/mms-sms");
 
 		startActivity(smsIntent);
 	}
-
-	// Add the username that was entered in the text field
-	public void addFriend(View v) {
+	
+	// called when the user presses the add button
+	public void addFriendClicked(View v){
 		EditText userText = (EditText) findViewById(R.id.username_field);
 		final String username = userText.getText().toString();
 
 		// If the username is empty don't try to add it as a friend
 		if (username.length() == 0)
 			return;
+		else {
+			addFriend(username);
+		}
+	}
 
+	// Add the friend with the given username
+	public void addFriend(final String username) {
 		// disable button so it isn't pressed again
 		setAddButtonState(false);
 
@@ -178,47 +198,47 @@ public class ContactsActivity extends Activity {
 		String path = "users/" + Session.currentUser().getUserId() + "/friends";
 		RequestParams params = new RequestParams();
 		params.put("username", username);
-		LyricooAPI.post(path, params, new JsonHttpResponseHandler() {
+		LyricooAPI.post(path, params, new AsyncHttpResponseHandler() {
 
 			@Override
-			public void onSuccess(JSONArray json) {
+			public void onSuccess(int statusCode, org.apache.http.Header[] headers, byte[] responseBody) {
 				toastAddFriendResult(username, true);
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
+			public void onFailure(int statusCode, org.apache.http.Header[] headers, byte[] responseBody, java.lang.Throwable error) {
 				// Could have failed because friend doesn't exist, friend was
 				// already added, or a connection problem
 				// TODO: Make the failure notice more specific
-				toastAddFriendResult(username, false);				
+				toastAddFriendResult(username, false);
 			}
-			
+
 			@Override
-			public void onFinish(){				
+			public void onFinish() {
 				// re-enable button when process is over
 				setAddButtonState(true);
 			}
 		});
 	}
-		
-	
-	/** Raise a toast letting the user know the result of the add friend request
+
+	/**
+	 * Raise a toast letting the user know the result of the add friend request
 	 * 
 	 */
-	private void toastAddFriendResult(String username, boolean success){
+	private void toastAddFriendResult(String username, boolean success) {
 		CharSequence text;
-		if(success){
-			 text = "Added " + username + " to friends!";
+		if (success) {
+			text = "Added " + username + " to friends!";
 		} else {
 			text = "Failed adding " + username + " to friends";
 		}
-		
-		Context context = getApplicationContext();		
+
+		Context context = getApplicationContext();
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();		
-	}	
+		toast.show();
+	}
 
 	/**
 	 * Enables or disables the button to add a friend

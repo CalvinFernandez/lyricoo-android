@@ -2,6 +2,7 @@ package com.lyricoo.activity;
 
 import java.util.ArrayList;
 
+import com.lyricoo.ContactsListViewEntry;
 import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.PhoneContact;
@@ -16,22 +17,18 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class ContactsListAdapter extends BaseAdapter {
-	// phone contacts that we can invite
-	private ArrayList<PhoneContact> mContacts;
-	// existing lyricoo users we can invite that match contacts on our phone
-	private ArrayList<User> mFriends;
+	private ArrayList<ContactsListViewEntry> mContacts;
 	private Context mContext;
 
-	public ContactsListAdapter(Context context, ArrayList<PhoneContact> contacts, ArrayList<User> friends) {
-		// A PhoneContact can have multiple phone numbers. To simplify things we will list each number as it's own entry
+	public ContactsListAdapter(Context context,
+			ArrayList<ContactsListViewEntry> contacts) {
 		mContacts = contacts;
-		mFriends = friends;		
 		mContext = context;
 	}
-	
 
 	@Override
 	public int getCount() {
+		// two lists of data plus a header for each list (2 headers total)
 		return mContacts.size();
 	}
 
@@ -42,35 +39,38 @@ public class ContactsListAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
+		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) mContext
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		// get the contact for this position
-		PhoneContact contact = mContacts.get(position);
 
 		View rowView = inflater.inflate(R.layout.contacts_list_item, parent,
-					false);
+				false);
 
-		// Set the contact name
-		TextView name = (TextView) rowView
-				.findViewById(R.id.contact_name);
-		name.setText(contact.getName());		
-		
-		// phone
-		if(!contact.getNumbers().isEmpty()){
-			// only show first one for now
-			String number = contact.getNumbers().get(0);
-			TextView numberView = (TextView) rowView
-					.findViewById(R.id.contact_number);
-			numberView.setText(number);
+		ContactsListViewEntry entry = mContacts.get(position);
+
+		// Set the name
+		TextView name = (TextView) rowView.findViewById(R.id.contact_name);
+		name.setText(entry.getName());
+
+		// set the username if they have a lyricoo account or their number
+		// otherwise so we can invite them
+		TextView info = (TextView) rowView.findViewById(R.id.contact_info);
+		String username = entry.getUsername();
+		String number = entry.getNumber();
+
+		if (username != null) {
+			info.setText(username);
+		} else if (number != null) {
+			info.setText(number);
+		} else {
+			// Why don't we have their name or number? Something went
+			// terribly wrong...
 		}
-		
+
 		return rowView;
 	}
 

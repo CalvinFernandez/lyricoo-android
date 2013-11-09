@@ -34,6 +34,7 @@ public class LoginActivity extends Activity {
 	public void login(View v){
 		final Intent i = new Intent(this, MenuActivity.class);
 	
+		// TODO: Accept either username or email address in the text field
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
 		
@@ -50,6 +51,7 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onSuccess(JSONObject response) {
 				System.out.println(response.toString());
+				// TODO: Get server to return complete user info. Right now only auth token and user id are returned
 				Session.create(response);
 				startActivity(i);
 			}
