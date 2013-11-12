@@ -63,7 +63,6 @@ public class LoginActivity extends Activity {
 		Session.login(username, password, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
-				System.out.println(response.toString());
 				// TODO: Get server to return complete user info. Right now only auth token and user id are returned
 				Session.create(response);
 				
