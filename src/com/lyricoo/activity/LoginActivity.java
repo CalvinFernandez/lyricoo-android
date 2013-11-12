@@ -10,18 +10,29 @@ import com.lyricoo.Session;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class LoginActivity extends Activity {
+	private ProgressBar mProgress;
+	private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+		// get progress bar
+		mProgress = (ProgressBar) findViewById(R.id.sign_in_progress);
+		
+		// save context
+		mContext = this;
 	}
 
 	@Override
@@ -32,7 +43,9 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void login(View v){
-		final Intent i = new Intent(this, MenuActivity.class);
+		setIsLoading(true);
+		
+		
 	
 		// TODO: Accept either username or email address in the text field
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
@@ -53,6 +66,8 @@ public class LoginActivity extends Activity {
 				System.out.println(response.toString());
 				// TODO: Get server to return complete user info. Right now only auth token and user id are returned
 				Session.create(response);
+				
+				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
 			}
 			
@@ -61,13 +76,9 @@ public class LoginActivity extends Activity {
 				handleLoginFailure(response);
 			}
 			
-			@Override
-			public void onStart() {
-				System.out.println("started");
-			}
 			@Override 
 			public void onFinish() {
-				System.out.println("ended");
+				setIsLoading(false);
 			}
 		});		
 		
@@ -93,6 +104,35 @@ public class LoginActivity extends Activity {
 	
 	private void resetPassword(){
 		// TODO: Send a reset password email and provide some user feedback about it
+	}
+	
+	public void signupClicked(View v){
+		Intent i = new Intent(this, SignUpActivity.class);
+		startActivity(i);
+	}
+	
+	/** Set whether or not the activity should 
+	 * display the loading state with buttons
+	 * disabled and progress bar visible
+	 * @param isLoading
+	 */
+	private void setIsLoading(boolean isLoading){
+		// get buttons
+		Button login = (Button) findViewById(R.id.login_button);
+		Button signup= (Button) findViewById(R.id.signup_button);
+		
+		// hide buttons and show progress if loading is true
+		if(isLoading){
+			signup.setVisibility(View.GONE);
+			login.setVisibility(View.GONE);
+			mProgress.setVisibility(View.VISIBLE);
+		} 
+		// reverse it otherwise
+		else {
+			signup.setVisibility(View.VISIBLE);
+			login.setVisibility(View.VISIBLE);
+			mProgress.setVisibility(View.GONE);
+		}		
 	}
 
 }
