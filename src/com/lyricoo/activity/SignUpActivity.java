@@ -176,14 +176,15 @@ public class SignUpActivity extends Activity {
 			// add each message to the result list
 			while (it.hasNext()) {
 				String key = (String) it.next();
-				// each key has an associated array which has at least one message
+				// each key has an associated array which has at least one
+				// message
 				JSONArray array = errors.getJSONArray(key);
 				int numMessages = array.length();
-				for(int i = 0; i < numMessages; i++){
+				for (int i = 0; i < numMessages; i++) {
 					String msg = array.getString(i);
 					result.add(new ErrorMessage(key, msg));
 				}
-				
+
 			}
 		} catch (JSONException e) {
 			// Can't get errors for some reason. Leave list empty
@@ -234,17 +235,18 @@ public class SignUpActivity extends Activity {
 		ArrayList<ErrorMessage> result = new ArrayList<ErrorMessage>();
 
 		// check username
+		// Simply make sure it's not blank. For now let the server do any other
+		// necessary checks
 		if (Utility.isStringBlank(data.username)) {
 			result.add(new ErrorMessage("Username", "can't be blank"));
 		}
-		// TODO: Length checks or restrict characters to alphanumeric? What
-		// checks are done on server?
 
 		// check password
+		// Simply make sure it's not blank. For now let the server do any other
+		// necessary checks
 		if (Utility.isStringBlank(data.password)) {
 			result.add(new ErrorMessage("Password", "can't be blank"));
 		}
-		// TODO: Check length or enforce other parameters for strong passwords?
 
 		// check email
 		if (!Utility.isValidEmail(data.email)) {
