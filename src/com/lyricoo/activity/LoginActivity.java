@@ -10,6 +10,7 @@ import com.lyricoo.Session;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +23,7 @@ import android.widget.ProgressBar;
 public class LoginActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,7 +66,7 @@ public class LoginActivity extends Activity {
 			public void onSuccess(JSONObject response) {
 				// TODO: Get server to return complete user info. Right now only auth token and user id are returned
 				Session.create(response);
-				
+
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
 			}
@@ -133,5 +134,4 @@ public class LoginActivity extends Activity {
 			mProgress.setVisibility(View.GONE);
 		}		
 	}
-
 }

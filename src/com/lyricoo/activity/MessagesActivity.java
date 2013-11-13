@@ -12,6 +12,7 @@ import com.lyricoo.Conversation;
 import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
+import com.lyricoo.Session;
 
 
 import android.os.Bundle;
@@ -52,7 +53,9 @@ public class MessagesActivity extends Activity {
 		// TODO: Cache messages instead of downloading every time
 		RequestParams params = new RequestParams();
 		// TODO: Use the id of the logged in user
-		params.put("id", "45");
+		String id = String.valueOf(Session.currentUser().getUserId());
+		params.put("id", id);
+		
 		LyricooAPI.get("messages/all", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {

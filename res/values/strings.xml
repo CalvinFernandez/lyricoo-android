@@ -15,6 +15,12 @@
     <string name="login_label">Login</string>
     <string name="signup_label">Signup</string>
     <!-- /Login -->
+    
+    <!-- Conversations resources -->
+    <string name="conversation_input">Write Message</string>
+    <string name="conversation_submit">Send</string>
+    <!--  /Conversations resources -->
+    
     <string name="title_activity_friends">Friends</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sign_up">Sign Up</string>

@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class Message {
 	private String mContent;
 	private int mMessageId;
-	private int mUserId;
+	private int mUserId;  // this should reference Session id.
 	private int mContactId;
 	private boolean mSent;
 	// songId can be null if no song was sent in this message
@@ -40,6 +40,22 @@ public class Message {
 		mSent = sent;
 		mSongId = songId;
 		mTime = time;
+	}
+	
+	//
+	//	No date provided, defaults to current
+	//
+	public Message(String content, int userId, int contactId, boolean sent,
+			int songId) {
+		this(content, userId, contactId, sent, -1, new Date());
+	}
+	
+	//
+	//  No date or song provided, defaults to current time and song with value -1 
+	//	(indicating no song selected for now .... )
+	//
+	public Message(String content, int userId, int contactId, boolean sent) {
+		this(content, userId, contactId, sent, -1, new Date());
 	}
 
 	public Message(JSONObject json) {
