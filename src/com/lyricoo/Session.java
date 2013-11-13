@@ -1,29 +1,42 @@
 package com.lyricoo;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import com.loopj.android.http.*;
 
 public class Session {
-	private static User current_user;
-	private static boolean logged_in = false;
+	private static User mCurrentUser;
+	private static boolean mLoggedIn = false;
+	private static String mAuthToken;
 	
 	public static User currentUser() {
-		return current_user;
+		return mCurrentUser;
 	}
 	
 	public static boolean isLoggedIn() {
-		return logged_in;
+		return mLoggedIn;
 	}
 	
 	public static User create(JSONObject json) {
-		current_user = new User(json);
-		logged_in = true;
-		return current_user;
+		try {
+			mCurrentUser = new User(json.getJSONObject("user"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			mAuthToken = json.getString("authentication_token");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		mLoggedIn = true;
+		return mCurrentUser;
 	}
 	
 	public static void destroy() {
-		current_user = null;
-		logged_in = false;
+		mCurrentUser = null;
+		mLoggedIn = false;
 	}
 
 	public static void login(String username, String password, JsonHttpResponseHandler 
@@ -36,7 +49,6 @@ public class Session {
 	}
 
 	public static String getAuthToken() {
-		// TODO Auto-generated method stub
-		return null;
+		return mAuthToken;
 	}
 }

@@ -15,7 +15,6 @@ public class User {
 	private String mEmail;
 	private int mUserId;
 	private String mPhoneNumber;
-	private String mAuthToken;
 	
 	public User(JSONObject json){
 		// TODO: Handle exceptions
@@ -47,13 +46,6 @@ public class User {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		try {
-			mAuthToken = json.getString("auth_token");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public String getEmail(){
@@ -69,10 +61,7 @@ public class User {
 		return mUserId;
 	}
 
-	public String getAuthToken() {
-		return mAuthToken;
-	}
-	
+
 	/** Parse a json array of users into an ArrayList<User>
 	 * 
 	 * @param json
