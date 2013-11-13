@@ -26,6 +26,7 @@ public class ConversationActivity extends Activity {
 		setContentView(R.layout.activity_conversation);
 		
 		mApp = (LyricooApp) getApplication();
+		
 		mConversation = mApp.conversationToDisplay;
 		
 		mConversationAdapter = new ConversationAdapter(this, R.id.messages_list, mConversation);
