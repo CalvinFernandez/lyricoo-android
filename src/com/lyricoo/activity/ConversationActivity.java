@@ -11,12 +11,14 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ConversationActivity extends Activity {
 	private LyricooApp mApp;
 	private Conversation mConversation;
+	private ConversationAdapter mConversationAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +28,13 @@ public class ConversationActivity extends Activity {
 		mApp = (LyricooApp) getApplication();
 		mConversation = mApp.conversationToDisplay;
 		
-		// Create adapter for the list view
-		ConversationAdapter adapter = new ConversationAdapter(this, mConversation);
-		ListView list = (ListView) findViewById(R.id.messages_list);
-		list.setAdapter(adapter);
+		mConversationAdapter = new ConversationAdapter(this, R.id.messages_list, mConversation);
 		
-		// When a message is clicked load the whole conversation
+		// Create adapter for the list view
+		ListView list = (ListView) findViewById(R.id.messages_list);
+		list.setAdapter(mConversationAdapter);
+		
+		//  Add click listener to li
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -48,6 +51,15 @@ public class ConversationActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.conversation, menu);
 		return true;
+	}
+	
+	public void sendMessage(View v) {
+		EditText conversationInputView = (EditText) findViewById(R.id.conversation_input);
+		String messageContent = conversationInputView.getText().toString();
+		//
+		// TODO: Message validation
+		//
+		mConversationAdapter.add(mConversation.buildNewMessage(messageContent));
 	}
 
 }

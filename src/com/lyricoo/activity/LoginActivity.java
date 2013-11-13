@@ -10,6 +10,7 @@ import com.lyricoo.Session;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,8 +23,6 @@ import android.widget.ProgressBar;
 public class LoginActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
-
-	private ProgressDialog progress;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

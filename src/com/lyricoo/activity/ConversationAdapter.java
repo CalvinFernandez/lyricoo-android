@@ -1,26 +1,25 @@
 package com.lyricoo.activity;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.R;
 
-public class ConversationAdapter extends BaseAdapter {
+public class ConversationAdapter extends ArrayAdapter<Message> {
 
 	private Conversation mConversation;
 	private Context mContext;
 
-	public ConversationAdapter(Context context, Conversation convo) {
-		mConversation = convo;
-		mContext = context;
+	public ConversationAdapter(Context context, int resource, Conversation conversation) {
+		super(context, resource, conversation.getMessages());
+		this.mConversation = conversation;
+		this.mContext = context;
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class ConversationAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Message getItem(int position) {
 		return mConversation.getMessages().get(position);
 	}
 

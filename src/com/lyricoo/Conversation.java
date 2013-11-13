@@ -1,6 +1,7 @@
 package com.lyricoo;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +14,9 @@ import org.json.JSONObject;
 public class Conversation {
 	private ArrayList<Message> mMessages;
 	private User mContact;
-	private int mUserId;
+	private int mUserId; // This should go away and reference the session id
+						 // we don't want duplicate data
+						 // Duplicate data 
 	
 	public Conversation(ArrayList<Message> messages, User contact) {
 		this.mMessages = messages;
@@ -34,6 +37,28 @@ public class Conversation {
 	
 	public Message getMostRecentMessage(){
 		return mMessages.get(mMessages.size() - 1);
+	}
+	
+	//
+	//  Creates a new Message and adds to mMessage array at the end.
+	//	No default.
+	//	Returns new message object
+	//
+	public Message buildNewMessage(String content, int songId, boolean sent, Date time) {
+		Message m = new Message(content, mUserId, mContact.getUserId(), sent, songId, time);
+		//mMessages.add(m);
+		return m;
+	}
+	
+	//
+	//	Creates a new message and adds to mMessage array to the end. Defaults sent to true and 
+	//	current date to now and song value to -1.
+	//	Returns new message object
+	//
+	public Message buildNewMessage(String content) {
+		Message m = new Message(content, mUserId, mContact.getUserId(), true);
+		//mMessages.add(m);
+		return m;
 	}
 	
 	/** Takes a JSONArray from api/messages/all and returns a
