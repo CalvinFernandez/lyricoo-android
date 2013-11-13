@@ -138,7 +138,7 @@ public class ContactsActivity extends Activity {
 		ContactsListAdapter adapter = new ContactsListAdapter(this, mContacts);
 		ListView list = (ListView) findViewById(R.id.contacts_list);
 		list.setAdapter(adapter);
-
+	
 		// When a contact is clicked we can do something
 		list.setOnItemClickListener(new OnItemClickListener() {
 

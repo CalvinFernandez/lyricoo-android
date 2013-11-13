@@ -9,17 +9,22 @@ import org.json.JSONObject;
 /** The User class stores all data pertaining
  * to a logged in user.
  */
-public class User {
+public class User extends LyricooModel {
 	// TODO: Change backend to support username and other contact info
 	private String mUsername;
 	private String mEmail;
 	private int mUserId;
 	private String mPhoneNumber;
+	private static String baseUrl = "user";
 	
-	public User(JSONObject json){
+	public User(JSONObject json) {
+		super();
+		
 		// TODO: Handle exceptions
 		try {
 			mUserId = json.getInt("id");
+			setBaseUrl(baseUrl + "/" + mUserId);
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,6 +53,10 @@ public class User {
 		}
 	}
 	
+	public User() {
+		this(new JSONObject());
+	}
+	
 	public String getEmail(){
 		return mEmail;
 	}
@@ -66,8 +75,9 @@ public class User {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static ArrayList<User> parseUserJsonArray(JSONArray json){
+	public static ArrayList<User> parseUserJsonArray(JSONArray json) {
 		// initialize arraylist to hold results
 		ArrayList<User> result = new ArrayList<User>();
 		

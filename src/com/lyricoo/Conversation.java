@@ -22,6 +22,10 @@ public class Conversation {
 		this.mMessages = messages;
 		mContact = contact;
 	}	
+	
+	public Conversation() {
+		this(new ArrayList<Message>(), new User());
+	}
 
 	public int getUserId() {
 		return mUserId;

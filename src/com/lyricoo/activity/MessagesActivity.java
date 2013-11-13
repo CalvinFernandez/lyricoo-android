@@ -48,7 +48,7 @@ public class MessagesActivity extends Activity {
 
 		// start progress bar to indicate loading
 		mProgress = (ProgressBar) findViewById(R.id.messages_loading_progress);
-
+		
 		// load messages
 		// TODO: Cache messages instead of downloading every time
 		RequestParams params = new RequestParams();

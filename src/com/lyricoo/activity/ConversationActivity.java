@@ -2,6 +2,7 @@ package com.lyricoo.activity;
 
 
 import com.lyricoo.Conversation;
+import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
 
@@ -61,6 +62,7 @@ public class ConversationActivity extends Activity {
 		// TODO: Message validation
 		//
 		mConversationAdapter.add(mConversation.buildNewMessage(messageContent));
+		LyricooAPI.post("messages/new", params, responseHandler)
 	}
 
 }
