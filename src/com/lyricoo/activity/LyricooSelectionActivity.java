@@ -186,7 +186,7 @@ public class LyricooSelectionActivity extends Activity {
 		// show loading icon until song is ready to play
 		mSongProgress.setVisibility(View.VISIBLE);
 		mPlayButton.setVisibility(View.INVISIBLE);
-		
+
 		mPlayer.loadSongFromUrl(song.getUrl(),
 		// listener for when song has loaded
 				new MediaPlayer.OnPreparedListener() {
@@ -195,7 +195,7 @@ public class LyricooSelectionActivity extends Activity {
 						// hide loading bar and show play button
 						mSongProgress.setVisibility(View.GONE);
 						mPlayButton.setVisibility(View.VISIBLE);
-						
+
 						// Change play button to pause
 						mPlayButton.setText("Pause");
 
@@ -251,7 +251,7 @@ public class LyricooSelectionActivity extends Activity {
 
 		// Make sure the play button is reset
 		mPlayButton.setText("Play");
-		
+
 		// make sure the progress bar is hidden and play button is showing
 		mSongProgress.setVisibility(View.GONE);
 		mPlayButton.setVisibility(View.VISIBLE);
@@ -289,7 +289,7 @@ public class LyricooSelectionActivity extends Activity {
 	public void playClicked(View v) {
 		// pause if music is playing and update button to play
 		if (mPlayer.isPlaying()) {
-			mPlayer.stop();
+			mPlayer.pause();
 			mPlayButton.setText("Play");
 		}
 

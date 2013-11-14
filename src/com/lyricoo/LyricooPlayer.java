@@ -8,8 +8,8 @@ import android.media.MediaPlayer;
 
 /**
  * Handles the playing of a song. Basically acts as a wrapper for the
- * MediaPlayer class to stream a song from a url and handle any
- * exceptions that get thrown
+ * MediaPlayer class to stream a song from a url and handle any exceptions that
+ * get thrown
  * 
  * 
  */
@@ -68,7 +68,8 @@ public class LyricooPlayer {
 	/**
 	 * Plays the song from the beginning
 	 * 
-	 * @return True is playback starts successfully and false if there is an error
+	 * @return True is playback starts successfully and false if there is an
+	 *         error
 	 * 
 	 */
 	public boolean play(MediaPlayer.OnCompletionListener listener) {
@@ -77,48 +78,64 @@ public class LyricooPlayer {
 
 		try {
 			mPlayer.start();
-			return true;
-		} catch (IllegalStateException e) {
+		} catch (Exception e) {
 			// reset the player if something went wrong
 			reset();
 			return false;
-		}		
+		}
+
+		return true;
 	}
 
 	/**
-	 * Stops playback if applicable
+	 * Stops playback and prepares the player to start playback again
 	 * 
 	 */
 	public void stop() {
-		// only try to stop the music if something is playing
+		try {
+			mPlayer.stop();
+			mPlayer.setOnPreparedListener(null);
+			mPlayer.prepareAsync();
+		} catch (Exception e) {
+			// reset the player if something went wrong
+			reset();
+		}
+
+	}
+
+	/**
+	 * Pauses playback at the current spot
+	 * 
+	 */
+	public void pause() {
 		if (mPlayer.isPlaying()) {
 			try {
-				mPlayer.stop();
-			} catch (IllegalStateException e) {
+				mPlayer.pause();
+			} catch (Exception e) {
 				// reset the player if something went wrong
 				reset();
 			}
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Reset the player and attempt to reload the last url if available
 	 */
-	private void reset(){
+	private void reset() {
 		// returns player to the uninitialized state
 		mPlayer.reset();
-		
-		if(mUrl != null){
+
+		if (mUrl != null) {
 			loadSongFromUrl(mUrl, null);
 		}
 	}
-	
+
 	/**
 	 * Checks whether music is playing
 	 * 
 	 * @return True is music is currently playing, false otherwise
 	 */
-	public boolean isPlaying(){
+	public boolean isPlaying() {
 		return mPlayer.isPlaying();
 	}
 
