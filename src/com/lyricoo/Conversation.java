@@ -2,6 +2,7 @@ package com.lyricoo;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +64,46 @@ public class Conversation {
 		Message m = new Message(content, mUserId, mContact.getUserId(), true);
 		//mMessages.add(m);
 		return m;
+	}
+	
+	public static ArrayList<Conversation> parseMessagesJson(JSONObject json) {
+		ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+		
+		Iterator<?> keys = json.keys();
+		
+		while (keys.hasNext()) {
+			String key = (String)keys.next();
+			JSONObject conversationObj, contactJson;
+			JSONArray conversation;
+			
+			try {
+				conversationObj = json.getJSONObject(key);
+				contactJson = conversationObj.getJSONObject("contact");
+				conversation = conversationObj.getJSONArray("conversation");
+				
+				ArrayList<Message> messages = new ArrayList<Message>();
+				int numMessages = conversation.length();
+				for(int j = 0; j < numMessages; j++){
+					JSONObject msg = null;
+					
+					try {
+						msg = conversation.getJSONObject(j);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					messages.add(new Message(msg));				
+				}
+				User contact = new User(contactJson);
+				conversations.add(new Conversation(messages, contact));	
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		return conversations;
 	}
 	
 	/** Takes a JSONArray from api/messages/all and returns a

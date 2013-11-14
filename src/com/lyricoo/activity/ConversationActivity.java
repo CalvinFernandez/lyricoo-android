@@ -62,7 +62,6 @@ public class ConversationActivity extends Activity {
 		// TODO: Message validation
 		//
 		mConversationAdapter.add(mConversation.buildNewMessage(messageContent));
-		LyricooAPI.post("messages/new", params, responseHandler)
 	}
 
 }

@@ -26,8 +26,9 @@ import com.loopj.android.http.*;
  * 
  */
 public class LyricooAPI {
-	public static final String BASE_URL = "http://lyricoo.com:8080";
-
+	public static final String BASE_URL 	  = "http://lyricoo.com:8080";
+	public static final String LOCAL_BASE_URL = "http://10.0.2.2:3000";
+	
 	private static AsyncHttpClient client = new AsyncHttpClient();
 
 	public static void get(String url, RequestParams params,
@@ -50,7 +51,7 @@ public class LyricooAPI {
 	}
 
 	private static String getAbsoluteUrl(String relativeUrl) {
-		return BASE_URL + "/" + relativeUrl;
+		return LOCAL_BASE_URL + "/" + relativeUrl;
 	}
 
 }

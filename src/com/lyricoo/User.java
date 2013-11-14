@@ -15,7 +15,7 @@ public class User extends LyricooModel {
 	private String mEmail;
 	private int mUserId;
 	private String mPhoneNumber;
-	private static String baseUrl = "user";
+	private static String baseUrl = "users";
 	
 	public User(JSONObject json) {
 		super();

@@ -49,18 +49,21 @@ public class MessagesActivity extends Activity {
 		// start progress bar to indicate loading
 		mProgress = (ProgressBar) findViewById(R.id.messages_loading_progress);
 		
-		// load messages
-		// TODO: Cache messages instead of downloading every time
-		RequestParams params = new RequestParams();
-		// TODO: Use the id of the logged in user
-		String id = String.valueOf(Session.currentUser().getUserId());
-		params.put("id", id);
-		
-		LyricooAPI.get("messages/all", params, new JsonHttpResponseHandler() {
+		Session.currentUser().get("messages", new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONObject json) {
+				System.out.print("halellujah");
+			}
+			
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into messages
-				mConversations = Conversation.parseMessagesJson(json);
+				try {
+					mConversations = Conversation.parseMessagesJson(json.getJSONObject(0));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				// hide progress bar
 				mProgress.setVisibility(View.GONE);				
