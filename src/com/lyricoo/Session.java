@@ -45,7 +45,8 @@ public class Session {
 		RequestParams params = new RequestParams();
 		params.put("email", username);
 		params.put("password", password);
-		LyricooAPI.post("users/sign_in", params, responseHandler);
+		
+		User.REST.post("sign_in", params, responseHandler);
 	}
 
 	public static String getAuthToken() {
