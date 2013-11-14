@@ -29,6 +29,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * List all available songs and allow playback on click
@@ -46,7 +48,16 @@ public class LyricooSelectionActivity extends Activity {
 	private ListView mSongList;
 	private Button mCategoryButton;
 
-	// TODO: Stop music playing when activity is paused or stopped
+	// The song options are shown at the bottom of the screen when a song is
+	// selected. The user can play or pause the song, see the song title, and
+	// choose to send it to a friend
+	private RelativeLayout mSongOptions;
+	private Button mPlayButton;
+	private TextView mSongTitle;
+	private ProgressBar mSongProgress;
+
+	// The last song the user clicked
+	private Song mSelectedSong;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +73,21 @@ public class LyricooSelectionActivity extends Activity {
 		mCategoryList = (ListView) findViewById(R.id.category_list);
 		mSongList = (ListView) findViewById(R.id.song_list);
 		mCategoryButton = (Button) findViewById(R.id.category_button);
+		mSongOptions = (RelativeLayout) findViewById(R.id.song_options);
+		mPlayButton = (Button) findViewById(R.id.play_button);
+		mSongTitle = (TextView) findViewById(R.id.song_title);
+		mSongProgress = (ProgressBar) findViewById(R.id.song_progress);
 
 		// load and display songs
 		loadSongs();
 
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// Stop the music if the activity looses focus
+		mPlayer.stop();
 	}
 
 	private void loadSongs() {
@@ -111,10 +133,6 @@ public class LyricooSelectionActivity extends Activity {
 				mCategories.add(category);
 			}
 		}
-	}
-	
-	public void showCategoriesClicked(View v){
-		displayCategories();
 	}
 
 	protected void displayCategories() {
@@ -165,17 +183,28 @@ public class LyricooSelectionActivity extends Activity {
 	}
 
 	private void playSong(Song song) {
+		// show loading icon until song is ready to play
+		mSongProgress.setVisibility(View.VISIBLE);
+		mPlayButton.setVisibility(View.GONE);
+		
 		mPlayer.loadSongFromUrl(song.getUrl(),
 		// listener for when song has loaded
 				new MediaPlayer.OnPreparedListener() {
 					@Override
 					public void onPrepared(MediaPlayer mp) {
+						// hide loading bar and show play button
+						mSongProgress.setVisibility(View.GONE);
+						mPlayButton.setVisibility(View.VISIBLE);
+						
+						// Change play button to pause
+						mPlayButton.setText("Pause");
+
 						mPlayer.play(new MediaPlayer.OnCompletionListener() {
 							// listener for when song has finished playing
 							@Override
 							public void onCompletion(MediaPlayer mp) {
-								// TODO: Update display play button
-
+								// Change pause button to play
+								mPlayButton.setText("Play");
 							}
 						});
 					}
@@ -193,6 +222,13 @@ public class LyricooSelectionActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Song song = (Song) adapter.getItem(position);
+				mSelectedSong = song;
+
+				// show the play button, title of selected song, and option to
+				// send the
+				// song
+				showSongOptions();
+
 				playSong(song);
 			}
 		});
@@ -204,6 +240,87 @@ public class LyricooSelectionActivity extends Activity {
 		mSongList.setVisibility(View.VISIBLE);
 		mCategoryButton.setVisibility(View.VISIBLE);
 
+		// set category button to show name of this category.
+		// Get category name from the first song in the song list
+		mCategoryButton.setText(songs.get(0).getCategory());
+
+	}
+
+	private void showSongOptions() {
+		mSongOptions.setVisibility(View.VISIBLE);
+
+		// Make sure the play button is reset
+		mPlayButton.setText("Play");
+		
+		// make sure the progress bar is hidden and play button is showing
+		mSongProgress.setVisibility(View.GONE);
+		mPlayButton.setVisibility(View.VISIBLE);
+
+		// if there is a selected song update the song text
+		if (mSelectedSong != null) {
+			mSongTitle.setText(mSelectedSong.getTitle());
+		}
+	}
+
+	private void hideSongOptions() {
+		// stop any music that is playing
+		mPlayer.stop();
+
+		// reset the selected song
+		mSelectedSong = null;
+		// Reset play button
+		mPlayButton.setText("Play");
+		// delete title text
+		mSongTitle.setText("");
+
+		// Hide the layout
+		mSongOptions.setVisibility(View.GONE);
+	}
+
+	// The button to send this lyricoo to a friend triggers this call
+	public void sendClicked(View v) {
+		// We handle this differently depending on how the activity was
+		// launched. If launched for result we return a result intent and
+		// finish(). Otherwise we let the user pick which friend to send to
+	}
+
+	// The play button only shows when a song has been selected. It defaults to
+	// saying play, and switches to pause when music is playing
+	public void playClicked(View v) {
+		// pause if music is playing and update button to play
+		if (mPlayer.isPlaying()) {
+			mPlayer.stop();
+			mPlayButton.setText("Play");
+		}
+
+		// else start playing
+		else {
+			// play the last selected song if available
+			if (mSelectedSong != null) {
+				mPlayButton.setText("Pause");
+				boolean success = mPlayer
+						.play(new MediaPlayer.OnCompletionListener() {
+							// listener for when song has finished playing
+							@Override
+							public void onCompletion(MediaPlayer mp) {
+								// Change pause button to play when song ends
+								mPlayButton.setText("Play");
+							}
+						});
+
+				// if something went wrong clear the song and make the user pick
+				// it again
+				if (!success) {
+					hideSongOptions();
+				}
+			}
+		}
+	}
+
+	// Called when the category button is clicked
+	public void showCategoriesClicked(View v) {
+		hideSongOptions();
+		displayCategories();
 	}
 
 }

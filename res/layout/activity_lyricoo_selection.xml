@@ -37,9 +37,63 @@
         android:id="@+id/song_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/song_options"
         android:layout_below="@+id/category_button"
         android:layout_centerHorizontal="true"
         android:visibility="gone" >
     </ListView>
+  
+    <RelativeLayout
+        android:id="@+id/song_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#A8B0BA" >
+
+        <Button
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:onClick="playClicked"
+            android:text="Play" />
+
+        <ProgressBar
+            android:id="@+id/song_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="sendClicked"
+            android:text="Send" />
+
+        <!-- To center song title between send button and play button we have to do some hacky stuff -->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/send_button"
+            android:layout_toLeftOf="@+id/send_button"
+            android:layout_toRightOf="@+id/play_button" >
+
+            <TextView
+                android:id="@+id/song_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </RelativeLayout>
+        
+    </RelativeLayout>
 
 </RelativeLayout>
