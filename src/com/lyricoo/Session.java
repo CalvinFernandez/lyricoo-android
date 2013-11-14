@@ -39,13 +39,14 @@ public class Session {
 		mLoggedIn = false;
 	}
 
-	public static void login(String username, String password, AsyncHttpResponseHandler 
-				asyncHttpResponseHandler) {
+	public static void login(String username, String password, JsonHttpResponseHandler 
+			responseHandler) {
 			
 		RequestParams params = new RequestParams();
 		params.put("email", username);
 		params.put("password", password);
-		LyricooAPI.post("users/sign_in", params, asyncHttpResponseHandler);
+		
+		User.REST.post("sign_in", params, responseHandler);
 	}
 
 	public static String getAuthToken() {
