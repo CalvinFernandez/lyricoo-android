@@ -23,7 +23,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.ContactsListViewEntry;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.OnTaskCompleted;
 import com.lyricoo.PhoneContact;
 import com.lyricoo.R;
@@ -78,7 +77,7 @@ public class ContactsActivity extends Activity {
 	// lyricoo accounts. Display the results.
 	private void sortPhoneContacts() {
 		// retrieve list of all lyricoo users to cross reference
-		LyricooAPI.get("users", null, new JsonHttpResponseHandler() {
+		User.REST.get(new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into users
@@ -195,10 +194,10 @@ public class ContactsActivity extends Activity {
 		setAddButtonState(false);
 
 		// send post request to server
-		String path = "users/" + Session.currentUser().getUserId() + "/friends";
 		RequestParams params = new RequestParams();
 		params.put("username", username);
-		LyricooAPI.post(path, params, new AsyncHttpResponseHandler() {
+		
+		Session.currentUser().post("friends", params, new AsyncHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, byte[] responseBody) {

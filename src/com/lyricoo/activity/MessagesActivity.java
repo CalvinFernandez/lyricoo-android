@@ -13,6 +13,7 @@ import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
 import com.lyricoo.Session;
+import com.lyricoo.User;
 
 
 import android.os.Bundle;
@@ -67,7 +68,7 @@ public class MessagesActivity extends Activity {
 				
 				// hide progress bar
 				mProgress.setVisibility(View.GONE);				
-
+				
 				// Create adapter for the list view
 				MessageListAdapter adapter = new MessageListAdapter(mContext, mConversations);
 				ListView list = (ListView) findViewById(R.id.messages_list);

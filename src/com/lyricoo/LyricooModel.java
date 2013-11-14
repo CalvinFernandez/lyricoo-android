@@ -19,6 +19,10 @@ public class LyricooModel {
 		this.baseUrl = baseUrl;
 	}
 	
+	public void get(AsyncHttpResponseHandler responseHandler) {
+		LyricooAPI.get(baseUrl, new RequestParams(), responseHandler);
+	}
+	
 	public void get(RequestParams params, AsyncHttpResponseHandler responseHandler) {
 		LyricooAPI.get(baseUrl, params, responseHandler);
 	}
