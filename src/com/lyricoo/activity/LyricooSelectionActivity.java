@@ -185,7 +185,7 @@ public class LyricooSelectionActivity extends Activity {
 	private void playSong(Song song) {
 		// show loading icon until song is ready to play
 		mSongProgress.setVisibility(View.VISIBLE);
-		mPlayButton.setVisibility(View.GONE);
+		mPlayButton.setVisibility(View.INVISIBLE);
 		
 		mPlayer.loadSongFromUrl(song.getUrl(),
 		// listener for when song has loaded
