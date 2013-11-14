@@ -91,21 +91,18 @@ public class SignUpActivity extends Activity {
 		setIsLoading(true);
 
 		// format phone number to properly include hyphens
-		data.number = PhoneNumberUtils.formatNumber(data.number);
+		data.number = Utility.formatPhoneNumberForServer(data.number);
 
 		// create parameters for post
 		RequestParams params = new RequestParams();
 		params.put("email", data.email);
 		params.put("password", data.password);
 		params.put("username", data.username);
-		params.put("number", data.number);
+		params.put("phone_number", data.number);
 
 		LyricooAPI.post("users/new", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
-				// TODO: Have response json be of same form as login response.
-				// Until then Session.create will not work
-
 				// store user credentials
 				Session.create(response);
 
@@ -188,6 +185,8 @@ public class SignUpActivity extends Activity {
 			}
 		} catch (JSONException e) {
 			// Can't get errors for some reason. Leave list empty
+		} catch (NullPointerException e){
+			
 		}
 
 		return result;
