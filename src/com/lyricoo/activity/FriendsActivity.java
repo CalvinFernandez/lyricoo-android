@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
 import com.lyricoo.Session;
@@ -105,11 +104,8 @@ public class FriendsActivity extends Activity {
 		// alert user that friend is being removed
 		String msg = "Removing " + friend.getUsername() + " from friends";
 		Utility.makeBasicToast(getApplicationContext(), msg);
-
-		// send delete request to server
-		String path = "users/" + Session.currentUser().getUserId()
-				+ "/friends/" + friend.getUserId();
-		LyricooAPI.delete(path, new JsonHttpResponseHandler() {
+		
+		Session.currentUser().delete("friends/" + friend.getUserId(), new JsonHttpResponseHandler() {
 			// TODO: For some reason onSuccess and onFailure aren't called but
 			// the friend is deleted and onFinish is called
 
@@ -145,10 +141,9 @@ public class FriendsActivity extends Activity {
 
 	// Load the conversation with this friend
 	private void loadConversation(User friend) {
-		String path = "users/messages/" + Session.currentUser().getUserId();
 		RequestParams params = new RequestParams();
 		params.put("contact_id", friend.getUserId());
-		LyricooAPI.get(path, params, new JsonHttpResponseHandler() {
+		Session.currentUser().get("messages", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// TODO: Clean this up and verify that it works with the backend
@@ -174,9 +169,7 @@ public class FriendsActivity extends Activity {
 		mProgress.setVisibility(View.VISIBLE);
 
 		// load friends
-		String path = "users/" + Session.currentUser().getUserId() + "/friends";
-		RequestParams params = new RequestParams();
-		LyricooAPI.get(path, params, new JsonHttpResponseHandler() {
+		Session.currentUser().get("friends", new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into messages
