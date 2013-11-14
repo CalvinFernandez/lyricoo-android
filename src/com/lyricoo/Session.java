@@ -40,7 +40,7 @@ public class Session {
 	}
 
 	public static void login(String username, String password, JsonHttpResponseHandler 
-				responseHandler) {
+			responseHandler) {
 			
 		RequestParams params = new RequestParams();
 		params.put("email", username);
