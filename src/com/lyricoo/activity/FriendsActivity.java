@@ -3,6 +3,7 @@ package com.lyricoo.activity;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -104,33 +105,36 @@ public class FriendsActivity extends Activity {
 		// alert user that friend is being removed
 		String msg = "Removing " + friend.getUsername() + " from friends";
 		Utility.makeBasicToast(getApplicationContext(), msg);
-		
-		Session.currentUser().delete("friends/" + friend.getUserId(), new JsonHttpResponseHandler() {
-			// TODO: For some reason onSuccess and onFailure aren't called but
-			// the friend is deleted and onFinish is called
 
-			@Override
-			public void onSuccess(JSONArray json) {
-				Utility.log("on success");
+		Session.currentUser().delete("friends/" + friend.getUserId(),
+				new JsonHttpResponseHandler() {
+					// TODO: For some reason onSuccess and onFailure aren't
+					// called but
+					// the friend is deleted and onFinish is called
 
-			}
+					@Override
+					public void onSuccess(JSONArray json) {
+						Utility.log("on success");
 
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				Utility.log("on failure");
-				String msg = "Error removing friend";
-				Utility.makeBasicToast(getApplicationContext(), msg);
-			}
+					}
 
-			@Override
-			public void onFinish() {
-				// reload the updated friend list
-				// TODO: Get server to return updated friends list so we don't
-				// have to make another request
-				loadFriendsList();
-			}
+					@Override
+					public void onFailure(Throwable error, JSONObject json) {
+						Utility.log("on failure");
+						String msg = "Error removing friend";
+						Utility.makeBasicToast(getApplicationContext(), msg);
+					}
 
-		});
+					@Override
+					public void onFinish() {
+						// reload the updated friend list
+						// TODO: Get server to return updated friends list so we
+						// don't
+						// have to make another request
+						loadFriendsList();
+					}
+
+				});
 	}
 
 	// Start an activity where the user can add friends to their list
@@ -143,22 +147,38 @@ public class FriendsActivity extends Activity {
 	private void loadConversation(User friend) {
 		RequestParams params = new RequestParams();
 		params.put("contact_id", friend.getUserId());
-		Session.currentUser().get("messages", params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(JSONArray json) {
-				// TODO: Clean this up and verify that it works with the backend
-				ArrayList<Conversation> convo = Conversation
-						.parseMessagesJson(json);
-				mApp.conversationToDisplay = convo.get(0);
-				Intent i = new Intent(mContext, ConversationActivity.class);
-				startActivity(i);
-			}
+		Session.currentUser().get("messages", params,
+				new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONArray json) {
+						// TODO: It's a bit hacky and confusing to be grabbing
+						// the first value in the arrays. We could probably make
+						// dedicated methods that are cleaner
+						Conversation convo = null;
+						try {
+							// json is an array with only one entry since we
+							// requested the messages with a single contact
+							ArrayList<Conversation> conversations = Conversation
+									.parseMessagesJson(json.getJSONObject(0));
 
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Handle failure
-			}
-		});
+							// The parsed list also has just one entry - The
+							// conversation with the requested friend
+							convo = conversations.get(0);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						mApp.conversationToDisplay = convo;
+						Intent i = new Intent(mContext,
+								ConversationActivity.class);
+						startActivity(i);
+					}
+
+					@Override
+					public void onFailure(Throwable error, JSONObject json) {
+						// TODO: Handle failure
+					}
+				});
 
 	}
 

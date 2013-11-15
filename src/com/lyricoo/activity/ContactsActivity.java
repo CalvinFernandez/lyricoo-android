@@ -177,8 +177,9 @@ public class ContactsActivity extends Activity {
 	
 	// called when the user presses the add button
 	public void addFriendClicked(View v){
+		// Retrieve the entered text and remove white space
 		EditText userText = (EditText) findViewById(R.id.username_field);
-		final String username = userText.getText().toString();
+		final String username = userText.getText().toString().trim();
 
 		// If the username is empty don't try to add it as a friend
 		if (username.length() == 0)
