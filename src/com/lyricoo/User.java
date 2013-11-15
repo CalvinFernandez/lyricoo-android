@@ -10,6 +10,7 @@ import org.json.JSONObject;
  * to a logged in user.
  */
 public class User extends LyricooModel {
+	
 	// TODO: Change backend to support username and other contact info
 	private String mUsername;
 	private String mEmail;
@@ -18,6 +19,8 @@ public class User extends LyricooModel {
 	
 	private static String baseUrl = "users";
 	public static LyricooModel REST = new LyricooModel(baseUrl);
+	
+	
 	
 	public User(JSONObject json) {
 		super();

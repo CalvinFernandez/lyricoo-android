@@ -198,12 +198,12 @@ public class ContactsActivity extends Activity {
 		RequestParams params = new RequestParams();
 		params.put("username", username);
 		
-		Session.currentUser().post("friends", params, new AsyncHttpResponseHandler() {
+		Session.currentUser().post("friends", params, new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, byte[] responseBody) {
 				toastAddFriendResult(username, true);
-			}
+			}			
 
 			@Override
 			public void onFailure(int statusCode, org.apache.http.Header[] headers, byte[] responseBody, java.lang.Throwable error) {
