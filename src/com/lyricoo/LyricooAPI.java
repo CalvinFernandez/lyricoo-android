@@ -51,8 +51,8 @@ public class LyricooAPI {
 	}
 
 	private static String getAbsoluteUrl(String relativeUrl) {
-		return LOCAL_BASE_URL + "/" + relativeUrl;
-		//return BASE_URL + "/" + relativeUrl;
+		//return LOCAL_BASE_URL + "/" + relativeUrl;
+		return BASE_URL + "/" + relativeUrl;
 	}
 
 }

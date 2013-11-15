@@ -11,7 +11,20 @@ import org.json.JSONTokener;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+/**
+ * Use LyricooResponseAdapter to convert reliably from 
+ * AsyncHttpResponse to JsonHttpResponse.
+ * 
+ * Usage LyricooResponseAdapter.adapt(asyncJsonHttpResponseHandler);
+ * @author 
+ *
+ */
 public class LyricooResponseAdapter {
+	/**
+	 * Converts byte array to object form
+	 * @param in byte[]
+	 * @return Object
+	 */
 	private static Object toJson(byte[] in) {
 		Object json = null;
 		try {
@@ -28,6 +41,11 @@ public class LyricooResponseAdapter {
 		return json;
 	}
 	
+	/**
+	 * Adapter that converts http responses to json responses
+	 * @param JsonHttpResponseHandler handles json responses
+	 * @return AsyncHttpResponseHandler
+	 */
 	public static AsyncHttpResponseHandler adapt(final JsonHttpResponseHandler responseHandler) {
 		return new AsyncHttpResponseHandler() {
 			@Override
