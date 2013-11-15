@@ -60,7 +60,7 @@ public class MessageListAdapter extends BaseAdapter {
 		Conversation convo = mConversations.get(position);
 		Message msg = convo.getMostRecentMessage();
 
-		contactName.setText(convo.getContact().getEmail());
+		contactName.setText(convo.getContact().getUsername());
 		content.setText(msg.getContent());
 
 		return rowView;

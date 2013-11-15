@@ -147,6 +147,7 @@ public class FriendsActivity extends Activity {
 	private void loadConversation(User friend) {
 		RequestParams params = new RequestParams();
 		params.put("contact_id", friend.getUserId());
+		// TODO: Show loading dialog
 		Session.currentUser().get("messages", params,
 				new JsonHttpResponseHandler() {
 					@Override
@@ -183,7 +184,6 @@ public class FriendsActivity extends Activity {
 	}
 
 	private void loadFriendsList() {
-		Utility.log("Loading friends");
 		// hide list while it loads and show progress bar to indicate loading
 		mList.setVisibility(View.GONE);
 		mProgress.setVisibility(View.VISIBLE);

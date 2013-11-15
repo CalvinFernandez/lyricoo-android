@@ -30,6 +30,9 @@ public class ConversationActivity extends Activity {
 		
 		mConversation = mApp.conversationToDisplay;
 		
+		// set title to reflect contact's name
+		setTitle(mConversation.getContact().getUsername());
+		
 		mConversationAdapter = new ConversationAdapter(this, R.id.messages_list, mConversation);
 		
 		// Create adapter for the list view
