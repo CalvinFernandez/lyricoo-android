@@ -49,19 +49,8 @@ public class Conversation {
 	//	No default.
 	//	Returns new message object
 	//
-	public Message buildNewMessage(String content, int songId, boolean sent, Date time) {
-		Message m = new Message(content, mUserId, mContact.getUserId(), sent, songId, time);
-		//mMessages.add(m);
-		return m;
-	}
-	
-	//
-	//	Creates a new message and adds to mMessage array to the end. Defaults sent to true and 
-	//	current date to now and song value to -1.
-	//	Returns new message object
-	//
-	public Message buildNewMessage(String content) {
-		Message m = new Message(content, mUserId, mContact.getUserId(), true);
+	public Message buildNewMessage(String content, Song song, boolean sent, Date time) {
+		Message m = new Message(content, mUserId, mContact.getUserId(), sent, song, time);
 		//mMessages.add(m);
 		return m;
 	}

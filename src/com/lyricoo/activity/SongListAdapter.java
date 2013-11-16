@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.R;
+
 import com.lyricoo.Song;
 
 public class SongListAdapter extends BaseAdapter {

@@ -15,6 +15,7 @@ public class Song {
 	private String mArtist;
 	private String mPath;
 	private String mCategory;
+	private int mCategoryId;
 	
 	public Song(int id, String title, String artist, String path,
 			String category) {
@@ -51,18 +52,21 @@ public class Song {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		JSONObject category = null;
+		
 		try {
-			category = json.getJSONObject("category");
+			mCategoryId = json.getInt("category_id");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// In some cases the JSON will include a key for the category with detailed category info
+		JSONObject category = null;
 		try {
+			category = json.getJSONObject("category");
 			mCategory = category.getString("name");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			// Will get called if there is no category key. In this case we just have category_id
 		}
 	}
 
@@ -90,6 +94,11 @@ public class Song {
 		return mCategory;
 	}
 	
+	/** 
+	 * Turn a JSONArray of songs from the server into an ArrayList of Songs
+	 * @param json
+	 * @return
+	 */
 	public static ArrayList<Song> parseJsonArray(JSONArray json){
 		ArrayList<Song> result = new ArrayList<Song>();
 		int numSongs = json.length();

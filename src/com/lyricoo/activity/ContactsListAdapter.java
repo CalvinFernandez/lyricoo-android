@@ -7,6 +7,7 @@ import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.PhoneContact;
 import com.lyricoo.R;
+
 import com.lyricoo.User;
 
 import android.content.Context;

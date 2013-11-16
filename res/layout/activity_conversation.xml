@@ -12,32 +12,50 @@
         android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/message_controls"
-        android:layout_alignParentTop="true" />
+        android:layout_above="@+id/lyricoo_button"
+        android:layout_alignParentTop="true" >
+    </ListView>
 
-    <RelativeLayout
-        android:id="@+id/message_controls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:id="@+id/lyricoo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/lyricoo_button"
+            android:layout_alignBaseline="@+id/lyricoo_button"
+            android:onClick="selectedLyricooClicked"
+            android:longClickable="true"
+            android:text="No Lyricoo Selected"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/lyricoo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/conversation_submit"
+            android:layout_alignParentRight="true"
+            android:onClick="lyricooButtonClicked"
+            android:text="Lyricoos" />
 
         <EditText
             android:id="@+id/conversation_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/conversation_submit"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/conversation_submit"
+            android:ems="10"
             android:hint="@string/conversation_input"
-            android:inputType="text" >
-        </EditText>
+            android:inputType="text" />
 
         <Button
             android:id="@+id/conversation_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:onClick="sendMessage"
             android:text="@string/conversation_submit" />
-    </RelativeLayout>
 
 </RelativeLayout>

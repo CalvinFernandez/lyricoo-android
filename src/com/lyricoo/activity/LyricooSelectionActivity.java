@@ -12,6 +12,8 @@ import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
+import com.lyricoo.Utility;
+
 import com.lyricoo.Song;
 
 import android.media.MediaPlayer;
@@ -38,6 +40,9 @@ import android.widget.TextView;
  * 
  */
 public class LyricooSelectionActivity extends Activity {
+	// Request code when launched for result
+	public static final int SELECT_LYRICOO_REQUEST = 0;
+
 	private ArrayList<Song> mSongs;
 	private ArrayList<String> mCategories;
 	private ProgressBar mProgress;
@@ -88,6 +93,14 @@ public class LyricooSelectionActivity extends Activity {
 		super.onPause();
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
+	}
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		
+		// Release player
+		mPlayer.destroy();
 	}
 
 	private void loadSongs() {
@@ -282,6 +295,22 @@ public class LyricooSelectionActivity extends Activity {
 		// We handle this differently depending on how the activity was
 		// launched. If launched for result we return a result intent and
 		// finish(). Otherwise we let the user pick which friend to send to
+
+		// getCallingActivity is non null if this activity was started for a
+		// result
+		if (getCallingActivity() != null) {
+			// Return the selected lyricoo as a result
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("lyricoo", Utility.toJson(mSelectedSong));
+			setResult(RESULT_OK, returnIntent);
+			finish();
+		}
+
+		// otherwise the user hasn't yet picked somebody to send this lyricoo
+		// too. Show a list of friends to send to
+		else {
+			// TODO: Show friends list and send song to friend
+		}
 	}
 
 	// The play button only shows when a song has been selected. It defaults to
