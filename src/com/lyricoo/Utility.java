@@ -1,5 +1,8 @@
 package com.lyricoo;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import android.content.Context;
 import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
@@ -105,5 +108,4 @@ public class Utility {
 
 		return result;
 	}
-
 }
