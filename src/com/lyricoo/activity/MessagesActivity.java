@@ -2,18 +2,14 @@ package com.lyricoo.activity;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
 import com.lyricoo.Session;
-import com.lyricoo.User;
 
 
 import android.os.Bundle;
@@ -53,18 +49,7 @@ public class MessagesActivity extends Activity {
 		Session.currentUser().get("messages", new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject json) {
-				System.out.print("halellujah");
-			}
-			
-			@Override
-			public void onSuccess(JSONArray json) {
-				// parse json into messages
-				try {
-					mConversations = Conversation.parseMessagesJson(json.getJSONObject(0));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				mConversations = Conversation.parseMessagesJson(json);
 				
 				// hide progress bar
 				mProgress.setVisibility(View.GONE);				
@@ -94,6 +79,7 @@ public class MessagesActivity extends Activity {
 				// TODO: Handle failure
 				Log.v("Messages", error.getMessage());
 			}
+			 
 		});
 	}
 
