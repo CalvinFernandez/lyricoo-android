@@ -46,6 +46,8 @@ public class Song {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// in songs the key is "path" and in messages the key is "url"... TODO: Make this consistent
 		try {
 			mPath = json.getString("path");
 		} catch (JSONException e) {

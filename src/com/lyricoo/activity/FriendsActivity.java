@@ -149,7 +149,7 @@ public class FriendsActivity extends Activity {
 	// Load the conversation with this friend
 	private void loadConversation(User friend) {
 		RequestParams params = new RequestParams();
-		params.put("contact_id", friend.getUserId());
+		params.put("contact_id", Integer.toString(friend.getUserId()));
 		// TODO: Show loading dialog
 		Session.currentUser().get("messages", params,
 				new JsonHttpResponseHandler() {
