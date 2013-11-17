@@ -8,9 +8,38 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SettingsActivity" >
 
+    <ToggleButton
+        android:id="@+id/notification_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:onClick="notificationToggleClicked"
+        android:textOff="Notifications Off"
+        android:textOn="Notifications On" />
+
     <TextView
+        android:id="@+id/volume_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/notification_toggle"
+        android:layout_marginTop="16dp"
+        android:text="Lyricoo Volume" />
+
+    <SeekBar
+        android:id="@+id/volume_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/volume_label" />
+
+    <Button
+        android:id="@+id/log_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/volume_seek"
+        android:onClick="logoutClicked"
+        android:text="Log Out" />
 
 </RelativeLayout>

@@ -42,4 +42,8 @@ public class MenuActivity extends Activity {
 		startActivity(i);
 	}
 
+	public void settingsClicked(View v){
+		Intent i = new Intent(this, SettingsActivity.class);
+		startActivity(i);
+	}
 }
