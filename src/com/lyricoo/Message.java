@@ -170,42 +170,51 @@ public class Message {
 	 */
 	public boolean equals(Message msg) {
 		// if the message is null they are not equal by default
-		if (msg == null)
+		if (msg == null){
 			return false;
+		}
 
 		// if the message ids are equal the messages are equal
-		if (msg.getMessageId() == mMessageId)
+		if (msg.getMessageId() == mMessageId){
 			return true;
+		}
 
 		// if at least one of the messages has an id return false
-		if (msg.getMessageId() != null || mMessageId != null)
+		if (msg.getMessageId() != null || mMessageId != null){
 			return false;
+		}
 
 		// if both of the messages don't have an id we can check all the other
 		// parameters
 
 		// check if user and contact are the same
-		if (msg.getContactId() != mContactId)
+		if (msg.getContactId() != mContactId){
 			return false;
-		if (msg.getUserId() != mUserId)
+		}
+		if (msg.getUserId() != mUserId){
 			return false;
+		}
 
 		// Use the Boolean class to check if the two boolean sent values are the
 		// same.
 		// Returns 0 if they are the same
-		if (Boolean.valueOf(msg.getIsSent()).compareTo(mSent) != 0)
+		if (Boolean.valueOf(msg.getIsSent()).compareTo(mSent) != 0){
 			return false;
+		}
 
 		// Check that message content is equal
-		if (!msg.getContent().equals(mContent))
+		if (!msg.getContent().equals(mContent)){
 			return false;
+		}
 
 		// Check that songs are equal
 		int id1 = mSong == null ? -1 : mSong.getId();
 		int id2 = msg.getSong() == null ? -1 : msg.getSong().getId();
-		if (id1 != id2)
+		if (id1 != id2){
 			return false;
+		}
 
+		// if we got through all the checks then the messages must be equal
 		return true;
 	}
 }
