@@ -7,44 +7,55 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ConversationActivity" >
-    
-    <LinearLayout
+
+    <ListView
+        android:id="@+id/messages_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        >
-    		<ListView
-        		android:id="@+id/messages_list"
-        		android:layout_width="match_parent"
-        		android:layout_height="0dip"
-        		android:layout_weight="1"
-        	></ListView>
-    		<LinearLayout
-    		    android:layout_width="match_parent"
-    		    android:layout_height="wrap_content"
-    		    android:orientation="horizontal"
-    		 >
-    		    <EditText 
-	    		android:id="@+id/conversation_input"
-	    		android:layout_width="0dip"
-	    		android:layout_height="wrap_content"
-	    		android:inputType="text"
-	    		android:hint="@string/conversation_input"
-	    		android:layout_weight="1"
-	    		android:layout_marginBottom="5dp"
-	   			></EditText>
-    		    <Button 
-    		        android:id="@+id/conversation_submit"
-    		        android:layout_width="wrap_content"
-    		        android:layout_height="match_parent"
-    		        android:text="@string/conversation_submit"
-    		        android:onClick="sendMessage"
-    		        />
-    		</LinearLayout>
-    		
-    	</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lyricoo_button"
+        android:layout_alignParentTop="true" >
+    </ListView>
+
+
+        <TextView
+            android:id="@+id/lyricoo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/lyricoo_button"
+            android:layout_alignBaseline="@+id/lyricoo_button"
+            android:onClick="selectedLyricooClicked"
+            android:longClickable="true"
+            android:text="No Lyricoo Selected"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/lyricoo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/conversation_submit"
+            android:layout_alignParentRight="true"
+            android:onClick="lyricooButtonClicked"
+            android:text="Lyricoos" />
+
+        <EditText
+            android:id="@+id/conversation_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/conversation_submit"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/conversation_submit"
+            android:ems="10"
+            android:hint="@string/conversation_input"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/conversation_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="sendMessage"
+            android:text="@string/conversation_submit" />
 
 </RelativeLayout>

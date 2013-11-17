@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 
 /**
  * Handles the playing of a song. Basically acts as a wrapper for the
@@ -39,6 +40,15 @@ public class LyricooPlayer {
 				0);
 	}
 
+	/**
+	 * Prepares a song to stream from http
+	 * 
+	 * @param url
+	 *            The url to stream from
+	 * @param listener
+	 *            Listener to call when the song is ready to play. If null,
+	 *            playback starts automatically when ready
+	 */
 	public void loadSongFromUrl(String url,
 			MediaPlayer.OnPreparedListener listener) {
 		mUrl = url;
@@ -55,7 +65,18 @@ public class LyricooPlayer {
 		} catch (IOException e) {
 		}
 
-		// set callback for when stream is ready to play
+		// set callback for when stream is ready to play. If none is provided,
+		// create one that plays when ready
+		if (listener == null) {
+			listener = new OnPreparedListener() {
+
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					mp.start();
+				}
+			};
+		}
+
 		mPlayer.setOnPreparedListener(listener);
 
 		try {
@@ -137,6 +158,13 @@ public class LyricooPlayer {
 	 */
 	public boolean isPlaying() {
 		return mPlayer.isPlaying();
+	}
+
+	/** Stop music and free all player resources
+	 * 
+	 */
+	public void destroy() {
+		mPlayer.release();		
 	}
 
 }

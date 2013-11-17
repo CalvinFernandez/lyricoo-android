@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.R;
+import com.lyricoo.Song;
+
 
 public class ConversationAdapter extends ArrayAdapter<Message> {
 
@@ -23,19 +25,8 @@ public class ConversationAdapter extends ArrayAdapter<Message> {
 	}
 
 	@Override
-	public int getCount() {
-		return mConversation.getMessages().size();
-	}
-
-	@Override
-	public Message getItem(int position) {
-		return mConversation.getMessages().get(position);
-	}
-
-	@Override
 	public long getItemId(int position) {
-		// return the message id
-		return mConversation.getMessages().get(position).getMessageId();
+		return position;
 	}
 
 	@Override
@@ -61,6 +52,14 @@ public class ConversationAdapter extends ArrayAdapter<Message> {
 		TextView content = (TextView) rowView
 				.findViewById(R.id.message_content);
 		content.setText(msg.getContent());
+		
+		// set the attached lyricoo title if applicable
+		Song song = msg.getSong();
+		if(song != null){
+			TextView lyricoo = (TextView) rowView
+					.findViewById(R.id.attached_lyricoo_title);
+			lyricoo.setText(song.getTitle());
+		}
 		
 		return rowView;
 	}

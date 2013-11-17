@@ -10,13 +10,11 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
 import com.lyricoo.LyricooApp;
+
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.User;
 import com.lyricoo.Utility;
-import com.lyricoo.R.id;
-import com.lyricoo.R.layout;
-import com.lyricoo.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -51,8 +49,6 @@ public class FriendsActivity extends Activity {
 		// get progress bar and list view to use
 		mProgress = (ProgressBar) findViewById(R.id.friends_loading_progress);
 		mList = (ListView) findViewById(R.id.friends_list);
-
-		// load and display friends
 
 	}
 
@@ -108,14 +104,19 @@ public class FriendsActivity extends Activity {
 
 		Session.currentUser().delete("friends/" + friend.getUserId(),
 				new JsonHttpResponseHandler() {
-					// TODO: For some reason onSuccess and onFailure aren't
-					// called but
-					// the friend is deleted and onFinish is called
+
+					@Override
+					public void onSuccess(JSONObject json) {
+						String msg = friend.getUsername()
+								+ " removed from friends";
+						Utility.makeBasicToast(getApplicationContext(), msg);
+					}
 
 					@Override
 					public void onSuccess(JSONArray json) {
-						Utility.log("on success");
-
+						String msg = friend.getUsername()
+								+ " removed from friends";
+						Utility.makeBasicToast(getApplicationContext(), msg);
 					}
 
 					@Override
@@ -146,31 +147,25 @@ public class FriendsActivity extends Activity {
 	// Load the conversation with this friend
 	private void loadConversation(User friend) {
 		RequestParams params = new RequestParams();
-		params.put("contact_id", friend.getUserId());
+		params.put("contact_id", Integer.toString(friend.getUserId()));
+		// TODO: Show loading dialog
 		Session.currentUser().get("messages", params,
 				new JsonHttpResponseHandler() {
 					@Override
-					public void onSuccess(JSONArray json) {
-						// TODO: It's a bit hacky and confusing to be grabbing
-						// the first value in the arrays. We could probably make
-						// dedicated methods that are cleaner
-						Conversation convo = null;
-						try {
-							// json is an array with only one entry since we
-							// requested the messages with a single contact
-							ArrayList<Conversation> conversations = Conversation
-									.parseMessagesJson(json.getJSONObject(0));
+					public void onSuccess(JSONObject json) {
 
-							// The parsed list also has just one entry - The
-							// conversation with the requested friend
-							convo = conversations.get(0);
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						mApp.conversationToDisplay = convo;
+						ArrayList<Conversation> conversations = Conversation
+								.parseMessagesJson(json);
+						
+						// should be only one conversation in the list						
+						Conversation conversation = conversations.get(0);
+
+						// convert to json to make it easy to pass to the conversation activity
+						String conversationAsJson = Utility.toJson(conversation);
+						
 						Intent i = new Intent(mContext,
 								ConversationActivity.class);
+						i.putExtra("conversation", conversationAsJson);
 						startActivity(i);
 					}
 
@@ -183,7 +178,6 @@ public class FriendsActivity extends Activity {
 	}
 
 	private void loadFriendsList() {
-		Utility.log("Loading friends");
 		// hide list while it loads and show progress bar to indicate loading
 		mList.setVisibility(View.GONE);
 		mProgress.setVisibility(View.VISIBLE);
@@ -227,7 +221,6 @@ public class FriendsActivity extends Activity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
-						System.out.println("Click");
 						User friend = mFriends.get(position);
 						loadConversation(friend);
 					}
