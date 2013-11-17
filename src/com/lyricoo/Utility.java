@@ -33,13 +33,13 @@ public class Utility {
 	 * @param classType The class to convert to - e.g. Song.class
 	 * @return The converted object. Null on failure
 	 */
-	public static <T> T fromJson(String json, Class<T> classType) throws JsonSyntaxException {
+	public static <T> T fromJson(String json, Class<T> classType) {
 		// simple wrapper function for GSON
 		Gson gson = new Gson();	
 		T result = null;
 		try {
 			result = gson.fromJson(json, classType);		
-		} catch(JsonSyntaxException e) {
+		} catch(Exception e) {
 			return null;
 		}
 		

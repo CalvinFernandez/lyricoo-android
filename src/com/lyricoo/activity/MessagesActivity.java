@@ -10,6 +10,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.lyricoo.Conversation;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
+import com.lyricoo.Utility;
 
 import com.lyricoo.Session;
 
@@ -70,13 +71,16 @@ public class MessagesActivity extends Activity {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// Pass selected conversation to the conversation
-						// activity to display
-						// TODO: Pass conversation in a cleaner way than storing
-						// in app
-						mApp.conversationToDisplay = mConversations
-								.get(position);
+						// activity to display				
+						Conversation conversation = mConversations
+								.get(position);;
+
+						// convert to json to make it easy to pass to the conversation activity
+						String conversationAsJson = Utility.toJson(conversation);
+						
 						Intent i = new Intent(mContext,
 								ConversationActivity.class);
+						i.putExtra("conversation", conversationAsJson);
 						startActivity(i);
 					}
 				});

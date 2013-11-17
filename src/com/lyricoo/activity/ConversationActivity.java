@@ -67,7 +67,19 @@ public class ConversationActivity extends Activity {
 
 		mApp = (LyricooApp) getApplication();
 
-		mConversation = mApp.conversationToDisplay;
+		// get the extras sent to this activity (conversation and possibly a
+		// song to send)
+		Bundle extras = getIntent().getExtras();
+
+		// get the conversation to display
+		try {
+			String conversationAsJson = extras.getString("conversation");
+			mConversation = Utility.fromJson(conversationAsJson,
+					Conversation.class);
+		} catch (Exception e) {
+			// No conversation was passed in... What do?
+			// TODO: Error logging and handling
+		}
 
 		// initialize player
 		mPlayer = new LyricooPlayer(this);
@@ -92,6 +104,11 @@ public class ConversationActivity extends Activity {
 
 		// build the list view for the messages in the conversation
 		displayMessages();
+
+		// If a song was included with the activity intent then load it.
+		// retrieve data from intent, will be null if no song was included
+		String songJson = extras.getString("song");
+		attachSong(songJson);
 	}
 
 	@Override
@@ -152,9 +169,9 @@ public class ConversationActivity extends Activity {
 		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null)
 			return;
 
-		final Message newMessage = new Message(messageContent, Session.currentUser()
-				.getUserId(), mConversation.getContact().getUserId(), true,
-				mSelectedLyricoo);
+		final Message newMessage = new Message(messageContent, Session
+				.currentUser().getUserId(), mConversation.getContact()
+				.getUserId(), true, mSelectedLyricoo);
 
 		// Update display with message
 		mConversationAdapter.add(newMessage);
@@ -163,41 +180,46 @@ public class ConversationActivity extends Activity {
 		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
 
 		// Send post request to server to save message
-		
+
 		RequestParams params = new RequestParams();
 		params.put("contact_id", Integer.toString(newMessage.getContactId()));
 		params.put("content", messageContent);
 		params.put("sent", "true");
-		if(mSelectedLyricoo != null){
+		if (mSelectedLyricoo != null) {
 			params.put("song_id", Integer.toString(mSelectedLyricoo.getId()));
 		}
-		
-		Session.currentUser().post("messages", params, new JsonHttpResponseHandler() {
-			
-			// TODO: Better way for handling synchronicity with server if sending fails
-			
-			@Override
-			public void onSuccess(JSONArray json) {
-				// TODO: On success update the sent message with its new id from the server. Need to get server to return message info
 
-			}
-			
-			@Override
-			public void onSuccess(JSONObject json) {
+		Session.currentUser().post("messages", params,
+				new JsonHttpResponseHandler() {
 
-			}
+					// TODO: Better way for handling synchronicity with server
+					// if sending fails
 
-			// Response should be a JSONObject but include JSONArray method to be safe
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				handleMessageSendFailure(newMessage);
-			}
-			
-			@Override
-			public void onFailure(Throwable error, JSONArray json) {
-				handleMessageSendFailure(newMessage);
-			}
-		});
+					@Override
+					public void onSuccess(JSONArray json) {
+						// TODO: On success update the sent message with its new
+						// id from the server. Need to get server to return
+						// message info
+
+					}
+
+					@Override
+					public void onSuccess(JSONObject json) {
+
+					}
+
+					// Response should be a JSONObject but include JSONArray
+					// method to be safe
+					@Override
+					public void onFailure(Throwable error, JSONObject json) {
+						handleMessageSendFailure(newMessage);
+					}
+
+					@Override
+					public void onFailure(Throwable error, JSONArray json) {
+						handleMessageSendFailure(newMessage);
+					}
+				});
 
 	}
 
@@ -205,9 +227,9 @@ public class ConversationActivity extends Activity {
 		// create toast
 		String toast = "Error sending message";
 		Utility.makeBasicToast(getApplicationContext(), toast);
-		
+
 		// Delete the message
-		mConversationAdapter.remove(message);		
+		mConversationAdapter.remove(message);
 	}
 
 	// When the lyricoo title is clicked
@@ -284,18 +306,7 @@ public class ConversationActivity extends Activity {
 
 			if (resultCode == RESULT_OK) {
 				String songJson = data.getStringExtra("lyricoo");
-
-				// Convert json to Song object
-				try {
-					// save the result as a private instance variable
-					mSelectedLyricoo = Utility.fromJson(songJson, Song.class);
-				} catch (JsonSyntaxException e) {
-					// Problem converting result into Song. Exit and do nothing
-					mSelectedLyricoo = null;
-					return;
-				}
-
-				mLyricooTitle.setText(mSelectedLyricoo.getTitle());
+				attachSong(songJson);
 			}
 			if (resultCode == RESULT_CANCELED) {
 				// Don't do anything if a lyricoo wasn't selected
@@ -303,4 +314,34 @@ public class ConversationActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Attaches the given song to the message to send
+	 * 
+	 * @param songJson
+	 *            The song to attach in String json format
+	 */
+	private void attachSong(String songJson) {
+		// don't do anything if null was passed in
+		if (songJson == null) {
+			return;
+		}
+
+		// Convert json to Song object
+		Song song = Utility.fromJson(songJson, Song.class);
+
+		// if song is null then either the song was in a bad format or
+		// something really bad happened with the json function.
+		if (song == null) {
+			// TODO: Record this error
+			mSelectedLyricoo = null;
+			mLyricooTitle.setText("No Lyricoo Selected");
+			return;
+		}
+
+		// save the result as a private instance variable
+		mSelectedLyricoo = song;
+
+		// update display to show song
+		mLyricooTitle.setText(mSelectedLyricoo.getTitle());
+	}
 }

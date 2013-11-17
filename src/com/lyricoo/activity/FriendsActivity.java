@@ -50,8 +50,6 @@ public class FriendsActivity extends Activity {
 		mProgress = (ProgressBar) findViewById(R.id.friends_loading_progress);
 		mList = (ListView) findViewById(R.id.friends_list);
 
-		// load and display friends
-
 	}
 
 	@Override
@@ -158,11 +156,16 @@ public class FriendsActivity extends Activity {
 
 						ArrayList<Conversation> conversations = Conversation
 								.parseMessagesJson(json);
+						
+						// should be only one conversation in the list						
+						Conversation conversation = conversations.get(0);
 
-						mApp.conversationToDisplay = conversations.get(0);
+						// convert to json to make it easy to pass to the conversation activity
+						String conversationAsJson = Utility.toJson(conversation);
 						
 						Intent i = new Intent(mContext,
 								ConversationActivity.class);
+						i.putExtra("conversation", conversationAsJson);
 						startActivity(i);
 					}
 
