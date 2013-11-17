@@ -2,6 +2,7 @@ package com.lyricoo;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.Header;
@@ -68,10 +69,31 @@ public class Session {
                     	RequestParams p = new RequestParams();
                     	p.put("gcm_id", regid);
                     	
-                    	currentUser().put(p, new AsyncHttpResponseHandler() {
+                    	currentUser().put(p, new JsonHttpResponseHandler() {
                     		@Override
-                    		public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    			System.out.print("hello");
+                    		public void onSuccess(JSONObject json) {
+                    			// TODO: DO something here (maybe just UI indication of
+                    			//		 registration success .. 
+                    			System.out.print("Success user registered");
+                    		}
+                    		@Override
+                    		public void onSuccess(JSONArray json) {
+                    			//	TODO: see above*
+                    			System.out.print("Success user registered");
+                    		}
+                    		
+                    		@Override
+                    		public void onFailure(java.lang.Throwable error, JSONObject json) {
+                    			// TODO: Do something when server errors! (maybe keep trying 
+                    			// ... this is a big problem if this happens because no one 
+                    			//	will be able to communicate with the user because our server
+                    			//	will not know the users's gcm id. Perhaps we should implement
+                    			//	an http polling feature if this fails.
+                    			System.out.print("Error! User unable to register!");
+                    		}
+                    		@Override
+                    		public void onFailure(java.lang.Throwable error, JSONArray json) {
+                    			System.out.print("Error! User unable to register!");
                     		}
                     	});
                     } else {
