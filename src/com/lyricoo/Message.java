@@ -20,42 +20,60 @@ import org.json.JSONObject;
 
 public class Message {
 	private String mContent;
-	private int mMessageId;
-	private int mUserId;  // this should reference Session id.
+	// use integer because the message id can be null for locally created
+	// messages
+	private Integer mMessageId;
+	private int mUserId; // this should reference Session id.
 	private int mContactId;
 	private boolean mSent;
-	// songId can be null if no song was sent in this message
-	private Integer mSongId;
+	// the Song included with this message. Null if none
+	private Song mSong;
 	private Date mTime;
-	
+
 	// format of the date that the server uses
 	// TODO: Adjust message time for user's timezone
 	private final String DATE_FORMAT = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'";
 
 	public Message(String content, int userId, int contactId, boolean sent,
-			int songId, Date time) {
+			Song song, Date time) {
 		mContent = content;
 		mUserId = userId;
 		mContactId = contactId;
 		mSent = sent;
-		mSongId = songId;
+		mSong = song;
 		mTime = time;
 	}
-	
-	//
-	//	No date provided, defaults to current
-	//
+
+	/**
+	 * A new message with no date provided. Initialized to current time
+	 * 
+	 * @param content
+	 *            Message content
+	 * @param userId
+	 *            The user that this message belongs to
+	 * @param contactId
+	 *            The contact the user is talking to
+	 * @param sent
+	 *            Whether or not the user sent or received this message
+	 * @param song
+	 *            The song attached to the message. Null if none
+	 */
 	public Message(String content, int userId, int contactId, boolean sent,
-			int songId) {
-		this(content, userId, contactId, sent, -1, new Date());
+			Song song) {
+		this(content, userId, contactId, sent, song, new Date());
 	}
-	
-	//
-	//  No date or song provided, defaults to current time and song with value -1 
-	//	(indicating no song selected for now .... )
-	//
+
+	/**
+	 * No date or song provided, defaults to current time and song with value
+	 * null (indicating no song selected for now .... )
+	 * 
+	 * @param content
+	 * @param userId
+	 * @param contactId
+	 * @param sent
+	 */
 	public Message(String content, int userId, int contactId, boolean sent) {
-		this(content, userId, contactId, sent, -1, new Date());
+		this(content, userId, contactId, sent, null, new Date());
 	}
 
 	public Message(JSONObject json) {
@@ -92,7 +110,8 @@ public class Message {
 		}
 
 		try {
-			mSongId = json.getInt("song_id");
+			JSONObject song = json.getJSONObject("song");
+			mSong = new Song(song);
 		} catch (JSONException e) {
 
 		}
@@ -100,7 +119,8 @@ public class Message {
 		// Parse date string into usable java format
 		try {
 			String createdAt = json.getString("created_at");
-			mTime = new SimpleDateFormat(DATE_FORMAT, Locale.US).parse(createdAt);
+			mTime = new SimpleDateFormat(DATE_FORMAT, Locale.US)
+					.parse(createdAt);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,16 +146,75 @@ public class Message {
 		return mSent;
 	}
 
-	public int getSongId() {
-		return mSongId;
+	public Song getSong() {
+		return mSong;
 	}
 
 	public Date getTime() {
 		return mTime;
 	}
 
-	public int getMessageId() {
+	public Integer getMessageId() {
 		return mMessageId;
 	}
 
+	public boolean getIsSent() {
+		return mSent;
+	}
+
+	/**
+	 * Check if two messages are equal.
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	public boolean equals(Message msg) {
+		// if the message is null they are not equal by default
+		if (msg == null){
+			return false;
+		}
+
+		// if the message ids are equal the messages are equal
+		if (msg.getMessageId() == mMessageId){
+			return true;
+		}
+
+		// if at least one of the messages has an id return false
+		if (msg.getMessageId() != null || mMessageId != null){
+			return false;
+		}
+
+		// if both of the messages don't have an id we can check all the other
+		// parameters
+
+		// check if user and contact are the same
+		if (msg.getContactId() != mContactId){
+			return false;
+		}
+		if (msg.getUserId() != mUserId){
+			return false;
+		}
+
+		// Use the Boolean class to check if the two boolean sent values are the
+		// same.
+		// Returns 0 if they are the same
+		if (Boolean.valueOf(msg.getIsSent()).compareTo(mSent) != 0){
+			return false;
+		}
+
+		// Check that message content is equal
+		if (!msg.getContent().equals(mContent)){
+			return false;
+		}
+
+		// Check that songs are equal
+		int id1 = mSong == null ? -1 : mSong.getId();
+		int id2 = msg.getSong() == null ? -1 : msg.getSong().getId();
+		if (id1 != id2){
+			return false;
+		}
+
+		// if we got through all the checks then the messages must be equal
+		return true;
+	}
 }

@@ -25,6 +25,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.ContactsListViewEntry;
 import com.lyricoo.OnTaskCompleted;
 import com.lyricoo.PhoneContact;
+
 import com.lyricoo.R;
 import com.lyricoo.RetrieveContactsAsync;
 import com.lyricoo.Session;

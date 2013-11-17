@@ -1,10 +1,50 @@
 package com.lyricoo;
 
+import java.io.UnsupportedEncodingException;
+
+import org.json.JSONException;
+import org.json.JSONTokener;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import android.content.Context;
 import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
 
 public class Utility {
+	
+	/**
+	 * Converts a java object to a Json string. Uses Google GSON
+	 * @param src The object to be converted 
+	 * @return A string of JSON representing the source object
+	 */
+	public static String toJson(Object src){
+			// simple wrapper function for GSON
+			Gson gson = new Gson();		
+			return gson.toJson(src);
+	}
+	
+	/**
+	 * Convert a JSON string to a java class object
+	 * @param <T>
+	 * 
+	 * @param json The json string to convert
+	 * @param classType The class to convert to - e.g. Song.class
+	 * @return The converted object. Null on failure
+	 */
+	public static <T> T fromJson(String json, Class<T> classType) {
+		// simple wrapper function for GSON
+		Gson gson = new Gson();	
+		T result = null;
+		try {
+			result = gson.fromJson(json, classType);		
+		} catch(Exception e) {
+			return null;
+		}
+		
+		return result;
+	}
 
 	/**
 	 * Compares two phone numbers and checks if they are equal or not

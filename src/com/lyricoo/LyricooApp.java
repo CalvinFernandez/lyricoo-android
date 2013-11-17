@@ -19,7 +19,8 @@ public class LyricooApp extends Application {
 	  {
 	    super.onCreate();
 	    
-	    // Initialize any singletons or variables here
+	    // Initialize whatever we need here
+	    
 	    
 	  }
 

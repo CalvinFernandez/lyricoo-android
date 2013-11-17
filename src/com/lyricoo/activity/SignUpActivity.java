@@ -12,9 +12,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.LyricooAPI;
 import com.lyricoo.R;
+
 import com.lyricoo.Session;
-import com.lyricoo.R.layout;
-import com.lyricoo.R.menu;
+
 import com.lyricoo.Utility;
 
 import android.os.Bundle;

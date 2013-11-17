@@ -11,6 +11,7 @@ import com.lyricoo.Conversation;
 import com.lyricoo.Message;
 import com.lyricoo.R;
 
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,7 @@ public class MessageListAdapter extends BaseAdapter {
 		Conversation convo = mConversations.get(position);
 		Message msg = convo.getMostRecentMessage();
 
-		contactName.setText(convo.getContact().getEmail());
+		contactName.setText(convo.getContact().getUsername());
 		content.setText(msg.getContent());
 
 		return rowView;

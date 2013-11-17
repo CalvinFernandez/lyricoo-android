@@ -12,12 +12,18 @@ import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
+import com.lyricoo.Session;
+import com.lyricoo.User;
+import com.lyricoo.Utility;
+
 import com.lyricoo.Song;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +35,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,6 +45,9 @@ import android.widget.TextView;
  * 
  */
 public class LyricooSelectionActivity extends Activity {
+	// Request code when launched for result
+	public static final int SELECT_LYRICOO_REQUEST = 0;
+
 	private ArrayList<Song> mSongs;
 	private ArrayList<String> mCategories;
 	private ProgressBar mProgress;
@@ -88,6 +98,14 @@ public class LyricooSelectionActivity extends Activity {
 		super.onPause();
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		// Release player
+		mPlayer.destroy();
 	}
 
 	private void loadSongs() {
@@ -282,6 +300,131 @@ public class LyricooSelectionActivity extends Activity {
 		// We handle this differently depending on how the activity was
 		// launched. If launched for result we return a result intent and
 		// finish(). Otherwise we let the user pick which friend to send to
+
+		// getCallingActivity is non null if this activity was started for a
+		// result
+		if (getCallingActivity() != null) {
+			// Return the selected lyricoo as a result
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("lyricoo", Utility.toJson(mSelectedSong));
+			setResult(RESULT_OK, returnIntent);
+			finish();
+		}
+
+		// otherwise the user hasn't yet picked somebody to send this lyricoo
+		// too. Show a list of friends to send to
+		else {
+			// Show friends list and so user can send song to a friend
+			showFriendsList();
+		}
+	}
+
+	/**
+	 * Load the current user's friends in a dialog list and send the currently
+	 * selected lyricoo to the clicked friend
+	 */
+	private void showFriendsList() {
+		// load friends
+		Session.currentUser().get("friends", new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONArray json) {
+				// parse json
+				final ArrayList<User> friends = User.parseUserJsonArray(json);
+				
+				// get list of just friend names to show in dialog
+				ArrayList<String> names = new ArrayList<String>();
+				for(User friend : friends){
+					names.add(friend.getUsername());
+				}
+				
+				// if the user doesn't have any friends show them a different dialog
+				if(names.isEmpty()){
+					
+					return;
+				}
+				
+				// convert ArrayList to Array so AlertDialog can use it
+				String[] namesArray = new String[names.size()];
+				namesArray = names.toArray(namesArray);
+
+				// create a new dialog
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				// set the title to be the username of the friend
+				builder.setTitle("Send Lyricoo")
+				// add the options to the list
+						.setItems(namesArray,
+								new DialogInterface.OnClickListener() {
+									// handle clicking on an option
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// get the friend that was selected and
+										// pass the selected song to the
+										// conversation with that friend
+										try {
+											User friend = friends.get(which);
+											sendLyricooToFriend(mSelectedSong,
+													friend);
+										} catch (Exception e) {
+											// If this gets caught it's probably
+											// index out of bound error. TODO:
+											// Log it
+											// so we can see why it happened
+										}
+									}
+								});
+				builder.create().show();
+
+			}
+
+			@Override
+			public void onFailure(Throwable error, JSONObject json) {
+				// TODO: Handle failure
+			}
+		});
+
+	}
+
+	/** Start the conversation activity with the given friend
+	 * and send the selected song as an intent so the activity can create
+	 * a message with it
+	 * @param song
+	 * @param friend
+	 */
+	private void sendLyricooToFriend(final Song song, User friend) {
+		// Retrieve the conversation with this friend so we can load it
+		// TODO: Cleaner method for getting conversation
+		RequestParams params = new RequestParams();
+		params.put("contact_id", Integer.toString(friend.getUserId()));
+		// TODO: Show loading dialog
+		Session.currentUser().get("messages", params,
+				new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONObject json) {
+
+						
+						ArrayList<Conversation> conversations = Conversation
+								.parseMessagesJson(json);
+
+						// should be only one conversation in the list						
+						Conversation conversation = conversations.get(0);
+						
+						// convert to json to make it easy to pass to the conversation activity
+						String conversationAsJson = Utility.toJson(conversation);
+						String songAsJson = Utility.toJson(song);
+						
+						Intent i = new Intent(mContext,
+								ConversationActivity.class);
+						i.putExtra("conversation", conversationAsJson);
+						i.putExtra("song", songAsJson);
+						startActivity(i);
+					}
+
+					@Override
+					public void onFailure(Throwable error, JSONObject json) {
+						// TODO: Handle failure
+					}
+				});
+
 	}
 
 	// The play button only shows when a song has been selected. It defaults to
