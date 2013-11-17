@@ -63,10 +63,15 @@ public class Message {
 		this(content, userId, contactId, sent, song, new Date());
 	}
 
-	//
-	// No date or song provided, defaults to current time and song with value -1
-	// (indicating no song selected for now .... )
-	//
+	/**
+	 * No date or song provided, defaults to current time and song with value
+	 * null (indicating no song selected for now .... )
+	 * 
+	 * @param content
+	 * @param userId
+	 * @param contactId
+	 * @param sent
+	 */
 	public Message(String content, int userId, int contactId, boolean sent) {
 		this(content, userId, contactId, sent, null, new Date());
 	}
@@ -197,8 +202,9 @@ public class Message {
 
 		// Check that songs are equal
 		int id1 = mSong == null ? -1 : mSong.getId();
-		int id2 = msg.getSong() == null ?  -1 : msg.getSong().getId();
-		if(id1 != id2) return false;
+		int id2 = msg.getSong() == null ? -1 : msg.getSong().getId();
+		if (id1 != id2)
+			return false;
 
 		return true;
 	}
