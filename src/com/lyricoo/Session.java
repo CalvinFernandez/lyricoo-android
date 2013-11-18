@@ -149,9 +149,13 @@ public class Session {
 		return mCurrentUser;
 	}
 	
+	/**
+	 * Delete the current user's session, if applicable
+	 */
 	public static void destroy() {
 		mCurrentUser = null;
 		mLoggedIn = false;
+		mAuthToken = null;
 	}
 
 	public static void login(String username, String password, JsonHttpResponseHandler 

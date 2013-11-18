@@ -8,19 +8,15 @@ import android.app.Application;
  * about the logged in user and their session.
  */
 
-public class LyricooApp extends Application {
-	// The currently logged in user. Null if the app is logged out	
-	private User mUser = null;
-	
-	public Conversation conversationToDisplay = null;
+public class LyricooApp extends Application {	
 	
 	@Override
 	  public void onCreate()
 	  {
 	    super.onCreate();
 	    
-	    // Initialize whatever we need here
-	    
+	    // Initialize user settings
+	    LyricooSettings.initUserSettings(getApplicationContext());	    
 	    
 	  }
 

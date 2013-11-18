@@ -30,10 +30,11 @@
             android:text="Friends" />
 
         <Button
-            android:id="@+id/menu_button_logout"
+            android:id="@+id/menu_button_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log Out" />
+            android:onClick="settingsClicked"
+            android:text="Settings" />
         
     </LinearLayout>
 

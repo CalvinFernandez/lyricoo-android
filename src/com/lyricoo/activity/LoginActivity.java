@@ -1,10 +1,14 @@
 package com.lyricoo.activity;
 
+
+import org.apache.http.Header;
+
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -14,6 +18,11 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+
+import com.lyricoo.LyricooAPI;
+import com.lyricoo.LyricooResponseAdapter;
+
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Utility;
@@ -95,7 +104,8 @@ public class LoginActivity extends Activity {
 	public void login(View v) {
 		setIsLoading(true);
 
-		// TODO: Accept either username or email address in the text field
+		// TODO: Accept either username or email address in the text field.
+		// Right now the server only accepts email
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
 
@@ -107,8 +117,13 @@ public class LoginActivity extends Activity {
 			username = "konakid@gmail.com";
 			password = "asdfasdf";
 		}
+		// hacky thing to allow the email address to be final and used in the
+		// callback, but still be able to change it to konakid in the debug
+		// check
+		final String email = username;
 
 		Session.login(username, password, new JsonHttpResponseHandler() {
+
 			@Override
 			public void onSuccess(JSONObject response) {
 				Session.create(response);
@@ -121,7 +136,7 @@ public class LoginActivity extends Activity {
 			
 			 @Override
 			 public void onFailure(Throwable error, JSONObject response) {
-			 handleLoginFailure(response);
+			 handleLoginFailure(email);
 			 }
 			
 			 @Override
@@ -133,11 +148,12 @@ public class LoginActivity extends Activity {
 			 public void onFinish() {
 			 setIsLoading(false);
 			 }
+
 		});
 
 	}
 
-	private void handleLoginFailure(JSONObject response) {
+	private void handleLoginFailure(final String email) {
 		new AlertDialog.Builder(this)
 				.setTitle("Login Error")
 				.setMessage("Sorry, there was a problem logging you in")
@@ -153,14 +169,40 @@ public class LoginActivity extends Activity {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								// Send reset email
-								resetPassword();
+								resetPassword(email);
 							}
 						}).show();
 	}
 
-	private void resetPassword() {
-		// TODO: Send a reset password email and provide some user feedback
-		// about it
+	/**
+	 * Send a new password to the given email address. Show toast on completion.
+	 * 
+	 * @param email
+	 */
+	private void resetPassword(final String email) {
+		RequestParams params = new RequestParams();
+		params.put("email", email);
+
+		LyricooAPI.post("users/reset_password", params,
+				new AsyncHttpResponseHandler() {
+
+					@Override
+					public void onSuccess(int statusCode, Header[] headers,
+							byte[] responseBody) {
+						// TODO: Right now response failure is in json not in
+						// error codes. Change that on the server
+						String msg = "New password sent to " + email;
+						Utility.makeBasicToast(mContext, msg);
+					}
+
+					@Override
+					public void onFailure(int statusCode,
+							org.apache.http.Header[] headers,
+							byte[] responseBody, java.lang.Throwable error) {
+						String msg = "Failed sending new password to " + email;
+						Utility.makeBasicToast(mContext, msg);
+					}
+				});
 	}
 
 	public void signupClicked(View v) {
