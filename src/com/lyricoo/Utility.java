@@ -1,5 +1,7 @@
 package com.lyricoo;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.io.UnsupportedEncodingException;
 
 import org.json.JSONException;
@@ -145,5 +147,4 @@ public class Utility {
 
 		return result;
 	}
-
 }
