@@ -24,6 +24,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/notification_toggle"
         android:layout_marginTop="16dp"
+        android:textSize="20sp"
         android:text="Lyricoo Volume" />
 
     <SeekBar
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/volume_seek"
+        android:layout_marginTop="20sp"
         android:onClick="logoutClicked"
         android:text="Log Out" />
 

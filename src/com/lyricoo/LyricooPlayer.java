@@ -30,13 +30,11 @@ public class LyricooPlayer {
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-		// set volume to half max
-		// TODO: Allow the user to adjust the volume somehow
+		// set volume according to the user's settings
 		AudioManager audioManager = (AudioManager) context
 				.getSystemService(Context.AUDIO_SERVICE);
-		int maxVolume = audioManager
-				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 2,
+		int volume = LyricooSettings.getUserSettings().getVolume();
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume,
 				0);
 	}
 
