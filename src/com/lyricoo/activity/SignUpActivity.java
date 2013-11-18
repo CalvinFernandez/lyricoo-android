@@ -100,7 +100,7 @@ public class SignUpActivity extends Activity {
 		params.put("username", data.username);
 		params.put("phone_number", data.number);
 
-		LyricooAPI.post("users/new", params, new JsonHttpResponseHandler() {
+		LyricooAPI.post("users", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
 				// store user credentials
@@ -109,7 +109,7 @@ public class SignUpActivity extends Activity {
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
-			}
+			}		
 
 			@Override
 			public void onFailure(Throwable error, JSONObject response) {
@@ -185,8 +185,8 @@ public class SignUpActivity extends Activity {
 			}
 		} catch (JSONException e) {
 			// Can't get errors for some reason. Leave list empty
-		} catch (NullPointerException e){
-			
+		} catch (NullPointerException e) {
+
 		}
 
 		return result;
