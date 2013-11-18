@@ -24,6 +24,14 @@ public class Conversation {
 		mContact = contact;
 	}	
 	
+	/**
+	 * Create a blank conversation with this contact
+	 * @param contact
+	 */
+	public Conversation(User contact){
+		this(new ArrayList<Message>(), contact);
+	}
+	
 	public Conversation() {
 		this(new ArrayList<Message>(), new User());
 	}

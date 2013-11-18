@@ -202,18 +202,35 @@ public class ContactsActivity extends Activity {
 		Session.currentUser().post("friends", params, new JsonHttpResponseHandler() {
 
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, byte[] responseBody) {
+			public void onSuccess(JSONObject json) {
 				toastAddFriendResult(username, true);
-			}			
-
+			}	
+			
 			@Override
-			public void onFailure(int statusCode, org.apache.http.Header[] headers, byte[] responseBody, java.lang.Throwable error) {
+			public void onSuccess(JSONArray json) {
+				toastAddFriendResult(username, true);
+			}	
+
+
+			
+			@Override
+			public void onFailure(Throwable error, JSONArray json) {
+				// Could have failed because friend doesn't exist, friend was
+				// already added, or a connection problem
+				// TODO: Make the failure notice more specific
+				toastAddFriendResult(username, false);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, JSONObject json) {
 				// Could have failed because friend doesn't exist, friend was
 				// already added, or a connection problem
 				// TODO: Make the failure notice more specific
 				toastAddFriendResult(username, false);
 			}
 
+			
+			
 			@Override
 			public void onFinish() {
 				// re-enable button when process is over

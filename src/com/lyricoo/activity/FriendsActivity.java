@@ -145,7 +145,7 @@ public class FriendsActivity extends Activity {
 	}
 
 	// Load the conversation with this friend
-	private void loadConversation(User friend) {
+	private void loadConversation(final User friend) {
 		RequestParams params = new RequestParams();
 		params.put("contact_id", Integer.toString(friend.getUserId()));
 		// TODO: Show loading dialog
@@ -156,13 +156,22 @@ public class FriendsActivity extends Activity {
 
 						ArrayList<Conversation> conversations = Conversation
 								.parseMessagesJson(json);
-						
-						// should be only one conversation in the list						
-						Conversation conversation = conversations.get(0);
 
-						// convert to json to make it easy to pass to the conversation activity
-						String conversationAsJson = Utility.toJson(conversation);
-						
+						// should be only one conversation in the list, but if
+						// no messages have yet been sent to this friend then it
+						// will be empty
+						Conversation conversation;
+						if (conversations.isEmpty()) {
+							conversation = new Conversation(friend);
+						} else {
+							conversation = conversations.get(0);
+						}
+
+						// convert to json to make it easy to pass to the
+						// conversation activity
+						String conversationAsJson = Utility
+								.toJson(conversation);
+
 						Intent i = new Intent(mContext,
 								ConversationActivity.class);
 						i.putExtra("conversation", conversationAsJson);
