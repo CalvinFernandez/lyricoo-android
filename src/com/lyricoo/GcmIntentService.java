@@ -1,9 +1,12 @@
 package com.lyricoo;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.lyricoo.activity.MessagesActivity;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -33,16 +36,20 @@ public class GcmIntentService extends IntentService {
 			 */
 			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
 				// error
-				//sendNotification("Send error: " + extras.toString());
+				sendNotification("Send error: " + extras.toString());
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
 				// error
-				// sendNotification("Deleted messages on server: " + 
-					//	extras.toString());
+				 sendNotification("Deleted messages on server: " + 
+						extras.toString());
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 				// Regular message hooray!
+				sendNotification("Received: " + extras.toString());
 			}
 		}
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
-
+	
+	private void sendNotification(String msg) {
+		LyricooNotificationManager.newMessageNotification(getApplicationContext(), 1);
+	}
 }
