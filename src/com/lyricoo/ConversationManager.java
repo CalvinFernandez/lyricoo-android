@@ -8,6 +8,11 @@ import java.util.ArrayList;
  */
 public class ConversationManager {
 	private User mUser;
+	private ArrayList<Conversation> mConversations;
+	// Whether the last sync was successful or not
+	private boolean mIsSynced;
+	// callback for when local data is changed
+	private OnDataChanged mOnDataChangedListener;
 
 	/**
 	 * Initialize a ConversationManager to manage a particular user's messages
@@ -16,10 +21,18 @@ public class ConversationManager {
 	 *            The Lyricoo User who's messages we are managing
 	 */
 	public ConversationManager(User user) {
+		// store the user whose messages we are managing
 		mUser = user;
 
-		// could call sync() automatically here and then offer a callback, or
-		// force manual call to sync()
+		// store the callback
+		mOnDataChangedListener = listener;
+
+		// Initialize an empty list of conversations
+		mConversations = new ArrayList<Conversation>();
+
+		// Do the initial sync to get up to date. We don't have to worry about
+		// the callback
+		sync(null);
 	}
 
 	/**
@@ -28,15 +41,10 @@ public class ConversationManager {
 	 * @return
 	 */
 	public ArrayList<Conversation> getConversations() {
-		// Need to decide how this local data is kept consistent with server.
-		// Possible options - 1. Make user call sync() before calling a method
-		// like this. 2. Have callback for onSuccess and onFailure like in the
-		// Friends abstraction
+		// Data is refreshed automatically in background, or manually with a
+		// call to sync(). This method returns the latest available data
 
-		// Do we pass a deep or shallow copy of the conversations? Shallow is
-		// easier, and might be nice because if we add a message to our copy it
-		// will be reflected in all other copies. However, this also allows changes
-		// to other copies to affect our data as well.
+		// Pass a shallow copy of the data
 		return null;
 	}
 
@@ -49,7 +57,7 @@ public class ConversationManager {
 	 *         empty if no messages have been sent or received
 	 */
 	public Conversation getConversation(User contact) {
-		// same issues as with getConversations
+		// same as getConversations
 		return null;
 	}
 
@@ -61,56 +69,59 @@ public class ConversationManager {
 	 * @param contact
 	 *            The user that the conversation is with
 	 */
-	public void sendMessage(Message message, User contact) {
+	public void sendMessage(Message message, User contact,
+			OnMessageSent listener) {
 		// add the message to the local conversation
 
 		// send a post request to server
 		// update local message with message id that server creates
 
-		// handle failure? Could retry automatically or simply delete the local
-		// copy and tell the user to try again
-
-		// Could register a callback for this specific method, or could leave it
-		// to the generic onDataChangedListener
+		// Alert the user of failure or success
 	}
 
+	public interface OnMessageSent {
+		public void onSuccess();
+
+		public void onFailure();
+	}
+
+	/**
+	 * Add a message to the local conversation that the contact sent to us.
+	 * Should be received through GCM
+	 * 
+	 * @param message
+	 * @param contact
+	 */
 	public void receiveMessage(Message message, User contact) {
-		// Add a message that a contact sent to us. Is this necessary?
+		// Add message to the relevant conversation
 
-		// Two ways to handle messages sent to us. 1. GCM receives the message
-		// json and passes a new Message to this function. 2. GCM simply tells
-		// us that a new message is waiting on the server and leave us to
-		// retrieve it ourselves.
-
-		// I'm partial to 2, it makes receiveMessage unnecessary and guarantees
-		// that we are properly synced
+		// Call onDataChanged Listener
 	}
 
 	/**
 	 * Force the ConversationManager to sync local data with server
 	 */
-	public void sync() {
-		// This might be nice to allow activities to refresh data when they want
-		// to. The other option is remove this method and add a "refresh"
-		// boolean parameter to methods liked getConversation() that lets us
-		// choose whether we want to force a
-		// server sync
+	public void sync(OnSyncCompleted listener) {
 
-		// could accept a callback for onSuccess and onFailure
 	}
 
 	/**
-	 * Whether or not data has yet been synced with the server
+	 * Callback methods for when sync() finishes
+	 * 
+	 */
+	public interface OnSyncCompleted {
+		public void onSuccess();
+
+		public void onFailure(String errorMessage);
+	}
+
+	/**
+	 * Whether or not the last sync was successful
 	 * 
 	 * @return
 	 */
 	public boolean isSynced() {
-		// if we implement sync() we might want a method like this to tell us if
-		// data has been synced yet
-
-		// could also make the return type Date and have it say the last time a
-		// sync happened
-		return false;
+		return mIsSynced;
 	}
 
 	/**
@@ -118,16 +129,37 @@ public class ConversationManager {
 	 * 
 	 * @param listener
 	 */
-	public void setOnDataChangedListener(OnDataChangedListener listener) {
-
+	public void setOnDataChangedListener(OnDataChanged listener) {
+		// should we allow the user to set multiple listeners? I'm not sure if
+		// that's done in Android
+		mOnDataChangedListener = listener;
 	}
 
 	/**
-	 * A callback for when any of the local data is updated
+	 * Callback for when any of the local data is updated
 	 * 
 	 */
-	public interface OnDataChangedListener {
+	public interface OnDataChanged {
 		void dataUpdated();
+	}
+
+	/**
+	 * Delete all memory held by the manager
+	 */
+	public void destroy() {
+		// clear conversations
+		mConversations.clear();
+		mConversations = null;
+
+		// handle any other things we need to
+	}
+
+	/**
+	 * Called when our local data changes. Alerts any callbacks that have been
+	 * registered with the manager
+	 */
+	private void notifyDataChanged() {
+
 	}
 
 }

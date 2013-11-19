@@ -18,6 +18,7 @@ public class Session {
 	private static User mCurrentUser;
 	private static boolean mLoggedIn = false;
 	private static String mAuthToken;
+	private static ConversationManager mConversationManager;
 	
 	/**
 	 * GCM variables 
@@ -136,16 +137,18 @@ public class Session {
 		try {
 			mCurrentUser = new User(json.getJSONObject("user"));
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO Handle failure
 		}
 		
 		try {
 			mAuthToken = json.getString("authentication_token");
 		} catch (JSONException e) {
-			e.printStackTrace();
+			// TODO Handle failure
 		}
 		mLoggedIn = true;
+		
+		mConversationManager = new ConversationManager(mCurrentUser);
+		
 		return mCurrentUser;
 	}
 	
@@ -156,6 +159,10 @@ public class Session {
 		mCurrentUser = null;
 		mLoggedIn = false;
 		mAuthToken = null;
+		
+		// delete all local message data
+		mConversationManager.destroy();
+		mConversationManager = null;
 	}
 
 	public static void login(String username, String password, JsonHttpResponseHandler 
@@ -170,5 +177,9 @@ public class Session {
 
 	public static String getAuthToken() {
 		return mAuthToken;
+	}
+	
+	public static ConversationManager getConversationManager(){
+		return mConversationManager;
 	}
 }
