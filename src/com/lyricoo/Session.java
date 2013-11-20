@@ -5,19 +5,21 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.apache.http.Header;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.loopj.android.http.*;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 public class Session {
 	private static User mCurrentUser;
 	private static boolean mLoggedIn = false;
 	private static String mAuthToken;
+	private static Context mContext;
+	private static ConversationManager mConversationManager;
 	
 	/**
 	 * GCM variables 
@@ -132,20 +134,24 @@ public class Session {
 		return mLoggedIn;
 	}
 	
-	public static User create(JSONObject json) {
+	public static User create(Context context, JSONObject json) {
+		mContext = context;
+		
 		try {
 			mCurrentUser = new User(json.getJSONObject("user"));
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO Handle failure
 		}
 		
 		try {
 			mAuthToken = json.getString("authentication_token");
 		} catch (JSONException e) {
-			e.printStackTrace();
+			// TODO Handle failure
 		}
 		mLoggedIn = true;
+		
+		mConversationManager = new ConversationManager(context, mCurrentUser);
+		
 		return mCurrentUser;
 	}
 	
@@ -156,6 +162,10 @@ public class Session {
 		mCurrentUser = null;
 		mLoggedIn = false;
 		mAuthToken = null;
+		
+		// delete all local message data
+		mConversationManager.destroy();
+		mConversationManager = null;
 	}
 
 	public static void login(String username, String password, JsonHttpResponseHandler 
@@ -170,5 +180,9 @@ public class Session {
 
 	public static String getAuthToken() {
 		return mAuthToken;
+	}
+	
+	public static ConversationManager getConversationManager(){
+		return mConversationManager;
 	}
 }

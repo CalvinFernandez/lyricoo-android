@@ -2,29 +2,24 @@ package com.lyricoo.activity;
 
 import java.util.ArrayList;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.lyricoo.Conversation;
-import com.lyricoo.LyricooApp;
-import com.lyricoo.R;
-import com.lyricoo.Utility;
-
-import com.lyricoo.Session;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import com.lyricoo.Conversation;
+import com.lyricoo.ConversationManager;
+import com.lyricoo.LyricooApp;
+import com.lyricoo.R;
+import com.lyricoo.Session;
+import com.lyricoo.User;
+import com.lyricoo.Utility;
 
 /**
  * This activity loads all of the users messages and shows a preview of the most
@@ -37,6 +32,9 @@ public class MessagesActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private LyricooApp mApp;
+	
+	// display resources
+	private ListView mMessageList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,59 +43,52 @@ public class MessagesActivity extends Activity {
 		mContext = this;
 		mApp = (LyricooApp) getApplication();
 
-		// start progress bar to indicate loading
-		mProgress = (ProgressBar) findViewById(R.id.messages_loading_progress);
-
-		Session.currentUser().get("messages", new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(JSONObject json) {
-
-				mConversations = Conversation.parseMessagesJson(json);
-
-
-				// hide progress bar
-				mProgress.setVisibility(View.GONE);
-
-				// Create adapter for the list view
-				MessageListAdapter adapter = new MessageListAdapter(mContext,
-						mConversations);
-				ListView list = (ListView) findViewById(R.id.messages_list);
-				list.setAdapter(adapter);
-
-				// When a message is clicked load the whole conversation
-				list.setOnItemClickListener(new OnItemClickListener() {
+		// register callback on conversations update
+		Session.getConversationManager().registerOnDataChangedListener(
+				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// Pass selected conversation to the conversation
-						// activity to display				
-						Conversation conversation = mConversations
-								.get(position);;
-
-						// convert to json to make it easy to pass to the conversation activity
-						String conversationAsJson = Utility.toJson(conversation);
-						
-						Intent i = new Intent(mContext,
-								ConversationActivity.class);
-						i.putExtra("conversation", conversationAsJson);
-						startActivity(i);
+					public void onDataChanged() {
+						loadAndDisplayConversations();
+						// TODO: Update display to show which messages are new
 					}
 				});
-			}
+		
+		// save resources
+		mMessageList = (ListView) findViewById(R.id.messages_list);
+		
+		loadAndDisplayConversations();		
+	}
+
+	/** 
+	 * Get all of our users conversations and show them in a listview
+	 */
+	private void loadAndDisplayConversations() {
+		// load conversations
+		mConversations = Session.getConversationManager().getConversations();		
+
+		// Create a new adapter for this conversation data
+		MessageListAdapter adapter = new MessageListAdapter(mContext,
+				mConversations);
+		
+		mMessageList.setAdapter(adapter);
+
+		// When a message is clicked load the whole conversation
+		mMessageList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Handle failure
-				Log.v("Messages", error.getMessage());
-			}
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// Pass selected user so conversationActivity knows whose conversation to display
+				User contact = mConversations.get(position).getContact();
 
-			@Override
-			public void onFailure(Throwable error, JSONArray json) {
-				// TODO: Handle failure
-				Log.v("Messages", error.getMessage());
-			}
+				// convert to json to make it easy to pass to the object
+				String contactAsJson = Utility.toJson(contact);
 
+				Intent i = new Intent(mContext, ConversationActivity.class);
+				i.putExtra("contact", contactAsJson);
+				startActivity(i);
+			}
 		});
 	}
 

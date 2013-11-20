@@ -104,7 +104,7 @@ public class SignUpActivity extends Activity {
 			@Override
 			public void onSuccess(JSONObject response) {
 				// store user credentials
-				Session.create(response);
+				Session.create(mContext, response);
 
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
