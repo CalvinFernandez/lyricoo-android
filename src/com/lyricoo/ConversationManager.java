@@ -15,10 +15,10 @@ import com.loopj.android.http.RequestParams;
  * Conversations are retrieved with getConversations() and
  * getConversation(contact). Shallow copies of the conversations are passed, so
  * when a single message is added the data updates automatically. However,
- * sync() recreates all Conversations with new data structures, unlinking existing copies
- * from future updates. The OnDataChangedListener will register for both cases,
- * but in the case of a sync it will pass oldDataInvalidated = true to notify
- * the client that they need to retrieve a fresh copy.
+ * sync() recreates all Conversations with new data structures, unlinking
+ * existing copies from future updates. The OnDataChangedListener will register
+ * for both cases, but in the case of a sync it will pass oldDataInvalidated =
+ * true to notify the client that they need to retrieve a fresh copy.
  * 
  */
 public class ConversationManager {
@@ -114,7 +114,7 @@ public class ConversationManager {
 		// add the message to the local conversation
 		final Conversation conversation = getConversation(contact);
 		conversation.add(message);
-		notifyDataChanged(false);
+		notifyDataUpdate(contact);
 
 		// send a post request to server to create message
 		RequestParams params = new RequestParams();
@@ -163,7 +163,7 @@ public class ConversationManager {
 		conversation.remove(message);
 
 		// alert listeners to changes
-		notifyDataChanged(false);
+		notifyDataUpdate(conversation.getContact());
 
 		// create error toast
 		String toast = "Error sending message";
@@ -183,7 +183,7 @@ public class ConversationManager {
 		conversation.add(message);
 
 		// alert listeners to changes
-		notifyDataChanged(false);
+		notifyDataUpdate(contact);
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class ConversationManager {
 
 				// Alert listeners that their old data copies are no longer
 				// linked
-				notifyDataChanged(true);
+				notifyDataReset();
 
 				mIsSynced = true;
 
@@ -271,22 +271,42 @@ public class ConversationManager {
 	 */
 	public interface OnDataChangedListener {
 		/**
-		 * Called when any conversation data changes
+		 * Called when the conversation data for a specific user changes
 		 * 
-		 * @param oldDataInvalidated
-		 *            Whether old copies of conversation data are still valid
 		 */
-		void onDataChanged(boolean oldDataInvalidated);
+		void onDataUpdated(User user);
+
+		/**
+		 * Called when all data is reset. The client must grab a new copy of the
+		 * data with getConversation()
+		 */
+		void onDataReset();
 	}
 
 	/**
-	 * Called when our local data changes. Alerts any callbacks that have been
+	 * Called when our local data updates. Alerts any callbacks that have been
 	 * registered with the manager
+	 * 
+	 * @param contact
+	 *            The user whose conversation was updated
+	 * 
 	 */
-	private void notifyDataChanged(boolean oldDataInvalidated) {
+	private void notifyDataUpdate(User contact) {
 		// Call all listeners that have been registered
 		for (OnDataChangedListener listener : mOnDataChangedListeners) {
-			listener.onDataChanged(oldDataInvalidated);
+			listener.onDataUpdated(contact);
+		}
+	}
+
+	/**
+	 * Called when our local data is reset. Alerts any callbacks that have been
+	 * registered with the manager
+	 * 
+	 */
+	private void notifyDataReset() {
+		// Call all listeners that have been registered
+		for (OnDataChangedListener listener : mOnDataChangedListeners) {
+			listener.onDataReset();
 		}
 	}
 

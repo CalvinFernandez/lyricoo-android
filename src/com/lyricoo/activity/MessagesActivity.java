@@ -52,16 +52,18 @@ public class MessagesActivity extends Activity {
 				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void onDataChanged(boolean oldDataInvalidated) {
-						if (oldDataInvalidated) {
-							// Get a fresh copy of the conversation
-							mConversations = Session.getConversationManager()
-									.getConversations();
-							displayConversations();
-						} else {
-							updateConversations();
-						}
+					public void onDataUpdated(User user) {
+						// we care about conversations with all contacts, so
+						// update everything
+						updateConversations();
+					}
 
+					@Override
+					public void onDataReset() {
+						// Get a fresh copy of the conversation
+						mConversations = Session.getConversationManager()
+								.getConversations();
+						displayConversations();
 					}
 				});
 
@@ -76,6 +78,7 @@ public class MessagesActivity extends Activity {
 	 * view
 	 */
 	protected void updateConversations() {
+		// TODO: Show indicators for new messages
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -84,8 +87,7 @@ public class MessagesActivity extends Activity {
 	 */
 	private void displayConversations() {
 		// Create a new adapter for this conversation data
-		mAdapter = new MessageListAdapter(mContext,
-				mConversations);
+		mAdapter = new MessageListAdapter(mContext, mConversations);
 
 		mMessageList.setAdapter(mAdapter);
 

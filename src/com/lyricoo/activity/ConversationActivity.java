@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
@@ -84,17 +85,19 @@ public class ConversationActivity extends Activity {
 				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void onDataChanged(boolean oldDataInvalidated) {
-						if (oldDataInvalidated) {
-							// Get a fresh copy of the conversation
-							mConversation = Session.getConversationManager()
-									.getConversation(mContact);
-							displayConversation();
-						} else {
+					public void onDataUpdated(User user) {
+						// only update our view if we our contact was updated
+						if (user.equals(mContact)) {
 							updateConversation();
 						}
+					}
 
-						
+					@Override
+					public void onDataReset() {
+						// Get a fresh copy of the conversation
+						mConversation = Session.getConversationManager()
+								.getConversation(mContact);
+						displayConversation();
 					}
 				});
 
@@ -126,6 +129,8 @@ public class ConversationActivity extends Activity {
 		// retrieve data from intent, will be null if no song was included
 		String songJson = getIntent().getStringExtra("song");
 		attachSong(songJson);
+
+		attachKeyboardListener();
 	}
 
 	@Override
@@ -134,7 +139,7 @@ public class ConversationActivity extends Activity {
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
 	}
-	
+
 	/**
 	 * Tell the adapter that the data has changed and it needs to update the
 	 * view
@@ -151,7 +156,7 @@ public class ConversationActivity extends Activity {
 		// Create adapter with the new conversation data
 		mMessageList.setAdapter(mConversationAdapter);
 
-		scrollToBottom();		
+		scrollToBottom();
 
 		// Add click listener to list
 		mMessageList.setOnItemClickListener(new OnItemClickListener() {
@@ -181,11 +186,13 @@ public class ConversationActivity extends Activity {
 			}
 		});
 	}
-	
-	/** Scroll to the bottom of the message list, showing the most recent messages.
+
+	/**
+	 * Scroll to the bottom of the message list, showing the most recent
+	 * messages.
 	 * 
 	 */
-	private void scrollToBottom(){
+	private void scrollToBottom() {
 		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
 	}
 
@@ -330,5 +337,44 @@ public class ConversationActivity extends Activity {
 
 		// update display to show song
 		mLyricooTitle.setText(mSelectedLyricoo.getTitle());
+	}
+
+	/**
+	 * When the keyboard pops up to write a message the view size is changed and
+	 * the bottom of the message list is hidden. We can listen for the keyboard
+	 * and update the view accordingly
+	 */
+	private boolean isKeyboardShown = false;
+
+	private void attachKeyboardListener() {
+		final View activityRootView = findViewById(R.id.root_view);
+		activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+				new OnGlobalLayoutListener() {
+					@Override
+					public void onGlobalLayout() {
+						// if the height changes enough the keyboard was
+						// probably introduced
+						int heightDiff = activityRootView.getRootView()
+								.getHeight() - activityRootView.getHeight();
+						if (heightDiff > 100) { // if more than 100 pixels, its
+												// probably a keyboard...
+
+							// if the keyboard was just shown, scroll the
+							// messages down to the bottom
+							if (!isKeyboardShown) {
+								isKeyboardShown = true;
+								scrollToBottom();
+							}
+						}
+						// keep track of whether or not the keyboard was just
+						// shown. For some reason this callback is called even
+						// when the layout doesn't seem to change much and this
+						// prevents duplicate calls
+						else {
+							isKeyboardShown = false;
+						}
+					}
+				});
+
 	}
 }
