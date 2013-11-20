@@ -11,6 +11,8 @@ import com.lyricoo.Conversation;
 import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
+import com.lyricoo.MusicManager;
+import com.lyricoo.MusicManager.MusicHandler;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.User;
@@ -68,12 +70,15 @@ public class LyricooSelectionActivity extends Activity {
 
 	// The last song the user clicked
 	private Song mSelectedSong;
+	private MusicManager mMusicManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lyricoo_selection);
 
+		mMusicManager = new MusicManager();	// Initialize manager
+		
 		mContext = this;
 		mApp = (LyricooApp) getApplication();
 		mPlayer = new LyricooPlayer(this);
@@ -111,46 +116,26 @@ public class LyricooSelectionActivity extends Activity {
 	private void loadSongs() {
 		// load song list
 		// TODO: Cache songs instead of downloading every time
-		LyricooAPI.get("songs/all", null, new JsonHttpResponseHandler() {
+		
+		mMusicManager.getAll(new MusicHandler() {
+
 			@Override
-			public void onSuccess(JSONArray json) {
-				// parse json into songs
-				mSongs = Song.parseJsonArray(json);
-
-				// get list of categories from songs
-				buildCategoryList();
-
-				// hide progress bar
+			public void onSuccess(ArrayList<Song> songs,
+					ArrayList<String> categories) {
+				mSongs = songs;
+				mCategories = categories;
 				mProgress.setVisibility(View.GONE);
-
-				// Show the songs to the user
 				displayCategories();
+				
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Handle failure
-				Log.v("Songs", error.getMessage());
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+				
 			}
+
 		});
-	}
-
-	/**
-	 * Populate the local list of categories by looking at all the songs.
-	 */
-	protected void buildCategoryList() {
-		// TODO: Cache this list locally. Also, is it more efficient to make a
-		// call to categories/all?
-		mCategories = new ArrayList<String>();
-
-		// go through each song and add it's category to the list if it hasn't
-		// been added yet
-		for (Song song : mSongs) {
-			String category = song.getCategory();
-			if (!mCategories.contains(category)) {
-				mCategories.add(category);
-			}
-		}
 	}
 
 	protected void displayCategories() {
