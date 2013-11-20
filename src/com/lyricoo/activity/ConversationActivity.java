@@ -8,12 +8,14 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
 
+import com.lyricoo.ConversationManager;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.Message;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Song;
+import com.lyricoo.User;
 import com.lyricoo.Utility;
 
 import android.os.Bundle;
@@ -45,8 +47,8 @@ import android.widget.TextView;
  * 
  */
 public class ConversationActivity extends Activity {
-	private LyricooApp mApp;
 	private Conversation mConversation;
+	private User mContact;
 	private ConversationAdapter mConversationAdapter;
 
 	// player to handle playing lyricoos from messages
@@ -65,21 +67,23 @@ public class ConversationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
 
-		mApp = (LyricooApp) getApplication();
-
-		// get the extras sent to this activity (conversation and possibly a
-		// song to send)
-		Bundle extras = getIntent().getExtras();
-
-		// get the conversation to display
-		try {
-			String conversationAsJson = extras.getString("conversation");
-			mConversation = Utility.fromJson(conversationAsJson,
-					Conversation.class);
-		} catch (Exception e) {
-			// No conversation was passed in... What do?
-			// TODO: Error logging and handling
+		// get the User who we are talking to
+		String contactAsJson = getIntent().getStringExtra("contact");
+		mContact = Utility.fromJson(contactAsJson, User.class);
+		if (mContact == null) {
+			// uh oh, no contact was passed... TODO: What do? Error message and
+			// return to main menu
 		}
+
+		// register data update callback
+		Session.getConversationManager().registerOnDataChangedListener(
+				new ConversationManager.OnDataChanged() {
+
+					@Override
+					public void dataUpdated() {
+						getAndDisplayConversation();
+					}
+				});
 
 		// initialize player
 		mPlayer = new LyricooPlayer(this);
@@ -103,10 +107,11 @@ public class ConversationActivity extends Activity {
 		});
 
 		// build the list view for the messages in the conversation
-		displayMessages();
+		getAndDisplayConversation();
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
+		Bundle extras = getIntent().getExtras();
 		String songJson = extras.getString("song");
 		attachSong(songJson);
 	}
@@ -118,12 +123,19 @@ public class ConversationActivity extends Activity {
 		mPlayer.stop();
 	}
 
-	private void displayMessages() {
+	private void getAndDisplayConversation() {
+		// update messages list
+		mConversation = Session.getConversationManager().getConversation(
+				mContact);
+
 		mConversationAdapter = new ConversationAdapter(this,
 				R.id.messages_list, mConversation);
 
 		// Create adapter for the list view
 		mMessageList.setAdapter(mConversationAdapter);
+
+		// scroll to bottom
+		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
 
 		// Add click listener to list
 		mMessageList.setOnItemClickListener(new OnItemClickListener() {
@@ -161,6 +173,14 @@ public class ConversationActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * Called when send is clicks. Creates a message with the entered info and
+	 * sends it to the contact this conversation is with. If no message has been
+	 * entered and no song has been selected then no message is sent
+	 * 
+	 * @param v
+	 *            The view that called this
+	 */
 	public void sendMessage(View v) {
 		EditText conversationInputView = (EditText) findViewById(R.id.conversation_input);
 		String messageContent = conversationInputView.getText().toString();
@@ -169,67 +189,13 @@ public class ConversationActivity extends Activity {
 		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null)
 			return;
 
-		final Message newMessage = new Message(messageContent, Session
-				.currentUser().getUserId(), mConversation.getContact()
-				.getUserId(), true, mSelectedLyricoo);
+		Message newMessage = new Message(messageContent, Session.currentUser()
+				.getUserId(), mConversation.getContact().getUserId(), true,
+				mSelectedLyricoo);
 
-		// Update display with message
-		mConversationAdapter.add(newMessage);
-
-		// Select the last row so the new message will scroll into view
-		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
-
-		// Send post request to server to save message
-
-		RequestParams params = new RequestParams();
-		params.put("contact_id", Integer.toString(newMessage.getContactId()));
-		params.put("content", messageContent);
-		params.put("sent", "true");
-		if (mSelectedLyricoo != null) {
-			params.put("song_id", Integer.toString(mSelectedLyricoo.getId()));
-		}
-
-		Session.currentUser().post("messages", params,
-				new JsonHttpResponseHandler() {
-
-					// TODO: Better way for handling synchronicity with server
-					// if sending fails
-
-					@Override
-					public void onSuccess(JSONArray json) {
-						// TODO: On success update the sent message with its new
-						// id from the server. Need to get server to return
-						// message info
-
-					}
-
-					@Override
-					public void onSuccess(JSONObject json) {
-
-					}
-
-					// Response should be a JSONObject but include JSONArray
-					// method to be safe
-					@Override
-					public void onFailure(Throwable error, JSONObject json) {
-						handleMessageSendFailure(newMessage);
-					}
-
-					@Override
-					public void onFailure(Throwable error, JSONArray json) {
-						handleMessageSendFailure(newMessage);
-					}
-				});
-
-	}
-
-	protected void handleMessageSendFailure(Message message) {
-		// create toast
-		String toast = "Error sending message";
-		Utility.makeBasicToast(getApplicationContext(), toast);
-
-		// Delete the message
-		mConversationAdapter.remove(message);
+		// send message
+		Session.getConversationManager().sendMessage(newMessage,
+				mConversation.getContact());
 	}
 
 	// When the lyricoo title is clicked

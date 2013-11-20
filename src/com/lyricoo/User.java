@@ -123,4 +123,33 @@ public class User extends LyricooModel {
 		
 		return false;
 	}
+	
+	/**
+	 * Test if one user object is the same as another
+	 * @param user
+	 */	
+	@Override
+	public boolean equals(Object object){
+		// if object is null it is unequal by default
+		if(object == null){
+			return false;
+		}
+		
+		if (object == this) {
+			return true;
+		}
+		
+		// Make sure the object is a User
+		if (!(object instanceof User)){
+            return false;
+		}
+		
+		User user = (User) object;		
+		
+		// the only thing we have to look at is user id
+		return (user.getUserId() == mUserId);
+	}
+	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
+	
+	
 }
