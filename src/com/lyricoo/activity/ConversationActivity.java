@@ -77,10 +77,10 @@ public class ConversationActivity extends Activity {
 
 		// register data update callback
 		Session.getConversationManager().registerOnDataChangedListener(
-				new ConversationManager.OnDataChanged() {
+				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void dataUpdated() {
+					public void onDataChanged() {
 						getAndDisplayConversation();
 					}
 				});
@@ -89,7 +89,7 @@ public class ConversationActivity extends Activity {
 		mPlayer = new LyricooPlayer(this);
 
 		// set activity title to reflect contact's name
-		setTitle(mConversation.getContact().getUsername());
+		setTitle(mContact.getUsername());
 
 		// Retrieve resources for later
 		mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
@@ -111,8 +111,7 @@ public class ConversationActivity extends Activity {
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
-		Bundle extras = getIntent().getExtras();
-		String songJson = extras.getString("song");
+		String songJson = getIntent().getStringExtra("song");
 		attachSong(songJson);
 	}
 
@@ -124,14 +123,14 @@ public class ConversationActivity extends Activity {
 	}
 
 	private void getAndDisplayConversation() {
-		// update messages list
+		// Get a fresh copy of the conversation
 		mConversation = Session.getConversationManager().getConversation(
 				mContact);
 
 		mConversationAdapter = new ConversationAdapter(this,
 				R.id.messages_list, mConversation);
 
-		// Create adapter for the list view
+		// Create adapter with the new conversation data
 		mMessageList.setAdapter(mConversationAdapter);
 
 		// scroll to bottom
@@ -190,12 +189,10 @@ public class ConversationActivity extends Activity {
 			return;
 
 		Message newMessage = new Message(messageContent, Session.currentUser()
-				.getUserId(), mConversation.getContact().getUserId(), true,
-				mSelectedLyricoo);
+				.getUserId(), mContact.getUserId(), true, mSelectedLyricoo);
 
 		// send message
-		Session.getConversationManager().sendMessage(newMessage,
-				mConversation.getContact());
+		Session.getConversationManager().sendMessage(newMessage, mContact);
 	}
 
 	// When the lyricoo title is clicked

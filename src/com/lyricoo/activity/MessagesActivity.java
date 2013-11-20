@@ -32,6 +32,9 @@ public class MessagesActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private LyricooApp mApp;
+	
+	// display resources
+	private ListView mMessageList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +45,17 @@ public class MessagesActivity extends Activity {
 
 		// register callback on conversations update
 		Session.getConversationManager().registerOnDataChangedListener(
-				new ConversationManager.OnDataChanged() {
+				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void dataUpdated() {
+					public void onDataChanged() {
 						loadAndDisplayConversations();
 						// TODO: Update display to show which messages are new
 					}
 				});
+		
+		// save resources
+		mMessageList = (ListView) findViewById(R.id.messages_list);
 		
 		loadAndDisplayConversations();		
 	}
@@ -59,16 +65,16 @@ public class MessagesActivity extends Activity {
 	 */
 	private void loadAndDisplayConversations() {
 		// load conversations
-		mConversations = Session.getConversationManager().getConversations();
+		mConversations = Session.getConversationManager().getConversations();		
 
-		// Create adapter for the list view
+		// Create a new adapter for this conversation data
 		MessageListAdapter adapter = new MessageListAdapter(mContext,
 				mConversations);
-		ListView list = (ListView) findViewById(R.id.messages_list);
-		list.setAdapter(adapter);
+		
+		mMessageList.setAdapter(adapter);
 
 		// When a message is clicked load the whole conversation
-		list.setOnItemClickListener(new OnItemClickListener() {
+		mMessageList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,

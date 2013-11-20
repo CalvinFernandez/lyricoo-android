@@ -21,7 +21,7 @@ public class ConversationManager {
 	// Whether the last sync was successful or not
 	private boolean mIsSynced;
 	// callbacks registered for when local data is changed
-	private ArrayList<OnDataChanged> mOnDataChangedListeners;
+	private ArrayList<OnDataChangedListener> mOnDataChangedListeners;
 
 	// TODO: Add polling to server when GCM isn't working on a device
 
@@ -42,7 +42,7 @@ public class ConversationManager {
 		mConversations = new ArrayList<Conversation>();
 
 		// initialize listeners list
-		mOnDataChangedListeners = new ArrayList<OnDataChanged>();
+		mOnDataChangedListeners = new ArrayList<OnDataChangedListener>();
 
 		// Do the initial sync to get up to date. We don't have to worry about
 		// the callback
@@ -56,10 +56,12 @@ public class ConversationManager {
 	public void destroy() {
 		// clear conversations
 		mConversations.clear();
+		
+		// update data one last time then remove listeners	
+		notifyDataChanged();
 		mConversations = null;
 
-		// update data one last time then remove listeners
-		notifyDataChanged();
+			
 		mOnDataChangedListeners.clear();
 		mOnDataChangedListeners = null;
 	}
@@ -244,7 +246,7 @@ public class ConversationManager {
 	 * 
 	 * @param listener
 	 */
-	public void registerOnDataChangedListener(OnDataChanged listener) {
+	public void registerOnDataChangedListener(OnDataChangedListener listener) {
 		// TODO: Allow client to register a listener for just a specific
 		// conversation to be more efficient
 
@@ -261,8 +263,8 @@ public class ConversationManager {
 	 * Callback for when any of the local data is updated
 	 * 
 	 */
-	public interface OnDataChanged {
-		void dataUpdated();
+	public interface OnDataChangedListener {
+		void onDataChanged();
 	}
 
 	/**
@@ -271,8 +273,8 @@ public class ConversationManager {
 	 */
 	private void notifyDataChanged() {
 		// Call all listeners that have been registered
-		for (OnDataChanged listener : mOnDataChangedListeners) {
-			listener.dataUpdated();
+		for (OnDataChangedListener listener : mOnDataChangedListeners) {
+			listener.onDataChanged();
 		}
 	}
 

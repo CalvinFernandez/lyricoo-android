@@ -5,19 +5,20 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.apache.http.Header;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.loopj.android.http.*;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 public class Session {
 	private static User mCurrentUser;
 	private static boolean mLoggedIn = false;
 	private static String mAuthToken;
+	private static Context mContext;
 	private static ConversationManager mConversationManager;
 	
 	/**
@@ -133,7 +134,9 @@ public class Session {
 		return mLoggedIn;
 	}
 	
-	public static User create(JSONObject json) {
+	public static User create(Context context, JSONObject json) {
+		mContext = context;
+		
 		try {
 			mCurrentUser = new User(json.getJSONObject("user"));
 		} catch (JSONException e) {
@@ -147,7 +150,7 @@ public class Session {
 		}
 		mLoggedIn = true;
 		
-		mConversationManager = new ConversationManager(mCurrentUser);
+		mConversationManager = new ConversationManager(context, mCurrentUser);
 		
 		return mCurrentUser;
 	}

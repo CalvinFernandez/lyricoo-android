@@ -126,7 +126,7 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onSuccess(JSONObject response) {
-				Session.create(response);
+				Session.create(mContext, response);
 				
 				Session.registerGCM(mContext);
 				
