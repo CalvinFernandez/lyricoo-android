@@ -29,10 +29,11 @@ import com.lyricoo.Utility;
  */
 public class MessagesActivity extends Activity {
 	private ArrayList<Conversation> mConversations;
+	private MessageListAdapter mAdapter;
 	private ProgressBar mProgress;
 	private Context mContext;
 	private LyricooApp mApp;
-	
+
 	// display resources
 	private ListView mMessageList;
 
@@ -43,35 +44,50 @@ public class MessagesActivity extends Activity {
 		mContext = this;
 		mApp = (LyricooApp) getApplication();
 
+		// load conversation data
+		mConversations = Session.getConversationManager().getConversations();
+
 		// register callback on conversations update
 		Session.getConversationManager().registerOnDataChangedListener(
 				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void onDataChanged() {
-						loadAndDisplayConversations();
-						// TODO: Update display to show which messages are new
+					public void onDataChanged(boolean oldDataInvalidated) {
+						if (oldDataInvalidated) {
+							// Get a fresh copy of the conversation
+							mConversations = Session.getConversationManager()
+									.getConversations();
+							displayConversations();
+						} else {
+							updateConversations();
+						}
+
 					}
 				});
-		
+
 		// save resources
 		mMessageList = (ListView) findViewById(R.id.messages_list);
-		
-		loadAndDisplayConversations();		
+
+		displayConversations();
 	}
 
-	/** 
+	/**
+	 * Tell the adapter that the data has changed and it needs to update the
+	 * view
+	 */
+	protected void updateConversations() {
+		mAdapter.notifyDataSetChanged();
+	}
+
+	/**
 	 * Get all of our users conversations and show them in a listview
 	 */
-	private void loadAndDisplayConversations() {
-		// load conversations
-		mConversations = Session.getConversationManager().getConversations();		
-
+	private void displayConversations() {
 		// Create a new adapter for this conversation data
-		MessageListAdapter adapter = new MessageListAdapter(mContext,
+		mAdapter = new MessageListAdapter(mContext,
 				mConversations);
-		
-		mMessageList.setAdapter(adapter);
+
+		mMessageList.setAdapter(mAdapter);
 
 		// When a message is clicked load the whole conversation
 		mMessageList.setOnItemClickListener(new OnItemClickListener() {
@@ -79,7 +95,8 @@ public class MessagesActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// Pass selected user so conversationActivity knows whose conversation to display
+				// Pass selected user so conversationActivity knows whose
+				// conversation to display
 				User contact = mConversations.get(position).getContact();
 
 				// convert to json to make it easy to pass to the object

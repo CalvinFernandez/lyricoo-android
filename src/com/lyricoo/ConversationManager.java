@@ -12,6 +12,13 @@ import com.loopj.android.http.RequestParams;
 
 /**
  * This class manages all of a user's conversations with other users.
+ * Conversations are retrieved with getConversations() and
+ * getConversation(contact). Shallow copies of the conversations are passed, so
+ * when a single message is added the data updates automatically. However,
+ * sync() recreates all Conversations with new data structures, unlinking existing copies
+ * from future updates. The OnDataChangedListener will register for both cases,
+ * but in the case of a sync it will pass oldDataInvalidated = true to notify
+ * the client that they need to retrieve a fresh copy.
  * 
  */
 public class ConversationManager {
@@ -56,12 +63,9 @@ public class ConversationManager {
 	public void destroy() {
 		// clear conversations
 		mConversations.clear();
-		
-		// update data one last time then remove listeners	
-		notifyDataChanged();
 		mConversations = null;
 
-			
+		// remove any listeners
 		mOnDataChangedListeners.clear();
 		mOnDataChangedListeners = null;
 	}
@@ -110,7 +114,7 @@ public class ConversationManager {
 		// add the message to the local conversation
 		final Conversation conversation = getConversation(contact);
 		conversation.add(message);
-		notifyDataChanged();
+		notifyDataChanged(false);
 
 		// send a post request to server to create message
 		RequestParams params = new RequestParams();
@@ -159,7 +163,7 @@ public class ConversationManager {
 		conversation.remove(message);
 
 		// alert listeners to changes
-		notifyDataChanged();
+		notifyDataChanged(false);
 
 		// create error toast
 		String toast = "Error sending message";
@@ -179,7 +183,7 @@ public class ConversationManager {
 		conversation.add(message);
 
 		// alert listeners to changes
-		notifyDataChanged();
+		notifyDataChanged(false);
 	}
 
 	/**
@@ -194,7 +198,9 @@ public class ConversationManager {
 				// copies that activities may be using
 				mConversations = Conversation.parseMessagesJson(json);
 
-				notifyDataChanged();
+				// Alert listeners that their old data copies are no longer
+				// linked
+				notifyDataChanged(true);
 
 				mIsSynced = true;
 
@@ -264,17 +270,23 @@ public class ConversationManager {
 	 * 
 	 */
 	public interface OnDataChangedListener {
-		void onDataChanged();
+		/**
+		 * Called when any conversation data changes
+		 * 
+		 * @param oldDataInvalidated
+		 *            Whether old copies of conversation data are still valid
+		 */
+		void onDataChanged(boolean oldDataInvalidated);
 	}
 
 	/**
 	 * Called when our local data changes. Alerts any callbacks that have been
 	 * registered with the manager
 	 */
-	private void notifyDataChanged() {
+	private void notifyDataChanged(boolean oldDataInvalidated) {
 		// Call all listeners that have been registered
 		for (OnDataChangedListener listener : mOnDataChangedListeners) {
-			listener.onDataChanged();
+			listener.onDataChanged(oldDataInvalidated);
 		}
 	}
 

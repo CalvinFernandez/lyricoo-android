@@ -75,13 +75,26 @@ public class ConversationActivity extends Activity {
 			// return to main menu
 		}
 
+		// load the conversation data
+		mConversation = Session.getConversationManager().getConversation(
+				mContact);
+
 		// register data update callback
 		Session.getConversationManager().registerOnDataChangedListener(
 				new ConversationManager.OnDataChangedListener() {
 
 					@Override
-					public void onDataChanged() {
-						getAndDisplayConversation();
+					public void onDataChanged(boolean oldDataInvalidated) {
+						if (oldDataInvalidated) {
+							// Get a fresh copy of the conversation
+							mConversation = Session.getConversationManager()
+									.getConversation(mContact);
+							displayConversation();
+						} else {
+							updateConversation();
+						}
+
+						
 					}
 				});
 
@@ -107,7 +120,7 @@ public class ConversationActivity extends Activity {
 		});
 
 		// build the list view for the messages in the conversation
-		getAndDisplayConversation();
+		displayConversation();
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
@@ -121,20 +134,24 @@ public class ConversationActivity extends Activity {
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
 	}
+	
+	/**
+	 * Tell the adapter that the data has changed and it needs to update the
+	 * view
+	 */
+	protected void updateConversation() {
+		mConversationAdapter.notifyDataSetChanged();
+		scrollToBottom();
+	}
 
-	private void getAndDisplayConversation() {
-		// Get a fresh copy of the conversation
-		mConversation = Session.getConversationManager().getConversation(
-				mContact);
-
+	private void displayConversation() {
 		mConversationAdapter = new ConversationAdapter(this,
 				R.id.messages_list, mConversation);
 
 		// Create adapter with the new conversation data
 		mMessageList.setAdapter(mConversationAdapter);
 
-		// scroll to bottom
-		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
+		scrollToBottom();		
 
 		// Add click listener to list
 		mMessageList.setOnItemClickListener(new OnItemClickListener() {
@@ -163,6 +180,13 @@ public class ConversationActivity extends Activity {
 				return true;
 			}
 		});
+	}
+	
+	/** Scroll to the bottom of the message list, showing the most recent messages.
+	 * 
+	 */
+	private void scrollToBottom(){
+		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
 	}
 
 	@Override
