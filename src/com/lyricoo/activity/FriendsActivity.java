@@ -11,6 +11,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
 import com.lyricoo.LyricooApp;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.User;
@@ -31,7 +32,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FriendsActivity extends Activity {
+public class FriendsActivity extends LyricooActivity {
 	private ArrayList<User> mFriends;
 	private ProgressBar mProgress;
 	private ListView mList;

@@ -9,6 +9,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
 
 import com.lyricoo.ConversationManager;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.Message;
@@ -47,7 +48,7 @@ import android.widget.TextView;
  * contact.
  * 
  */
-public class ConversationActivity extends Activity {
+public class ConversationActivity extends LyricooActivity {
 	private Conversation mConversation;
 	private User mContact;
 	private ConversationAdapter mConversationAdapter;
@@ -375,6 +376,5 @@ public class ConversationActivity extends Activity {
 						}
 					}
 				});
-
 	}
 }

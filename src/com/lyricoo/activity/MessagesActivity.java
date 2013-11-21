@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.lyricoo.Conversation;
 import com.lyricoo.ConversationManager;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
 import com.lyricoo.Session;
@@ -27,7 +28,7 @@ import com.lyricoo.Utility;
  * coversation is loaded.
  * 
  */
-public class MessagesActivity extends Activity {
+public class MessagesActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
 	private MessageListAdapter mAdapter;
 	private ProgressBar mProgress;

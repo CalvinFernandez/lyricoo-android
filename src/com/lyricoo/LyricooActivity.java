@@ -1,0 +1,50 @@
+package com.lyricoo;
+
+import com.lyricoo.activity.LoginActivity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
+public class LyricooActivity extends Activity {
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		checkSession();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		checkSession();
+		
+		((LyricooApp)getApplication()).resume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		((LyricooApp)getApplication()).pause();
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+	}
+	
+	/**
+	 * Make sure the user is properly signed in. If they aren't return to the loginActivity
+	 */
+	private void checkSession(){			
+		if(!Session.isLoggedIn()){
+			Intent i = new Intent(this, LoginActivity.class);
+			startActivity(i);			
+		}
+	}
+
+}

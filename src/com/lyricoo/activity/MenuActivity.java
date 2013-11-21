@@ -4,15 +4,15 @@ package com.lyricoo.activity;
 
 
 
-import com.lyricoo.R;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-public class MenuActivity extends Activity {
+import com.lyricoo.LyricooActivity;
+import com.lyricoo.R;
+
+public class MenuActivity extends LyricooActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

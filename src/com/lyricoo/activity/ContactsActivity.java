@@ -26,13 +26,14 @@ import com.lyricoo.ContactsListViewEntry;
 import com.lyricoo.OnTaskCompleted;
 import com.lyricoo.PhoneContact;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.RetrieveContactsAsync;
 import com.lyricoo.Session;
 import com.lyricoo.User;
 import com.lyricoo.Utility;
 
-public class ContactsActivity extends Activity {
+public class ContactsActivity extends LyricooActivity {
 	private ProgressBar mProgress;
 	// contacts list from our phone
 	private ArrayList<PhoneContact> mPhoneContacts;

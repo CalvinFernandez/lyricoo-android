@@ -28,15 +28,16 @@ public class Session {
 	private final static String SENDER_ID = "69329840121";
 	private static GoogleCloudMessaging gcm;
 	
-	private static String getRegistrationId() {
-		return regid;
-		// TODO: Set check for app update. if update, 
-		// no guarantee that old regid will work 
-		// with new version
-	}
 	
-	private static void storeRegistration(String _regid) {
-		regid = _regid;
+	
+	public static void registerGCM(Context context) {
+		gcm = GoogleCloudMessaging.getInstance(context);
+		String regID = getRegistrationId();
+		if (Utility.isStringBlank(regID)) {
+			registerInBackground(context);
+		} else {
+			((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(true);
+		}
 	}
 	
     /**
@@ -77,25 +78,25 @@ public class Session {
                     			// TODO: DO something here (maybe just UI indication of
                     			//		 registration success .. 
                     			System.out.print("Success user registered");
+                    			((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(true);
                     		}
                     		@Override
                     		public void onSuccess(JSONArray json) {
                     			//	TODO: see above*
                     			System.out.print("Success user registered");
+                    			((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(true);
                     		}
                     		
                     		@Override
                     		public void onFailure(java.lang.Throwable error, JSONObject json) {
-                    			// TODO: Do something when server errors! (maybe keep trying 
-                    			// ... this is a big problem if this happens because no one 
-                    			//	will be able to communicate with the user because our server
-                    			//	will not know the users's gcm id. Perhaps we should implement
-                    			//	an http polling feature if this fails.
                     			System.out.print("Error! User unable to register!");
+                    			handleGcmFailure();
                     		}
-                    		@Override
+                    		
+							@Override
                     		public void onFailure(java.lang.Throwable error, JSONArray json) {
                     			System.out.print("Error! User unable to register!");
+                    			handleGcmFailure();
                     		}
                     	});
                     } else {
@@ -117,13 +118,22 @@ public class Session {
             }
         }.execute(null, null, null);
     }
+    
+    private static String getRegistrationId() {
+		return regid;
+		// TODO: Set check for app update. if update, 
+		// no guarantee that old regid will work 
+		// with new version
+	}
 	
-	public static void registerGCM(Context context) {
-		gcm = GoogleCloudMessaging.getInstance(context);
-		String regID = getRegistrationId();
-		if (regID.isEmpty()) {
-			registerInBackground(context);
-		}
+	private static void storeRegistration(String _regid) {
+		regid = _regid;
+	}
+	
+	
+	
+	private static void handleGcmFailure() {
+		((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(false);		
 	}
 	
 	public static User currentUser() {

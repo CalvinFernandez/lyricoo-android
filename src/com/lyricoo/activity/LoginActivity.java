@@ -1,6 +1,5 @@
 package com.lyricoo.activity;
 
-
 import org.apache.http.Header;
 
 import java.io.IOException;
@@ -19,10 +18,10 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-
 import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooResponseAdapter;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Utility;
@@ -42,21 +41,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+/**
+ * This activity is called on launch, and handles logging the user into the app.
+ * All other activities extend LyricooActivity, but this only uses Activity
+ * 
+ * @author Eli
+ * 
+ */
 public class LoginActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	
+
 	String SENDER_ID = "69329840121";
 	String regid;
-	 
+
 	/**
 	 * GCM Tag
 	 */
 	static final String TAG = "GCM";
-	
+
 	GoogleCloudMessaging gcm;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,32 +73,30 @@ public class LoginActivity extends Activity {
 
 		// save context
 		mContext = this;
-		
+
 		if (!checkPlayServices()) {
 			Log.i(TAG, "No valid Google Play Services APK found");
 		}
 	}
 
 	/**
-	 * Check the device to make sure it has the Google Play Services APK. If
-	 * it doesn't, display a dialog that allows users to download the APK from
-	 * the Google Play Store or enable it in the device's system settings.
+	 * Check the device to make sure it has the Google Play Services APK. If it
+	 * doesn't, display a dialog that allows users to download the APK from the
+	 * Google Play Store or enable it in the device's system settings.
 	 */
 	private boolean checkPlayServices() {
-	    /*int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-	    if (resultCode != ConnectionResult.SUCCESS) {
-	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-	            GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
-	        } else {
-	            Log.i(TAG, "This device is not supported.");
-	            finish();
-	        }
-	        return false;
-	    }*/
-	    return true;
+		/*
+		 * int resultCode =
+		 * GooglePlayServicesUtil.isGooglePlayServicesAvailable(
+		 * getApplicationContext()); if (resultCode != ConnectionResult.SUCCESS)
+		 * { if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+		 * GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+		 * PLAY_SERVICES_RESOLUTION_REQUEST).show(); } else { Log.i(TAG,
+		 * "This device is not supported."); finish(); } return false; }
+		 */
+		return true;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -127,27 +130,27 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onSuccess(JSONObject response) {
 				Session.create(mContext, response);
-				
+
 				Session.registerGCM(mContext);
-				
+
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
 			}
-			
-			 @Override
-			 public void onFailure(Throwable error, JSONObject response) {
-			 handleLoginFailure(email);
-			 }
-			
-			 @Override
-			 public void onFailure(Throwable error, JSONArray response) {
-			 Utility.log("array");
-			 }
-			
-			 @Override
-			 public void onFinish() {
-			 setIsLoading(false);
-			 }
+
+			@Override
+			public void onFailure(Throwable error, JSONObject response) {
+				handleLoginFailure(email);
+			}
+
+			@Override
+			public void onFailure(Throwable error, JSONArray response) {
+				Utility.log("array");
+			}
+
+			@Override
+			public void onFinish() {
+				setIsLoading(false);
+			}
 
 		});
 

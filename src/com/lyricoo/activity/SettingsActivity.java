@@ -1,5 +1,6 @@
 package com.lyricoo.activity;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.LyricooSettings;
 import com.lyricoo.R;
 import com.lyricoo.Session;
@@ -13,7 +14,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ToggleButton;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends LyricooActivity {
 	private ToggleButton mNotificationToggle;
 	private SeekBar mVolumeSeek;
 	private LyricooSettings mSettings;

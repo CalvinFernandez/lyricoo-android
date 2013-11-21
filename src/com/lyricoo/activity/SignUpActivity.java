@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.LyricooAPI;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 
 import com.lyricoo.Session;
@@ -32,7 +33,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends LyricooActivity {
 	private Context mContext;
 	private ProgressBar mProgress;
 
