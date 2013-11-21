@@ -57,7 +57,6 @@ public class LyricooApp extends Application {
 	}
 
 	private void setPollingStatus(boolean doPolling) {
-		Utility.log("Setting polling to " + doPolling);
 		Intent pollingIntent = new Intent(this, LyricooPollingService.class);
 		pollingIntent.putExtra("doPolling", doPolling);
 		this.startService(pollingIntent);
