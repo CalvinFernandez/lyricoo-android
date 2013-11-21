@@ -10,12 +10,12 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.R;
 
 import com.lyricoo.Session;
 
 import com.lyricoo.Utility;
+import com.lyricoo.api.LyricooAPI;
 
 import android.os.Bundle;
 import android.app.Activity;

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
@@ -17,6 +16,8 @@ import com.lyricoo.User;
 import com.lyricoo.Utility;
 
 import com.lyricoo.Song;
+import com.lyricoo.api.LyricooAPI;
+import com.lyricoo.api.LyricooApiResponseHandler;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -325,9 +326,10 @@ public class LyricooSelectionActivity extends Activity {
 	 */
 	private void showFriendsList() {
 		// load friends
-		Session.currentUser().get("friends", new JsonHttpResponseHandler() {
+		Session.currentUser().get("friends", new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(JSONArray json) {
+			public void onSuccess(Object responseJson) {
+				JSONArray json = (JSONArray) responseJson;
 				// parse json
 				final ArrayList<User> friends = User.parseUserJsonArray(json);
 				
@@ -377,7 +379,7 @@ public class LyricooSelectionActivity extends Activity {
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
+			public void onFailure(int statusCode, String responseBody, Throwable error) {
 				// TODO: Handle failure
 			}
 		});
@@ -397,10 +399,10 @@ public class LyricooSelectionActivity extends Activity {
 		params.put("contact_id", Integer.toString(friend.getUserId()));
 		// TODO: Show loading dialog
 		Session.currentUser().get("messages", params,
-				new JsonHttpResponseHandler() {
+				new LyricooApiResponseHandler() {
 					@Override
-					public void onSuccess(JSONObject json) {
-
+					public void onSuccess(Object responseJson) {
+						JSONObject json = (JSONObject) responseJson;
 						
 						ArrayList<Conversation> conversations = Conversation
 								.parseMessagesJson(json);
@@ -420,7 +422,7 @@ public class LyricooSelectionActivity extends Activity {
 					}
 
 					@Override
-					public void onFailure(Throwable error, JSONObject json) {
+					public void onFailure(int statusCode, String responseBody, Throwable error) {
 						// TODO: Handle failure
 					}
 				});

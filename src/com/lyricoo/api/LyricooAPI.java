@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.api;
 
 import android.util.Log;
 

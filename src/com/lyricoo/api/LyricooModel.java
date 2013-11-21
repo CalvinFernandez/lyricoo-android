@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.api;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -41,7 +41,7 @@ public class LyricooModel {
 	 */
 	private String baseUrl;
 	
-	LyricooModel(String baseUrl) {
+	public LyricooModel(String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
 	
@@ -50,7 +50,7 @@ public class LyricooModel {
 	 * you'll need to define it later if you want to
 	 * access anything other that "/".
 	 */
-	LyricooModel() {
+	public LyricooModel() {
 		this("");
 	}
 	
@@ -63,9 +63,9 @@ public class LyricooModel {
 	
 	/*
 	 * Route: baseUrl
-	 * Parmas: None 
+	 * Params: None 
 	 */
-	public void get(JsonHttpResponseHandler responseHandler) {
+	public void get(LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.get(baseUrl, new RequestParams(), LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -73,7 +73,7 @@ public class LyricooModel {
 	 * Route: baseUrl
 	 * params: Custom.
 	 */
-	public void get(RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void get(RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.get(baseUrl, params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -81,7 +81,7 @@ public class LyricooModel {
 	 * Route: baseUrl + "/" + url
 	 * Params: Custom 
 	 */
-	public void get(String url, RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void get(String url, RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.get(getAbsoluteUrl(url), params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -89,7 +89,7 @@ public class LyricooModel {
 	 * Route: baseUrl + "/" + url
 	 * params: None
 	 */
-	public void get(String url, JsonHttpResponseHandler responseHandler) {
+	public void get(String url, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.get(getAbsoluteUrl(url), new RequestParams(), LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -97,7 +97,7 @@ public class LyricooModel {
 	 * Route: baseUrl
 	 * params: Custom.
 	 */
-	public void post(RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void post(RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.post(baseUrl, params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -105,7 +105,7 @@ public class LyricooModel {
 	 * Route: baseUrl + "/" + url
 	 * params: Custom.
 	 */
-	public void post(String url, RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void post(String url, RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.post(getAbsoluteUrl(url), params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -113,7 +113,7 @@ public class LyricooModel {
 	 * Route: baseUrl
 	 * params: Custom.
 	 */
-	public void put(RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void put(RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.put(baseUrl, params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -121,7 +121,7 @@ public class LyricooModel {
 	 * Route: baseUrl + "/" + url
 	 * params: Custom.
 	 */
-	public void put(String url, RequestParams params, JsonHttpResponseHandler responseHandler) {
+	public void put(String url, RequestParams params, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.put(getAbsoluteUrl(url), params, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -129,7 +129,7 @@ public class LyricooModel {
 	 * Route: baseUrl
 	 * params: None
 	 */
-	public void delete(JsonHttpResponseHandler responseHandler) {
+	public void delete(LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.delete(baseUrl, LyricooResponseAdapter.adapt(responseHandler));
 	}
 	
@@ -137,7 +137,7 @@ public class LyricooModel {
 	 * Route: baseUrl + "/" + url
 	 * params: None
 	 */
-	public void delete(String url, JsonHttpResponseHandler responseHandler) {
+	public void delete(String url, LyricooApiResponseHandler responseHandler) {
 		LyricooAPI.delete(getAbsoluteUrl(url), LyricooResponseAdapter.adapt(responseHandler));
 	}
 	

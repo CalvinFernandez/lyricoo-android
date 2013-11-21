@@ -9,6 +9,7 @@ import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.api.LyricooApiResponseHandler;
 
 /**
  * This class manages all of a user's conversations with other users.
@@ -125,25 +126,19 @@ public class ConversationManager {
 			params.put("song_id", Integer.toString(message.getSong().getId()));
 		}
 
-		mUser.post("messages", params, new JsonHttpResponseHandler() {
+		mUser.post("messages", params, new LyricooApiResponseHandler() {
 
 			@Override
-			public void onSuccess(JSONObject json) {
+			public void onSuccess(Object responseJson) {
 				// TODO: Have server messages#create return the message
 				// json so we can update the local copy with its new id
 			}
-
-			// Response should be a JSONObject but include JSONArray
-			// method to be safe
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
+			
+			public void onFailure(int statusCode, String responseBody, Throwable error){
+				// TODO: Customize and error based on statusCode
 				handleMessageSendFailure(conversation, message);
 			}
 
-			@Override
-			public void onFailure(Throwable error, JSONArray json) {
-				handleMessageSendFailure(conversation, message);
-			}
 		});
 	}
 
@@ -191,9 +186,12 @@ public class ConversationManager {
 	 */
 	public void sync(final OnSyncCompleted listener) {
 		// Send request to server to get all of our user's messages
-		mUser.get("messages", new JsonHttpResponseHandler() {
+		mUser.get("messages", new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(JSONObject json) {
+			public void onSuccess(Object responseJson) {
+				// We're expecting a JSONObject
+				JSONObject json = (JSONObject) responseJson;
+				
 				// This will create all new Conversation objects, unlinking any
 				// copies that activities may be using
 				mConversations = Conversation.parseMessagesJson(json);
@@ -211,18 +209,16 @@ public class ConversationManager {
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Use String responseBody onFailure method. Need to
-				// change LyricooResponseAdapter
+			public void onFailure(int statusCode, String responseBody, Throwable error) {
 				mIsSynced = false;
 
-				// TODO: Create specific error messages based on response code
+				// TODO: Create specific error messages based on response code and error
 				if (listener != null) {
 					listener.onFailure("Could not sync");
 				}
 
 				// create error toast
-				String toast = "Error retrieving message";
+				String toast = "Error retrieving messages";
 				Utility.makeBasicToast(mContext, toast);
 			}
 		});

@@ -31,6 +31,7 @@ import com.lyricoo.RetrieveContactsAsync;
 import com.lyricoo.Session;
 import com.lyricoo.User;
 import com.lyricoo.Utility;
+import com.lyricoo.api.LyricooApiResponseHandler;
 
 public class ContactsActivity extends Activity {
 	private ProgressBar mProgress;
@@ -78,9 +79,10 @@ public class ContactsActivity extends Activity {
 	// lyricoo accounts. Display the results.
 	private void sortPhoneContacts() {
 		// retrieve list of all lyricoo users to cross reference
-		User.REST.get(new JsonHttpResponseHandler() {
+		User.REST.get(new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(JSONArray json) {
+			public void onSuccess(Object jsonObject) {
+				JSONArray json = (JSONArray) jsonObject;
 				// parse json into users
 				ArrayList<User> lyricooUsers = User.parseUserJsonArray(json);
 
@@ -116,7 +118,7 @@ public class ContactsActivity extends Activity {
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
+			public void onFailure(int statusCode, String responseBody, Throwable error) {
 				// TODO: Handle failure
 			}
 		});
@@ -199,37 +201,21 @@ public class ContactsActivity extends Activity {
 		RequestParams params = new RequestParams();
 		params.put("username", username);
 		
-		Session.currentUser().post("friends", params, new JsonHttpResponseHandler() {
+		Session.currentUser().post("friends", params, new LyricooApiResponseHandler() {
 
 			@Override
-			public void onSuccess(JSONObject json) {
-				toastAddFriendResult(username, true);
-			}	
-			
-			@Override
-			public void onSuccess(JSONArray json) {
+			public void onSuccess(Object json) {
 				toastAddFriendResult(username, true);
 			}	
 
-
 			
 			@Override
-			public void onFailure(Throwable error, JSONArray json) {
+			public void onFailure(int statusCode, String responseBody, Throwable error) {
 				// Could have failed because friend doesn't exist, friend was
 				// already added, or a connection problem
 				// TODO: Make the failure notice more specific
 				toastAddFriendResult(username, false);
-			}
-			
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// Could have failed because friend doesn't exist, friend was
-				// already added, or a connection problem
-				// TODO: Make the failure notice more specific
-				toastAddFriendResult(username, false);
-			}
-
-			
+			}			
 			
 			@Override
 			public void onFinish() {

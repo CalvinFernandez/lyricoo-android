@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lyricoo.api.LyricooAPI;
+
 /** This class encapsulates the song model of the backend
  *
  */
