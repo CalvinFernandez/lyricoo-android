@@ -56,12 +56,10 @@ public class FriendsActivity extends Activity {
 			
 			@Override
 			public void onFriendsUpdated() {
-				mList.getAdapter().
+				//mList.getAdapter().notifyDataSetChanged();
 				
 			}
-		})
-		
-		
+		});		
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class FriendsActivity extends Activity {
 		mFriends = Session.getFriendManager().getFriends();
 
 		// Create adapter for the list view
-		FriendsListAdapter adapter = new FriendsListAdapter(mContext, mFriends);
+		FriendsListAdapter adapter = new FriendsListAdapter(mContext, R.layout.friend_list_item, mFriends);
 
 		mList.setAdapter(adapter);
 

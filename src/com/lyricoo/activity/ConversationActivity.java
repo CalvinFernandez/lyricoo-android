@@ -151,7 +151,7 @@ public class ConversationActivity extends Activity {
 
 	private void displayConversation() {
 		mConversationAdapter = new ConversationAdapter(this,
-				R.id.messages_list, mConversation);
+				R.layout.conversation_item_sent, mConversation);
 
 		// Create adapter with the new conversation data
 		mMessageList.setAdapter(mConversationAdapter);

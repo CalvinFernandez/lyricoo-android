@@ -15,27 +15,17 @@ import com.lyricoo.Song;
 
 public class ConversationAdapter extends ArrayAdapter<Message> {
 
-	private Conversation mConversation;
-	private Context mContext;
-
 	public ConversationAdapter(Context context, int resource, Conversation conversation) {
 		super(context, resource, conversation.getMessages());
-		this.mConversation = conversation;
-		this.mContext = context;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) mContext
+		LayoutInflater inflater = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// get the message that corresponds to this position
-		Message msg = mConversation.getMessages().get(position);
+		Message msg = getItem(position);
 
 		// use a different view depending on whether the message was sent or
 		// received
