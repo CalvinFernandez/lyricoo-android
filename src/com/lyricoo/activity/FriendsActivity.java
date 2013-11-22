@@ -11,6 +11,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
 import com.lyricoo.LyricooApp;
 
+import com.lyricoo.FriendManager;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.User;
@@ -34,10 +35,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class FriendsActivity extends Activity {
 	private ArrayList<User> mFriends;
-	private ProgressBar mProgress;
 	private ListView mList;
 	private Context mContext;
-	private LyricooApp mApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +44,24 @@ public class FriendsActivity extends Activity {
 		setContentView(R.layout.activity_friends);
 
 		mContext = this;
-		mApp = (LyricooApp) getApplication();
 
-		// get progress bar and list view to use
-		mProgress = (ProgressBar) findViewById(R.id.friends_loading_progress);
+		// get list view
 		mList = (ListView) findViewById(R.id.friends_list);
-
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		// on resume refresh friends list to make sure it is current
-		// TODO: Provide manual refresh button? Not efficient to make server
-		// call every time the activity is resumed but it guarantees updated
-		// results
+		
+		// load and display friends
 		loadFriendsList();
+		
+		// register callback for when friends list is updated
+		Session.getFriendManager().registerOnFriendsUpdatedListener(new FriendManager.OnFriendsUpdatedListener() {
+			
+			@Override
+			public void onFriendsUpdated() {
+				mList.getAdapter().
+				
+			}
+		})
+		
+		
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class FriendsActivity extends Activity {
 						switch (which) {
 						// "Delete" is the first option in the array
 						case 0:
-							removeFriend(friend);
+							Session.getFriendManager().removeFriend(friend);
 							break;
 						default:
 							break;
@@ -95,41 +95,6 @@ public class FriendsActivity extends Activity {
 					}
 				});
 		builder.create().show();
-	}
-
-	// Remove the given friend from the user's friend list
-	private void removeFriend(final User friend) {
-		// alert user that friend is being removed
-		String msg = "Removing " + friend.getUsername() + " from friends";
-		Utility.makeBasicToast(getApplicationContext(), msg);
-
-		Session.currentUser().delete("friends/" + friend.getUserId(),
-				new LyricooApiResponseHandler() {
-
-					@Override
-					public void onSuccess(Object responseJson) {
-						String msg = friend.getUsername()
-								+ " removed from friends";
-						Utility.makeBasicToast(getApplicationContext(), msg);
-					}
-
-					@Override
-					public void onFailure(int statusCode, String responseBody, Throwable error) {
-						Utility.log("on failure");
-						String msg = "Error removing friend";
-						Utility.makeBasicToast(getApplicationContext(), msg);
-					}
-
-					@Override
-					public void onFinish() {
-						// reload the updated friend list
-						// TODO: Get server to return updated friends list so we
-						// don't
-						// have to make another request
-						loadFriendsList();
-					}
-
-				});
 	}
 
 	// Start an activity where the user can add friends to their list
@@ -140,7 +105,8 @@ public class FriendsActivity extends Activity {
 
 	// Load the conversation with this friend
 	private void loadConversation(User friend) {
-		// Pass the friend so conversationActivity knows whose conversation to display.
+		// Pass the friend so conversationActivity knows whose conversation to
+		// display.
 		// Convert to json to make it easy to pass to the object
 		String friendAsJson = Utility.toJson(friend);
 
@@ -150,61 +116,42 @@ public class FriendsActivity extends Activity {
 	}
 
 	private void loadFriendsList() {
-		// hide list while it loads and show progress bar to indicate loading
-		mList.setVisibility(View.GONE);
-		mProgress.setVisibility(View.VISIBLE);
 
-		// load friends
-		Session.currentUser().get("friends", new LyricooApiResponseHandler() {
-			@Override
-			public void onSuccess(Object responseJson) {
-				// parse json into messages
-				mFriends = User.parseUserJsonArray((JSONArray) responseJson);
+		mFriends = Session.getFriendManager().getFriends();
 
-				// hide progress bar and show list
-				mList.setVisibility(View.VISIBLE);
-				mProgress.setVisibility(View.GONE);
+		// Create adapter for the list view
+		FriendsListAdapter adapter = new FriendsListAdapter(mContext, mFriends);
 
-				// Create adapter for the list view
-				FriendsListAdapter adapter = new FriendsListAdapter(mContext,
-						mFriends);
+		mList.setAdapter(adapter);
 
-				mList.setAdapter(adapter);
-
-				// on long click show a list of options to the user
-				mList.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-					@Override
-					public boolean onItemLongClick(AdapterView<?> parent,
-							View view, int position, long id) {
-						User friend = mFriends.get(position);
-						showOptions(friend);
-
-						// Return true to indicate that we have handled the
-						// click
-						return true;
-					}
-				});
-
-				// on normal click take the user to the conversation with this
-				// friend
-				mList.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						User friend = mFriends.get(position);
-						loadConversation(friend);
-					}
-
-				});
-			}
+		// on long click show a list of options to the user
+		mList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
-			public void onFailure(int statusCode, String responseBody, Throwable error) {
-				// TODO: Handle failure
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				User friend = mFriends.get(position);
+				showOptions(friend);
+
+				// Return true to indicate that we have handled the
+				// click
+				return true;
 			}
 		});
+
+		// on normal click take the user to the conversation with this
+		// friend
+		mList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				User friend = mFriends.get(position);
+				loadConversation(friend);
+			}
+
+		});
+
 	}
 
 }

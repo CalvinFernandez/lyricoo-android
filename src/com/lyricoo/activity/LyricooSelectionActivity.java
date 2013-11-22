@@ -325,70 +325,54 @@ public class LyricooSelectionActivity extends Activity {
 	 * selected lyricoo to the clicked friend
 	 */
 	private void showFriendsList() {
-		// load friends
-		Session.currentUser().get("friends", new LyricooApiResponseHandler() {
-			@Override
-			public void onSuccess(Object responseJson) {
-				JSONArray json = (JSONArray) responseJson;
-				// parse json
-				final ArrayList<User> friends = User.parseUserJsonArray(json);
-				
-				// get list of just friend names to show in dialog
-				ArrayList<String> names = new ArrayList<String>();
-				for(User friend : friends){
-					names.add(friend.getUsername());
-				}
-				
-				// if the user doesn't have any friends show them a different dialog
-				if(names.isEmpty()){
-					
-					return;
-				}
-				
-				// convert ArrayList to Array so AlertDialog can use it
-				String[] namesArray = new String[names.size()];
-				namesArray = names.toArray(namesArray);
 
-				// create a new dialog
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				// set the title to be the username of the friend
-				builder.setTitle("Send Lyricoo")
-				// add the options to the list
-						.setItems(namesArray,
-								new DialogInterface.OnClickListener() {
-									// handle clicking on an option
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// get the friend that was selected and
-										// pass the selected song to the
-										// conversation with that friend
-										try {
-											User friend = friends.get(which);
-											sendLyricooToFriend(mSelectedSong,
-													friend);
-										} catch (Exception e) {
-											// If this gets caught it's probably
-											// index out of bound error. TODO:
-											// Log it
-											// so we can see why it happened
-										}
-									}
-								});
-				builder.create().show();
+		final ArrayList<User> friends = Session.getFriendManager().getFriends();
 
-			}
+		// get list of just friend names to show in dialog
+		ArrayList<String> names = new ArrayList<String>();
+		for (User friend : friends) {
+			names.add(friend.getUsername());
+		}
 
-			@Override
-			public void onFailure(int statusCode, String responseBody, Throwable error) {
-				// TODO: Handle failure
-			}
-		});
+		// if the user doesn't have any friends show them a different dialog
+		if (names.isEmpty()) {
+			// TODO: Show no friends dialog
+			return;
+		}
 
+		// convert ArrayList to Array so AlertDialog can use it
+		String[] namesArray = new String[names.size()];
+		namesArray = names.toArray(namesArray);
+
+		// create a new dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		// set the title to be the username of the friend
+		builder.setTitle("Send Lyricoo")
+		// add the options to the list
+				.setItems(namesArray, new DialogInterface.OnClickListener() {
+					// handle clicking on an option
+					public void onClick(DialogInterface dialog, int which) {
+						// get the friend that was selected and
+						// pass the selected song to the
+						// conversation with that friend
+						try {
+							User friend = friends.get(which);
+							sendLyricooToFriend(mSelectedSong, friend);
+						} catch (Exception e) {
+							// If this gets caught it's probably
+							// index out of bound error. TODO:
+							// Log it
+							// so we can see why it happened
+						}
+					}
+				});
+		builder.create().show();
 	}
 
-	/** Start the conversation activity with the given friend
-	 * and send the selected song as an intent so the activity can create
-	 * a message with it
+	/**
+	 * Start the conversation activity with the given friend and send the
+	 * selected song as an intent so the activity can create a message with it
+	 * 
 	 * @param song
 	 * @param friend
 	 */
@@ -403,17 +387,19 @@ public class LyricooSelectionActivity extends Activity {
 					@Override
 					public void onSuccess(Object responseJson) {
 						JSONObject json = (JSONObject) responseJson;
-						
+
 						ArrayList<Conversation> conversations = Conversation
 								.parseMessagesJson(json);
 
-						// should be only one conversation in the list						
+						// should be only one conversation in the list
 						Conversation conversation = conversations.get(0);
-						
-						// convert to json to make it easy to pass to the conversation activity
-						String conversationAsJson = Utility.toJson(conversation);
+
+						// convert to json to make it easy to pass to the
+						// conversation activity
+						String conversationAsJson = Utility
+								.toJson(conversation);
 						String songAsJson = Utility.toJson(song);
-						
+
 						Intent i = new Intent(mContext,
 								ConversationActivity.class);
 						i.putExtra("conversation", conversationAsJson);
@@ -422,7 +408,8 @@ public class LyricooSelectionActivity extends Activity {
 					}
 
 					@Override
-					public void onFailure(int statusCode, String responseBody, Throwable error) {
+					public void onFailure(int statusCode, String responseBody,
+							Throwable error) {
 						// TODO: Handle failure
 					}
 				});

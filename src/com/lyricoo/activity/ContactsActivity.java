@@ -118,7 +118,8 @@ public class ContactsActivity extends Activity {
 			}
 
 			@Override
-			public void onFailure(int statusCode, String responseBody, Throwable error) {
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
 				// TODO: Handle failure
 			}
 		});
@@ -140,7 +141,7 @@ public class ContactsActivity extends Activity {
 		ContactsListAdapter adapter = new ContactsListAdapter(this, mContacts);
 		ListView list = (ListView) findViewById(R.id.contacts_list);
 		list.setAdapter(adapter);
-	
+
 		// When a contact is clicked we can do something
 		list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -151,13 +152,12 @@ public class ContactsActivity extends Activity {
 				String number = contact.getNumber();
 				String username = contact.getUsername();
 				// if it is an existing user then add them as a friend
-				if(username != null){
-					addFriend(username);
-					// TODO: Show visual cue in list that friend can/has been added
+				if (username != null) {
+					Session.getFriendManager().addFriend(username);
 				}
-				
+
 				// if the contact doesn't have an account send them an invite
-				else if(number != null){
+				else if (number != null) {
 					inviteFriend(number);
 				}
 			}
@@ -167,7 +167,9 @@ public class ContactsActivity extends Activity {
 	// send an invite to a phone number
 	// TODO: make this work
 	private void inviteFriend(String number) {
-		String inviteText = "Add me on Lyricoo! Username: " + Session.currentUser().getUsername() + " www.lyricoo.com/download";
+		String inviteText = "Add me on Lyricoo! Username: "
+				+ Session.currentUser().getUsername()
+				+ " www.lyricoo.com/download";
 
 		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
 
@@ -177,81 +179,19 @@ public class ContactsActivity extends Activity {
 
 		startActivity(smsIntent);
 	}
-	
+
 	// called when the user presses the add button
-	public void addFriendClicked(View v){
+	public void addFriendClicked(View v) {
 		// Retrieve the entered text and remove white space
 		EditText userText = (EditText) findViewById(R.id.username_field);
-		final String username = userText.getText().toString().trim();
+		String username = userText.getText().toString();
 
 		// If the username is empty don't try to add it as a friend
-		if (username.length() == 0)
+		if (Utility.isStringBlank(username)) {
 			return;
-		else {
-			addFriend(username);
-		}
-	}
-
-	// Add the friend with the given username
-	public void addFriend(final String username) {
-		// disable button so it isn't pressed again
-		setAddButtonState(false);
-
-		// send post request to server
-		RequestParams params = new RequestParams();
-		params.put("username", username);
-		
-		Session.currentUser().post("friends", params, new LyricooApiResponseHandler() {
-
-			@Override
-			public void onSuccess(Object json) {
-				toastAddFriendResult(username, true);
-			}	
-
-			
-			@Override
-			public void onFailure(int statusCode, String responseBody, Throwable error) {
-				// Could have failed because friend doesn't exist, friend was
-				// already added, or a connection problem
-				// TODO: Make the failure notice more specific
-				toastAddFriendResult(username, false);
-			}			
-			
-			@Override
-			public void onFinish() {
-				// re-enable button when process is over
-				setAddButtonState(true);
-			}
-		});
-	}
-
-	/**
-	 * Raise a toast letting the user know the result of the add friend request
-	 * 
-	 */
-	private void toastAddFriendResult(String username, boolean success) {
-		CharSequence text;
-		if (success) {
-			text = "Added " + username + " to friends!";
 		} else {
-			text = "Failed adding " + username + " to friends";
+			Session.getFriendManager().addFriend(username);
 		}
-
-		Context context = getApplicationContext();
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
-	}
-
-	/**
-	 * Enables or disables the button to add a friend
-	 * 
-	 * @param enabled
-	 */
-	private void setAddButtonState(boolean enabled) {
-		Button button = (Button) findViewById(R.id.add_friend_button);
-		button.setEnabled(enabled);
 	}
 
 }
