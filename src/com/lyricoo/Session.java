@@ -20,7 +20,9 @@ public class Session {
 	private static boolean mLoggedIn = false;
 	private static String mAuthToken;
 	private static Context mContext;
+	
 	private static ConversationManager mConversationManager;
+	private static FriendManager mFriendManager;
 
 	/**
 	 * GCM variables
@@ -154,6 +156,7 @@ public class Session {
 		mLoggedIn = true;
 
 		mConversationManager = new ConversationManager(context, mCurrentUser);
+		mFriendManager = new FriendManager(context, mCurrentUser);
 
 		return mCurrentUser;
 	}
@@ -169,6 +172,9 @@ public class Session {
 		// delete all local message data
 		mConversationManager.destroy();
 		mConversationManager = null;
+		
+		// remove stored friends
+		mFriendManager = null;
 	}
 
 	public static void login(String username, String password,
@@ -187,5 +193,9 @@ public class Session {
 
 	public static ConversationManager getConversationManager() {
 		return mConversationManager;
+	}
+	
+	public static FriendManager getFriendManager(){
+		return mFriendManager;
 	}
 }
