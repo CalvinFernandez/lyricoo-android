@@ -246,17 +246,16 @@ public class ConversationManager {
 	 * @param listener
 	 */
 	public void registerOnDataChangedListener(OnDataChangedListener listener) {
-		// TODO: Allow client to register a listener for just a specific
-		// conversation to be more efficient
-
-		// TODO: Conversation copies will reflect changes as long as the update
-		// didn't come from sync. It is much more efficient if the client
-		// doesn't have to reload fresh data, maybe include a boolean like
-		// dataInvalid?
 		mOnDataChangedListeners.add(listener);
 	}
 
-	// TODO: method to unregister listener
+	/**
+	 * Remove a listener that was registered
+	 * @param listener
+	 */
+	public void unregisterOnDataChangedListener(OnDataChangedListener listener) {
+		mOnDataChangedListeners.remove(listener);
+	}
 
 	/**
 	 * Callback for when any of the local data is updated

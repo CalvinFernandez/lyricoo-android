@@ -54,7 +54,6 @@ public class LyricooSelectionActivity extends Activity {
 	private ArrayList<String> mCategories;
 	private ProgressBar mProgress;
 	private Context mContext;
-	private LyricooApp mApp;
 	private LyricooPlayer mPlayer;
 	private ListView mCategoryList;
 	private ListView mSongList;
@@ -77,7 +76,6 @@ public class LyricooSelectionActivity extends Activity {
 		setContentView(R.layout.activity_lyricoo_selection);
 
 		mContext = this;
-		mApp = (LyricooApp) getApplication();
 		mPlayer = new LyricooPlayer(this);
 
 		// Get resouces to use later

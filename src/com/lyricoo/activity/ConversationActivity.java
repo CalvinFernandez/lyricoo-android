@@ -1,15 +1,23 @@
 package com.lyricoo.activity;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.gson.JsonSyntaxException;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-
 import com.lyricoo.ConversationManager;
-import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.Message;
 import com.lyricoo.R;
@@ -17,22 +25,6 @@ import com.lyricoo.Session;
 import com.lyricoo.Song;
 import com.lyricoo.User;
 import com.lyricoo.Utility;
-
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView;
 
 /**
  * Display a conversation with another Lyricoo User. The conversation is simply
@@ -53,7 +45,7 @@ public class ConversationActivity extends Activity {
 	private ConversationAdapter mConversationAdapter;
 
 	// Callback listener for when messages are updated
-	private ConversationManager.OnDataChangedListener mListener;
+	private ConversationManager.OnDataChangedListener mConversationListener;
 
 	// player to handle playing lyricoos from messages
 	private LyricooPlayer mPlayer;
@@ -82,9 +74,10 @@ public class ConversationActivity extends Activity {
 		// load the conversation data
 		mConversation = Session.getConversationManager().getConversation(
 				mContact);
-		
-		// Create a listener for message updates. Don't make it anonymous so we can remove it onDestroy
-		ConversationManager.OnDataChangedListener mListener  = new ConversationManager.OnDataChangedListener() {
+
+		// Create a listener for message updates. Don't make it anonymous so we
+		// can remove it onDestroy
+		mConversationListener = new ConversationManager.OnDataChangedListener() {
 
 			@Override
 			public void onDataUpdated(User user) {
@@ -104,7 +97,8 @@ public class ConversationActivity extends Activity {
 		};
 
 		// register data update callback
-		Session.getConversationManager().registerOnDataChangedListener(mListener);
+		Session.getConversationManager().registerOnDataChangedListener(
+				mConversationListener);
 
 		// initialize player
 		mPlayer = new LyricooPlayer(this);
@@ -143,6 +137,18 @@ public class ConversationActivity extends Activity {
 		super.onPause();
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
+	}
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		
+		try {
+			Session.getConversationManager().unregisterOnDataChangedListener(
+					mConversationListener);
+		} catch (Exception e) {
+			// thrown if conversation manager if null
+		}
 	}
 
 	/**

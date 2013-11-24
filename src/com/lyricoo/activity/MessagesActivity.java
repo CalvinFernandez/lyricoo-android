@@ -24,15 +24,16 @@ import com.lyricoo.Utility;
 /**
  * This activity loads all of the users messages and shows a preview of the most
  * recent message from each contact. If a message is clicked the whole
- * coversation is loaded.
+ * conversation is loaded.
  * 
  */
 public class MessagesActivity extends Activity {
 	private ArrayList<Conversation> mConversations;
 	private MessageListAdapter mAdapter;
-	private ProgressBar mProgress;
 	private Context mContext;
-	private LyricooApp mApp;
+
+	// Callback listener for when messages are updated
+	private ConversationManager.OnDataChangedListener mConversationListener;
 
 	// display resources
 	private ListView mMessageList;
@@ -42,35 +43,48 @@ public class MessagesActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
 		mContext = this;
-		mApp = (LyricooApp) getApplication();
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
 
 		// register callback on conversations update
+		mConversationListener = new ConversationManager.OnDataChangedListener() {
+
+			@Override
+			public void onDataUpdated(User user) {
+				// we care about conversations with all contacts, so
+				// update everything
+				updateConversations();
+			}
+
+			@Override
+			public void onDataReset() {
+				// Get a fresh copy of the conversation
+				mConversations = Session.getConversationManager()
+						.getConversations();
+				displayConversations();
+			}
+		};
+
 		Session.getConversationManager().registerOnDataChangedListener(
-				new ConversationManager.OnDataChangedListener() {
-
-					@Override
-					public void onDataUpdated(User user) {
-						// we care about conversations with all contacts, so
-						// update everything
-						updateConversations();
-					}
-
-					@Override
-					public void onDataReset() {
-						// Get a fresh copy of the conversation
-						mConversations = Session.getConversationManager()
-								.getConversations();
-						displayConversations();
-					}
-				});
+				mConversationListener);
 
 		// save resources
 		mMessageList = (ListView) findViewById(R.id.messages_list);
 
 		displayConversations();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		try {
+			Session.getConversationManager().unregisterOnDataChangedListener(
+					mConversationListener);
+		} catch (Exception e) {
+			// thrown if conversation manager if null
+		}
 	}
 
 	/**
