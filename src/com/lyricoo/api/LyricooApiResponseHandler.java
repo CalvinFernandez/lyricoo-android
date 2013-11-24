@@ -1,7 +1,6 @@
 package com.lyricoo.api;
 
 public class LyricooApiResponseHandler {
-
 	/**
 	 * Called when the request has been returned and successfully parsed
 	 * 

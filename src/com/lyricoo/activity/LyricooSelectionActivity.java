@@ -16,7 +16,7 @@ import com.lyricoo.User;
 import com.lyricoo.Utility;
 
 import com.lyricoo.Song;
-import com.lyricoo.api.LyricooAPI;
+import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 
 import android.media.MediaPlayer;
@@ -112,7 +112,7 @@ public class LyricooSelectionActivity extends Activity {
 	private void loadSongs() {
 		// load song list
 		// TODO: Cache songs instead of downloading every time
-		LyricooAPI.get("songs/all", null, new JsonHttpResponseHandler() {
+		LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into songs
@@ -329,9 +329,8 @@ public class LyricooSelectionActivity extends Activity {
 		Session.currentUser().get("friends", new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object responseJson) {
-				JSONArray json = (JSONArray) responseJson;
 				// parse json
-				final ArrayList<User> friends = User.parseUserJsonArray(json);
+				final ArrayList<User> friends = User.parseUserJsonArray((JSONArray) responseJson);
 				
 				// get list of just friend names to show in dialog
 				ArrayList<String> names = new ArrayList<String>();
@@ -402,10 +401,8 @@ public class LyricooSelectionActivity extends Activity {
 				new LyricooApiResponseHandler() {
 					@Override
 					public void onSuccess(Object responseJson) {
-						JSONObject json = (JSONObject) responseJson;
-						
 						ArrayList<Conversation> conversations = Conversation
-								.parseMessagesJson(json);
+								.parseMessagesJson((JSONObject) responseJson);
 
 						// should be only one conversation in the list						
 						Conversation conversation = conversations.get(0);

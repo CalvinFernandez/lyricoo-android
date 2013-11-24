@@ -1,21 +1,15 @@
 package com.lyricoo.api;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 /**
  * Use LyricooResponseAdapter to convert reliably from AsyncHttpResponse to
- * JsonHttpResponse.
+ * LyricooApiResponseHandler.
  * 
- * Usage LyricooResponseAdapter.adapt(asyncJsonHttpResponseHandler);
+ * Usage LyricooResponseAdapter.adapt(LyricooApiResponseHandler);
  * 
  * @author
  * 
@@ -50,6 +44,7 @@ public class LyricooResponseAdapter {
 			public void onFailure(int statusCode,
 					org.apache.http.Header[] headers, byte[] responseBody,
 					java.lang.Throwable error) {
+				
 				responseHandler.onFailure(statusCode,
 						decodeByteArray(responseBody), error);
 			}
@@ -81,16 +76,14 @@ public class LyricooResponseAdapter {
 	 * Converts byte array to object form
 	 * 
 	 * @param in
-	 *            byte[]
-	 * @return Object The decoded json
-	 * 
+	 *            The byte[]
+	 * @return Object The decoded json *
 	 * @throws Throwable
 	 *             Either a NullPointerException or JSONException,
 	 */
 	private static Object toJson(byte[] in) throws Throwable {
 		String decoded = decodeByteArray(in);
 		Object json = new JSONTokener(decoded).nextValue();
-
 		return json;
 	}
 

@@ -24,7 +24,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooAPI;
+import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.api.LyricooResponseAdapter;
 
@@ -180,7 +180,7 @@ public class LoginActivity extends Activity {
 		RequestParams params = new RequestParams();
 		params.put("email", email);
 
-		LyricooAPI.post("users/reset_password", params,
+		LyricooApi.post("users/reset_password", params,
 				new AsyncHttpResponseHandler() {
 
 					@Override
