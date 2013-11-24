@@ -38,6 +38,10 @@ public class FriendsActivity extends Activity {
 	private ListView mList;
 	private Context mContext;
 
+	// Our listener for when friends is updated. Don't make this anonymous so it
+	// can be removed onDestroy
+	private FriendManager.OnFriendsUpdatedListener mFriendListener;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,19 +51,35 @@ public class FriendsActivity extends Activity {
 
 		// get list view
 		mList = (ListView) findViewById(R.id.friends_list);
-		
+
 		// load and display friends
 		loadFriendsList();
-		
+
 		// register callback for when friends list is updated
-		Session.getFriendManager().registerOnFriendsUpdatedListener(new FriendManager.OnFriendsUpdatedListener() {
-			
+		mFriendListener = new FriendManager.OnFriendsUpdatedListener() {
+
 			@Override
 			public void onFriendsUpdated() {
-				//mList.getAdapter().notifyDataSetChanged();
-				
+				FriendsListAdapter adapter = (FriendsListAdapter) mList
+						.getAdapter();
+				adapter.notifyDataSetChanged();
 			}
-		});		
+		};
+
+		Session.getFriendManager().registerOnFriendsUpdatedListener(
+				mFriendListener);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+		try {
+			Session.getFriendManager().unregisterOnFriendsUpdatedListener(
+					mFriendListener);
+		} catch (Exception e) {
+			// thrown if friend manager if null
+		}
 	}
 
 	@Override
@@ -118,7 +138,8 @@ public class FriendsActivity extends Activity {
 		mFriends = Session.getFriendManager().getFriends();
 
 		// Create adapter for the list view
-		FriendsListAdapter adapter = new FriendsListAdapter(mContext, R.layout.friend_list_item, mFriends);
+		FriendsListAdapter adapter = new FriendsListAdapter(mContext,
+				R.layout.friend_list_item, mFriends);
 
 		mList.setAdapter(adapter);
 

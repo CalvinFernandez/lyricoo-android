@@ -213,7 +213,14 @@ public class FriendManager {
 		mOnFriendsUpdatedListeners.add(listener);
 	}
 
-	// TODO: method to unregister listener
+	/**
+	 * Remove a callback that was registered
+	 * @param listener
+	 */
+	public void unregisterOnFriendsUpdatedListener(
+			OnFriendsUpdatedListener listener) {
+		mOnFriendsUpdatedListeners.remove(listener);
+	}
 
 	/**
 	 * Callback for when any of the local data is updated

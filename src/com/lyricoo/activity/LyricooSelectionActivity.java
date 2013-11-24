@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
+import com.lyricoo.FriendManager;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
@@ -107,6 +108,7 @@ public class LyricooSelectionActivity extends Activity {
 
 		// Release player
 		mPlayer.destroy();
+		mPlayer = null;
 	}
 
 	private void loadSongs() {

@@ -52,6 +52,9 @@ public class ConversationActivity extends Activity {
 	private User mContact;
 	private ConversationAdapter mConversationAdapter;
 
+	// Callback listener for when messages are updated
+	private ConversationManager.OnDataChangedListener mListener;
+
 	// player to handle playing lyricoos from messages
 	private LyricooPlayer mPlayer;
 
@@ -79,27 +82,29 @@ public class ConversationActivity extends Activity {
 		// load the conversation data
 		mConversation = Session.getConversationManager().getConversation(
 				mContact);
+		
+		// Create a listener for message updates. Don't make it anonymous so we can remove it onDestroy
+		ConversationManager.OnDataChangedListener mListener  = new ConversationManager.OnDataChangedListener() {
+
+			@Override
+			public void onDataUpdated(User user) {
+				// only update our view if we our contact was updated
+				if (user.equals(mContact)) {
+					updateConversation();
+				}
+			}
+
+			@Override
+			public void onDataReset() {
+				// Get a fresh copy of the conversation
+				mConversation = Session.getConversationManager()
+						.getConversation(mContact);
+				displayConversation();
+			}
+		};
 
 		// register data update callback
-		Session.getConversationManager().registerOnDataChangedListener(
-				new ConversationManager.OnDataChangedListener() {
-
-					@Override
-					public void onDataUpdated(User user) {
-						// only update our view if we our contact was updated
-						if (user.equals(mContact)) {
-							updateConversation();
-						}
-					}
-
-					@Override
-					public void onDataReset() {
-						// Get a fresh copy of the conversation
-						mConversation = Session.getConversationManager()
-								.getConversation(mContact);
-						displayConversation();
-					}
-				});
+		Session.getConversationManager().registerOnDataChangedListener(mListener);
 
 		// initialize player
 		mPlayer = new LyricooPlayer(this);
