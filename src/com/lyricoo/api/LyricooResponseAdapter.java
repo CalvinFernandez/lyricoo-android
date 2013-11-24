@@ -1,6 +1,8 @@
 package com.lyricoo.api;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -33,6 +35,13 @@ public class LyricooResponseAdapter {
 					byte[] responseBody) {
 				try {
 					Object json = LyricooResponseAdapter.toJson(responseBody);
+					if (!(json instanceof JSONObject)
+							|| !(json instanceof JSONArray)) {
+						// Something's wrong, the result should be either a
+						// JSONObject or JSONArray
+						responseHandler.onFailure(statusCode, decodeByteArray(responseBody), null);
+					}
+
 					responseHandler.onSuccess(json);
 				} catch (Throwable e) {
 					responseHandler.onFailure(statusCode,
@@ -44,7 +53,7 @@ public class LyricooResponseAdapter {
 			public void onFailure(int statusCode,
 					org.apache.http.Header[] headers, byte[] responseBody,
 					java.lang.Throwable error) {
-				
+
 				responseHandler.onFailure(statusCode,
 						decodeByteArray(responseBody), error);
 			}
