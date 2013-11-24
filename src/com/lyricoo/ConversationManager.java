@@ -188,13 +188,10 @@ public class ConversationManager {
 		// Send request to server to get all of our user's messages
 		mUser.get("messages", new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(Object responseJson) {
-				// We're expecting a JSONObject
-				JSONObject json = (JSONObject) responseJson;
-				
+			public void onSuccess(Object responseJson) {				
 				// This will create all new Conversation objects, unlinking any
 				// copies that activities may be using
-				mConversations = Conversation.parseMessagesJson(json);
+				mConversations = Conversation.parseMessagesJson((JSONObject) responseJson);
 
 				// Alert listeners that their old data copies are no longer
 				// linked

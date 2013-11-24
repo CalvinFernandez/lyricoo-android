@@ -15,7 +15,7 @@ import com.lyricoo.R;
 import com.lyricoo.Session;
 
 import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooAPI;
+import com.lyricoo.api.LyricooApi;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -100,7 +100,7 @@ public class SignUpActivity extends Activity {
 		params.put("username", data.username);
 		params.put("phone_number", data.number);
 
-		LyricooAPI.post("users", params, new JsonHttpResponseHandler() {
+		LyricooApi.post("users", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
 				// store user credentials

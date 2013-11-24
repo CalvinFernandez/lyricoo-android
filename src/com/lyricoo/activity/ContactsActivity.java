@@ -82,9 +82,8 @@ public class ContactsActivity extends Activity {
 		User.REST.get(new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object jsonObject) {
-				JSONArray json = (JSONArray) jsonObject;
 				// parse json into users
-				ArrayList<User> lyricooUsers = User.parseUserJsonArray(json);
+				ArrayList<User> lyricooUsers = User.parseUserJsonArray((JSONArray) jsonObject);
 
 				// initialize list
 				mContacts = new ArrayList<ContactsListViewEntry>();

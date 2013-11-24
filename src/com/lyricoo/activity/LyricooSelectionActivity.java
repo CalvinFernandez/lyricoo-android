@@ -16,7 +16,7 @@ import com.lyricoo.User;
 import com.lyricoo.Utility;
 
 import com.lyricoo.Song;
-import com.lyricoo.api.LyricooAPI;
+import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 
 import android.media.MediaPlayer;
@@ -112,7 +112,7 @@ public class LyricooSelectionActivity extends Activity {
 	private void loadSongs() {
 		// load song list
 		// TODO: Cache songs instead of downloading every time
-		LyricooAPI.get("songs/all", null, new JsonHttpResponseHandler() {
+		LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into songs
@@ -325,7 +325,6 @@ public class LyricooSelectionActivity extends Activity {
 	 * selected lyricoo to the clicked friend
 	 */
 	private void showFriendsList() {
-
 		final ArrayList<User> friends = Session.getFriendManager().getFriends();
 
 		// get list of just friend names to show in dialog
@@ -377,43 +376,14 @@ public class LyricooSelectionActivity extends Activity {
 	 * @param friend
 	 */
 	private void sendLyricooToFriend(final Song song, User friend) {
-		// Retrieve the conversation with this friend so we can load it
-		// TODO: Cleaner method for getting conversation
-		RequestParams params = new RequestParams();
-		params.put("contact_id", Integer.toString(friend.getUserId()));
-		// TODO: Show loading dialog
-		Session.currentUser().get("messages", params,
-				new LyricooApiResponseHandler() {
-					@Override
-					public void onSuccess(Object responseJson) {
-						JSONObject json = (JSONObject) responseJson;
+		// convert to json to make it easy to pass to the conversation activity
+		String contactAsJson = Utility.toJson(friend);
+		String songAsJson = Utility.toJson(song);
 
-						ArrayList<Conversation> conversations = Conversation
-								.parseMessagesJson(json);
-
-						// should be only one conversation in the list
-						Conversation conversation = conversations.get(0);
-
-						// convert to json to make it easy to pass to the
-						// conversation activity
-						String conversationAsJson = Utility
-								.toJson(conversation);
-						String songAsJson = Utility.toJson(song);
-
-						Intent i = new Intent(mContext,
-								ConversationActivity.class);
-						i.putExtra("conversation", conversationAsJson);
-						i.putExtra("song", songAsJson);
-						startActivity(i);
-					}
-
-					@Override
-					public void onFailure(int statusCode, String responseBody,
-							Throwable error) {
-						// TODO: Handle failure
-					}
-				});
-
+		Intent i = new Intent(mContext, ConversationActivity.class);
+		i.putExtra("contact", contactAsJson);
+		i.putExtra("song", songAsJson);
+		startActivity(i);
 	}
 
 	// The play button only shows when a song has been selected. It defaults to

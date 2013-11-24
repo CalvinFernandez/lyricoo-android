@@ -1,7 +1,6 @@
 package com.lyricoo.api;
 
 public class LyricooApiResponseHandler {
-
 	/**
 	 * Called when the request has been returned and successfully parsed
 	 * 
@@ -15,7 +14,9 @@ public class LyricooApiResponseHandler {
 
 	/**
 	 * Called when either the request fails or the response is unable to be
-	 * parsed to json
+	 * parsed to a JSONObject or JSONArray. If the request was successful, but
+	 * the result isn't a JSONObject/array, the status code will be a 2xx and
+	 * error will be null
 	 * 
 	 * @param statusCode
 	 * @param responseBody
