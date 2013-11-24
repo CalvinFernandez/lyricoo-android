@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lyricoo.api.LyricooModel;
+
 /** The User class stores all data pertaining
  * to a logged in user.
  */

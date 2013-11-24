@@ -20,12 +20,13 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 
-import com.lyricoo.LyricooAPI;
-import com.lyricoo.LyricooResponseAdapter;
 
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Utility;
+import com.lyricoo.api.LyricooApi;
+import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.api.LyricooResponseAdapter;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -122,11 +123,11 @@ public class LoginActivity extends Activity {
 		// check
 		final String email = username;
 
-		Session.login(username, password, new JsonHttpResponseHandler() {
+		Session.login(username, password, new LyricooApiResponseHandler() {
 
 			@Override
-			public void onSuccess(JSONObject response) {
-				Session.create(mContext, response);
+			public void onSuccess(Object responseJson) {
+				Session.create(mContext, (JSONObject) responseJson);
 				
 				Session.registerGCM(mContext);
 				
@@ -135,14 +136,10 @@ public class LoginActivity extends Activity {
 			}
 			
 			 @Override
-			 public void onFailure(Throwable error, JSONObject response) {
+			 public void onFailure(int statusCode, String responseBody, Throwable error) {
 			 handleLoginFailure(email);
 			 }
-			
-			 @Override
-			 public void onFailure(Throwable error, JSONArray response) {
-			 Utility.log("array");
-			 }
+
 			
 			 @Override
 			 public void onFinish() {
@@ -183,7 +180,7 @@ public class LoginActivity extends Activity {
 		RequestParams params = new RequestParams();
 		params.put("email", email);
 
-		LyricooAPI.post("users/reset_password", params,
+		LyricooApi.post("users/reset_password", params,
 				new AsyncHttpResponseHandler() {
 
 					@Override

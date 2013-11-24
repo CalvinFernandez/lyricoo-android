@@ -15,6 +15,7 @@ import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.User;
 import com.lyricoo.Utility;
+import com.lyricoo.api.LyricooApiResponseHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -103,24 +104,17 @@ public class FriendsActivity extends Activity {
 		Utility.makeBasicToast(getApplicationContext(), msg);
 
 		Session.currentUser().delete("friends/" + friend.getUserId(),
-				new JsonHttpResponseHandler() {
+				new LyricooApiResponseHandler() {
 
 					@Override
-					public void onSuccess(JSONObject json) {
+					public void onSuccess(Object responseJson) {
 						String msg = friend.getUsername()
 								+ " removed from friends";
 						Utility.makeBasicToast(getApplicationContext(), msg);
 					}
 
 					@Override
-					public void onSuccess(JSONArray json) {
-						String msg = friend.getUsername()
-								+ " removed from friends";
-						Utility.makeBasicToast(getApplicationContext(), msg);
-					}
-
-					@Override
-					public void onFailure(Throwable error, JSONObject json) {
+					public void onFailure(int statusCode, String responseBody, Throwable error) {
 						Utility.log("on failure");
 						String msg = "Error removing friend";
 						Utility.makeBasicToast(getApplicationContext(), msg);
@@ -161,11 +155,11 @@ public class FriendsActivity extends Activity {
 		mProgress.setVisibility(View.VISIBLE);
 
 		// load friends
-		Session.currentUser().get("friends", new JsonHttpResponseHandler() {
+		Session.currentUser().get("friends", new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(JSONArray json) {
+			public void onSuccess(Object responseJson) {
 				// parse json into messages
-				mFriends = User.parseUserJsonArray(json);
+				mFriends = User.parseUserJsonArray((JSONArray) responseJson);
 
 				// hide progress bar and show list
 				mList.setVisibility(View.VISIBLE);
@@ -207,7 +201,7 @@ public class FriendsActivity extends Activity {
 			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
+			public void onFailure(int statusCode, String responseBody, Throwable error) {
 				// TODO: Handle failure
 			}
 		});
