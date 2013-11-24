@@ -34,7 +34,6 @@ public class LyricooApi {
 	public static void get(String url, RequestParams params,
 			AsyncHttpResponseHandler responseHandler) {
 		client.get(getAbsoluteUrl(url), params, responseHandler);
-		// test
 	}
 
 	public static void post(String url, RequestParams params,

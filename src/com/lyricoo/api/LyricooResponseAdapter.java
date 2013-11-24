@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.lyricoo.Utility;
 
 /**
  * Use LyricooResponseAdapter to convert reliably from AsyncHttpResponse to
@@ -35,14 +36,17 @@ public class LyricooResponseAdapter {
 					byte[] responseBody) {
 				try {
 					Object json = LyricooResponseAdapter.toJson(responseBody);
-					if (!(json instanceof JSONObject)
-							|| !(json instanceof JSONArray)) {
-						// Something's wrong, the result should be either a
-						// JSONObject or JSONArray
-						responseHandler.onFailure(statusCode, decodeByteArray(responseBody), null);
+					
+					// json should be either a JSONObject or JSONArray
+					if ((json instanceof JSONObject)
+							|| (json instanceof JSONArray)) {
+						responseHandler.onSuccess(json);
+					} else {
+						// Something's unexpected about the response
+						responseHandler.onFailure(statusCode,
+								decodeByteArray(responseBody), null);
 					}
 
-					responseHandler.onSuccess(json);
 				} catch (Throwable e) {
 					responseHandler.onFailure(statusCode,
 							decodeByteArray(responseBody), e);
