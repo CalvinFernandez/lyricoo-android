@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -62,8 +63,21 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_login);
-
+		
+		if (Session.remember) {
+			
+			EditText username = (EditText) findViewById(R.id.username_field);
+			EditText password = (EditText) findViewById(R.id.password_field);
+			CheckBox check = (CheckBox) findViewById(R.id.rememberme_box);
+			
+			check.setChecked(true);
+			username.setText(Session.rememberedUsername());
+			password.setText(Session.rememberedPassword());
+			
+		}
+		
 		// get progress bar
 		mProgress = (ProgressBar) findViewById(R.id.sign_in_progress);
 
@@ -109,10 +123,21 @@ public class LoginActivity extends Activity {
 		// Right now the server only accepts email
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
+		
 
 		String username = usernameView.getText().toString();
 		String password = passwordView.getText().toString();
 
+		final CheckBox remember = (CheckBox) findViewById(R.id.rememberme_box);
+		
+		if (remember.isChecked()) {
+			Session.remember = true;
+			Session.storeRememberable(username, password);
+		} else {
+			Session.remember = false;
+			Session.destroyRememberable();
+		}
+		
 		// debug helper for testing
 		if (username.equals("") && password.equals("")) {
 			username = "konakid@gmail.com";

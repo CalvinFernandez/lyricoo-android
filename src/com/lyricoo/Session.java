@@ -18,11 +18,16 @@ import com.lyricoo.api.LyricooApiResponseHandler;
 public class Session {
 	private static User mCurrentUser;
 	private static boolean mLoggedIn = false;
+	
 	private static String mAuthToken;
 	private static Context mContext;
 	
 	private static ConversationManager mConversationManager;
 	private static FriendManager mFriendManager;
+	
+	public static boolean remember = false;
+	private static String mRememberedUsername = "";
+	private static String mRememberedPassword = "";
 
 	/**
 	 * GCM variables
@@ -198,4 +203,23 @@ public class Session {
 	public static FriendManager getFriendManager(){
 		return mFriendManager;
 	}
+	
+	public static void storeRememberable(String username, String password) {
+		mRememberedUsername = username;
+		mRememberedPassword = password;
+	}
+	
+	public static void destroyRememberable() {
+		mRememberedUsername = "";
+		mRememberedPassword = "";
+	}
+	
+	public static String rememberedUsername() {
+		return mRememberedUsername;
+	}
+	
+	public static String rememberedPassword() {
+		return mRememberedPassword;
+	}
+	
 }
