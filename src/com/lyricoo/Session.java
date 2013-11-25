@@ -119,7 +119,7 @@ public class Session {
 	public static void registerGCM(Context context) {
 		gcm = GoogleCloudMessaging.getInstance(context);
 		String regID = getRegistrationId();
-		if (regID.isEmpty()) {
+		if (Utility.isStringBlank(regID)) {
 			registerInBackground(context);
 		}
 	}
