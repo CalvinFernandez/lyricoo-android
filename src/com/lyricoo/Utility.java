@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 public class Utility {
 	
+	public static final String PREFS_NAME = "LyricooPrefsFile";
+	
 	/**
 	 * Converts a java object to a Json string. Uses Google GSON
 	 * @param src The object to be converted 

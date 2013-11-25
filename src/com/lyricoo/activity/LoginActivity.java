@@ -36,6 +36,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -48,6 +49,8 @@ public class LoginActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	
+	private SharedPreferences mPrefs;
 	
 	String SENDER_ID = "69329840121";
 	String regid;
@@ -64,17 +67,19 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		mPrefs = getSharedPreferences(Utility.PREFS_NAME, 0);
+		
 		setContentView(R.layout.activity_login);
 		
-		if (Session.remember) {
-			
+		if (mPrefs.getBoolean("rememberable", false)) {
+		
 			EditText username = (EditText) findViewById(R.id.username_field);
 			EditText password = (EditText) findViewById(R.id.password_field);
 			CheckBox check = (CheckBox) findViewById(R.id.rememberme_box);
 			
 			check.setChecked(true);
-			username.setText(Session.rememberedUsername());
-			password.setText(Session.rememberedPassword());
+			username.setText(mPrefs.getString("username", ""));
+			password.setText(mPrefs.getString("password", ""));
 			
 		}
 		
@@ -131,11 +136,9 @@ public class LoginActivity extends Activity {
 		final CheckBox remember = (CheckBox) findViewById(R.id.rememberme_box);
 		
 		if (remember.isChecked()) {
-			Session.remember = true;
-			Session.storeRememberable(username, password);
+			Session.storeRememberable(mPrefs, username, password);
 		} else {
-			Session.remember = false;
-			Session.destroyRememberable();
+			Session.destroyRememberable(mPrefs);
 		}
 		
 		// debug helper for testing

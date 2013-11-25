@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,6 +18,7 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.api.LyricooApiResponseHandler;
 
 public class Session {
+	
 	private static User mCurrentUser;
 	private static boolean mLoggedIn = false;
 	
@@ -25,9 +28,6 @@ public class Session {
 	private static ConversationManager mConversationManager;
 	private static FriendManager mFriendManager;
 	
-	public static boolean remember = false;
-	private static String mRememberedUsername = "";
-	private static String mRememberedPassword = "";
 
 	/**
 	 * GCM variables
@@ -204,22 +204,41 @@ public class Session {
 		return mFriendManager;
 	}
 	
-	public static void storeRememberable(String username, String password) {
-		mRememberedUsername = username;
-		mRememberedPassword = password;
+	/**
+	 * Helper for storing username and password. Doesn't need
+	 * to be used but makes things simpler.
+	 * @param mPrefs
+	 * @param username
+	 * @param password
+	 * @return true or false. True indicates a successful storage, false 
+	 * indicates unsuccessful 
+	 */
+	public static boolean storeRememberable(SharedPreferences mPrefs, String username, String password) {
+		
+		Editor mPrefsEdit = mPrefs.edit();
+		
+		mPrefsEdit.putBoolean("rememberable", true);
+		mPrefsEdit.putString("username", username);
+		mPrefsEdit.putString("password", password);
+		
+		return mPrefsEdit.commit();	
 	}
 	
-	public static void destroyRememberable() {
-		mRememberedUsername = "";
-		mRememberedPassword = "";
-	}
-	
-	public static String rememberedUsername() {
-		return mRememberedUsername;
-	}
-	
-	public static String rememberedPassword() {
-		return mRememberedPassword;
+	/**
+	 * Helper for destroying username and password from SharedPreferences
+	 * 
+	 * @param mPrefs
+	 * @return True or False. True indicates successful transaction.
+	 * false indicates unsuccessful.
+	 */
+	public static boolean destroyRememberable(SharedPreferences mPrefs) {
+		Editor mPrefsEdit = mPrefs.edit();
+		
+		mPrefsEdit.remove("username");
+		mPrefsEdit.remove("password");
+		mPrefsEdit.putBoolean("rememberable", false);
+		
+		return mPrefsEdit.commit();
 	}
 	
 }
