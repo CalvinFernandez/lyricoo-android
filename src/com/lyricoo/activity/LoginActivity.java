@@ -100,17 +100,17 @@ public class LoginActivity extends Activity {
 	 * the Google Play Store or enable it in the device's system settings.
 	 */
 	private boolean checkPlayServices() {
-	    /*int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 	    if (resultCode != ConnectionResult.SUCCESS) {
 	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
 	            GooglePlayServicesUtil.getErrorDialog(resultCode, this,
 	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
 	        } else {
 	            Log.i(TAG, "This device is not supported.");
-	            finish();
+	            //finish();
 	        }
 	        return false;
-	    }*/
+	    }
 	    return true;
 	}
 	

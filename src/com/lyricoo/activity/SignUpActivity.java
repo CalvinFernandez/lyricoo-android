@@ -109,12 +109,27 @@ public class SignUpActivity extends Activity {
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
-			}		
+			}
 
 			@Override
-			public void onFailure(Throwable error, JSONObject response) {
-				// display errors to user
-				handleFailure(response);
+			public void onFailure(int statusCode,
+					org.apache.http.Header[] headers,
+					java.lang.String responseBody, java.lang.Throwable e) {
+				// if the request failed because of form errors then the json
+				// response will list the problems
+				try {
+					Object responseJson = parseResponse(responseBody);
+					if (responseJson instanceof JSONObject) {
+						// display errors to user
+						handleFailure((JSONObject) responseJson);
+						return;
+					}
+				} catch (Exception ex) {
+					// json exception
+				}
+				
+				// if that didn't work then something went wrong in the connection with the server
+				Utility.makeBasicToast(mContext, "Unable to create a new account, please try again");
 			}
 
 			@Override
@@ -123,22 +138,6 @@ public class SignUpActivity extends Activity {
 				setIsLoading(false);
 			}
 		});
-	}
-
-	private void setIsLoading(boolean isLoading) {
-		// get buttons
-		Button create = (Button) findViewById(R.id.create_account_button);
-
-		// hide buttons and show progress if loading is true
-		if (isLoading) {
-			create.setVisibility(View.GONE);
-			mProgress.setVisibility(View.VISIBLE);
-		}
-		// reverse it otherwise
-		else {
-			create.setVisibility(View.VISIBLE);
-			mProgress.setVisibility(View.GONE);
-		}
 	}
 
 	/**
@@ -221,6 +220,22 @@ public class SignUpActivity extends Activity {
 		// Create the AlertDialog object and return it
 		builder.create().show();
 
+	}
+
+	private void setIsLoading(boolean isLoading) {
+		// get buttons
+		Button create = (Button) findViewById(R.id.create_account_button);
+
+		// hide buttons and show progress if loading is true
+		if (isLoading) {
+			create.setVisibility(View.GONE);
+			mProgress.setVisibility(View.VISIBLE);
+		}
+		// reverse it otherwise
+		else {
+			create.setVisibility(View.VISIBLE);
+			mProgress.setVisibility(View.GONE);
+		}
 	}
 
 	/**

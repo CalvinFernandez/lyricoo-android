@@ -42,8 +42,9 @@
         <activity
             android:name="com.lyricoo.activity.LoginActivity"
             android:windowSoftInputMode="stateVisible"
-            android:label="@string/app_name" >
-            
+            android:label="@string/app_name" 
+            android:noHistory="true" >
+          
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
