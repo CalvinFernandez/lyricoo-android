@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-import com.lyricoo.LyricooAPI;
+import com.lyricoo.FriendManager;
 import com.lyricoo.LyricooApp;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
@@ -17,6 +17,8 @@ import com.lyricoo.User;
 import com.lyricoo.Utility;
 
 import com.lyricoo.Song;
+import com.lyricoo.api.LyricooApi;
+import com.lyricoo.api.LyricooApiResponseHandler;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -52,7 +54,6 @@ public class LyricooSelectionActivity extends Activity {
 	private ArrayList<String> mCategories;
 	private ProgressBar mProgress;
 	private Context mContext;
-	private LyricooApp mApp;
 	private LyricooPlayer mPlayer;
 	private ListView mCategoryList;
 	private ListView mSongList;
@@ -75,7 +76,6 @@ public class LyricooSelectionActivity extends Activity {
 		setContentView(R.layout.activity_lyricoo_selection);
 
 		mContext = this;
-		mApp = (LyricooApp) getApplication();
 		mPlayer = new LyricooPlayer(this);
 
 		// Get resouces to use later
@@ -106,12 +106,13 @@ public class LyricooSelectionActivity extends Activity {
 
 		// Release player
 		mPlayer.destroy();
+		mPlayer = null;
 	}
 
 	private void loadSongs() {
 		// load song list
 		// TODO: Cache songs instead of downloading every time
-		LyricooAPI.get("songs/all", null, new JsonHttpResponseHandler() {
+		LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				// parse json into songs
@@ -324,107 +325,65 @@ public class LyricooSelectionActivity extends Activity {
 	 * selected lyricoo to the clicked friend
 	 */
 	private void showFriendsList() {
-		// load friends
-		Session.currentUser().get("friends", new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(JSONArray json) {
-				// parse json
-				final ArrayList<User> friends = User.parseUserJsonArray(json);
-				
-				// get list of just friend names to show in dialog
-				ArrayList<String> names = new ArrayList<String>();
-				for(User friend : friends){
-					names.add(friend.getUsername());
-				}
-				
-				// if the user doesn't have any friends show them a different dialog
-				if(names.isEmpty()){
-					
-					return;
-				}
-				
-				// convert ArrayList to Array so AlertDialog can use it
-				String[] namesArray = new String[names.size()];
-				namesArray = names.toArray(namesArray);
+		final ArrayList<User> friends = Session.getFriendManager().getFriends();
 
-				// create a new dialog
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				// set the title to be the username of the friend
-				builder.setTitle("Send Lyricoo")
-				// add the options to the list
-						.setItems(namesArray,
-								new DialogInterface.OnClickListener() {
-									// handle clicking on an option
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// get the friend that was selected and
-										// pass the selected song to the
-										// conversation with that friend
-										try {
-											User friend = friends.get(which);
-											sendLyricooToFriend(mSelectedSong,
-													friend);
-										} catch (Exception e) {
-											// If this gets caught it's probably
-											// index out of bound error. TODO:
-											// Log it
-											// so we can see why it happened
-										}
-									}
-								});
-				builder.create().show();
+		// get list of just friend names to show in dialog
+		ArrayList<String> names = new ArrayList<String>();
+		for (User friend : friends) {
+			names.add(friend.getUsername());
+		}
 
-			}
+		// if the user doesn't have any friends show them a different dialog
+		if (names.isEmpty()) {
+			// TODO: Show no friends dialog
+			return;
+		}
 
-			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Handle failure
-			}
-		});
+		// convert ArrayList to Array so AlertDialog can use it
+		String[] namesArray = new String[names.size()];
+		namesArray = names.toArray(namesArray);
 
+		// create a new dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		// set the title to be the username of the friend
+		builder.setTitle("Send Lyricoo")
+		// add the options to the list
+				.setItems(namesArray, new DialogInterface.OnClickListener() {
+					// handle clicking on an option
+					public void onClick(DialogInterface dialog, int which) {
+						// get the friend that was selected and
+						// pass the selected song to the
+						// conversation with that friend
+						try {
+							User friend = friends.get(which);
+							sendLyricooToFriend(mSelectedSong, friend);
+						} catch (Exception e) {
+							// If this gets caught it's probably
+							// index out of bound error. TODO:
+							// Log it
+							// so we can see why it happened
+						}
+					}
+				});
+		builder.create().show();
 	}
 
-	/** Start the conversation activity with the given friend
-	 * and send the selected song as an intent so the activity can create
-	 * a message with it
+	/**
+	 * Start the conversation activity with the given friend and send the
+	 * selected song as an intent so the activity can create a message with it
+	 * 
 	 * @param song
 	 * @param friend
 	 */
 	private void sendLyricooToFriend(final Song song, User friend) {
-		// Retrieve the conversation with this friend so we can load it
-		// TODO: Cleaner method for getting conversation
-		RequestParams params = new RequestParams();
-		params.put("contact_id", Integer.toString(friend.getUserId()));
-		// TODO: Show loading dialog
-		Session.currentUser().get("messages", params,
-				new JsonHttpResponseHandler() {
-					@Override
-					public void onSuccess(JSONObject json) {
+		// convert to json to make it easy to pass to the conversation activity
+		String contactAsJson = Utility.toJson(friend);
+		String songAsJson = Utility.toJson(song);
 
-						
-						ArrayList<Conversation> conversations = Conversation
-								.parseMessagesJson(json);
-
-						// should be only one conversation in the list						
-						Conversation conversation = conversations.get(0);
-						
-						// convert to json to make it easy to pass to the conversation activity
-						String conversationAsJson = Utility.toJson(conversation);
-						String songAsJson = Utility.toJson(song);
-						
-						Intent i = new Intent(mContext,
-								ConversationActivity.class);
-						i.putExtra("conversation", conversationAsJson);
-						i.putExtra("song", songAsJson);
-						startActivity(i);
-					}
-
-					@Override
-					public void onFailure(Throwable error, JSONObject json) {
-						// TODO: Handle failure
-					}
-				});
-
+		Intent i = new Intent(mContext, ConversationActivity.class);
+		i.putExtra("contact", contactAsJson);
+		i.putExtra("song", songAsJson);
+		startActivity(i);
 	}
 
 	// The play button only shows when a song has been selected. It defaults to

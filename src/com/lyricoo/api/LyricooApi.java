@@ -1,8 +1,8 @@
-package com.lyricoo;
+package com.lyricoo.api;
 
-import android.util.Log;
-
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 /**
  * This class provides easy methods for get and post requests to our api.
@@ -25,7 +25,7 @@ import com.loopj.android.http.*;
  *           AsyncHttpResponseHandler.html
  * 
  */
-public class LyricooAPI {
+public class LyricooApi {
 	public static final String BASE_URL 	  = "http://lyricoo.com:8080";
 	public static final String LOCAL_BASE_URL = "http://10.0.2.2:3000";
 	

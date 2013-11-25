@@ -1,35 +1,30 @@
 package com.lyricoo.activity;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.gson.JsonSyntaxException;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.lyricoo.Conversation;
-
-import com.lyricoo.LyricooApp;
+import com.lyricoo.ConversationManager;
 import com.lyricoo.LyricooPlayer;
 import com.lyricoo.Message;
 import com.lyricoo.R;
 import com.lyricoo.Session;
 import com.lyricoo.Song;
+import com.lyricoo.User;
 import com.lyricoo.Utility;
-
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView;
 
 /**
  * Display a conversation with another Lyricoo User. The conversation is simply
@@ -45,9 +40,12 @@ import android.widget.TextView;
  * 
  */
 public class ConversationActivity extends Activity {
-	private LyricooApp mApp;
 	private Conversation mConversation;
+	private User mContact;
 	private ConversationAdapter mConversationAdapter;
+
+	// Callback listener for when messages are updated
+	private ConversationManager.OnDataChangedListener mConversationListener;
 
 	// player to handle playing lyricoos from messages
 	private LyricooPlayer mPlayer;
@@ -65,27 +63,48 @@ public class ConversationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
 
-		mApp = (LyricooApp) getApplication();
-
-		// get the extras sent to this activity (conversation and possibly a
-		// song to send)
-		Bundle extras = getIntent().getExtras();
-
-		// get the conversation to display
-		try {
-			String conversationAsJson = extras.getString("conversation");
-			mConversation = Utility.fromJson(conversationAsJson,
-					Conversation.class);
-		} catch (Exception e) {
-			// No conversation was passed in... What do?
-			// TODO: Error logging and handling
+		// get the User who we are talking to
+		String contactAsJson = getIntent().getStringExtra("contact");
+		mContact = Utility.fromJson(contactAsJson, User.class);
+		if (mContact == null) {
+			// uh oh, no contact was passed... TODO: What do? Error message and
+			// return to main menu
 		}
+
+		// load the conversation data
+		mConversation = Session.getConversationManager().getConversation(
+				mContact);
+
+		// Create a listener for message updates. Don't make it anonymous so we
+		// can remove it onDestroy
+		mConversationListener = new ConversationManager.OnDataChangedListener() {
+
+			@Override
+			public void onDataUpdated(User user) {
+				// only update our view if we our contact was updated
+				if (user.equals(mContact)) {
+					updateConversation();
+				}
+			}
+
+			@Override
+			public void onDataReset() {
+				// Get a fresh copy of the conversation
+				mConversation = Session.getConversationManager()
+						.getConversation(mContact);
+				displayConversation();
+			}
+		};
+
+		// register data update callback
+		Session.getConversationManager().registerOnDataChangedListener(
+				mConversationListener);
 
 		// initialize player
 		mPlayer = new LyricooPlayer(this);
 
 		// set activity title to reflect contact's name
-		setTitle(mConversation.getContact().getUsername());
+		setTitle(mContact.getUsername());
 
 		// Retrieve resources for later
 		mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
@@ -103,12 +122,14 @@ public class ConversationActivity extends Activity {
 		});
 
 		// build the list view for the messages in the conversation
-		displayMessages();
+		displayConversation();
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
-		String songJson = extras.getString("song");
+		String songJson = getIntent().getStringExtra("song");
 		attachSong(songJson);
+
+		attachKeyboardListener();
 	}
 
 	@Override
@@ -117,13 +138,36 @@ public class ConversationActivity extends Activity {
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
 	}
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		
+		try {
+			Session.getConversationManager().unregisterOnDataChangedListener(
+					mConversationListener);
+		} catch (Exception e) {
+			// thrown if conversation manager if null
+		}
+	}
 
-	private void displayMessages() {
+	/**
+	 * Tell the adapter that the data has changed and it needs to update the
+	 * view
+	 */
+	protected void updateConversation() {
+		mConversationAdapter.notifyDataSetChanged();
+		scrollToBottom();
+	}
+
+	private void displayConversation() {
 		mConversationAdapter = new ConversationAdapter(this,
-				R.id.messages_list, mConversation);
+				R.layout.conversation_item_sent, mConversation);
 
-		// Create adapter for the list view
+		// Create adapter with the new conversation data
 		mMessageList.setAdapter(mConversationAdapter);
+
+		scrollToBottom();
 
 		// Add click listener to list
 		mMessageList.setOnItemClickListener(new OnItemClickListener() {
@@ -154,6 +198,15 @@ public class ConversationActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Scroll to the bottom of the message list, showing the most recent
+	 * messages.
+	 * 
+	 */
+	private void scrollToBottom() {
+		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -161,6 +214,14 @@ public class ConversationActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * Called when send is clicks. Creates a message with the entered info and
+	 * sends it to the contact this conversation is with. If no message has been
+	 * entered and no song has been selected then no message is sent
+	 * 
+	 * @param v
+	 *            The view that called this
+	 */
 	public void sendMessage(View v) {
 		EditText conversationInputView = (EditText) findViewById(R.id.conversation_input);
 		String messageContent = conversationInputView.getText().toString();
@@ -169,67 +230,11 @@ public class ConversationActivity extends Activity {
 		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null)
 			return;
 
-		final Message newMessage = new Message(messageContent, Session
-				.currentUser().getUserId(), mConversation.getContact()
-				.getUserId(), true, mSelectedLyricoo);
+		Message newMessage = new Message(messageContent, Session.currentUser()
+				.getUserId(), mContact.getUserId(), true, mSelectedLyricoo);
 
-		// Update display with message
-		mConversationAdapter.add(newMessage);
-
-		// Select the last row so the new message will scroll into view
-		mMessageList.setSelection(mConversationAdapter.getCount() - 1);
-
-		// Send post request to server to save message
-
-		RequestParams params = new RequestParams();
-		params.put("contact_id", Integer.toString(newMessage.getContactId()));
-		params.put("content", messageContent);
-		params.put("sent", "true");
-		if (mSelectedLyricoo != null) {
-			params.put("song_id", Integer.toString(mSelectedLyricoo.getId()));
-		}
-
-		Session.currentUser().post("messages", params,
-				new JsonHttpResponseHandler() {
-
-					// TODO: Better way for handling synchronicity with server
-					// if sending fails
-
-					@Override
-					public void onSuccess(JSONArray json) {
-						// TODO: On success update the sent message with its new
-						// id from the server. Need to get server to return
-						// message info
-
-					}
-
-					@Override
-					public void onSuccess(JSONObject json) {
-
-					}
-
-					// Response should be a JSONObject but include JSONArray
-					// method to be safe
-					@Override
-					public void onFailure(Throwable error, JSONObject json) {
-						handleMessageSendFailure(newMessage);
-					}
-
-					@Override
-					public void onFailure(Throwable error, JSONArray json) {
-						handleMessageSendFailure(newMessage);
-					}
-				});
-
-	}
-
-	protected void handleMessageSendFailure(Message message) {
-		// create toast
-		String toast = "Error sending message";
-		Utility.makeBasicToast(getApplicationContext(), toast);
-
-		// Delete the message
-		mConversationAdapter.remove(message);
+		// send message
+		Session.getConversationManager().sendMessage(newMessage, mContact);
 	}
 
 	// When the lyricoo title is clicked
@@ -343,5 +348,44 @@ public class ConversationActivity extends Activity {
 
 		// update display to show song
 		mLyricooTitle.setText(mSelectedLyricoo.getTitle());
+	}
+
+	/**
+	 * When the keyboard pops up to write a message the view size is changed and
+	 * the bottom of the message list is hidden. We can listen for the keyboard
+	 * and update the view accordingly
+	 */
+	private boolean isKeyboardShown = false;
+
+	private void attachKeyboardListener() {
+		final View activityRootView = findViewById(R.id.root_view);
+		activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+				new OnGlobalLayoutListener() {
+					@Override
+					public void onGlobalLayout() {
+						// if the height changes enough the keyboard was
+						// probably introduced
+						int heightDiff = activityRootView.getRootView()
+								.getHeight() - activityRootView.getHeight();
+						if (heightDiff > 100) { // if more than 100 pixels, its
+												// probably a keyboard...
+
+							// if the keyboard was just shown, scroll the
+							// messages down to the bottom
+							if (!isKeyboardShown) {
+								isKeyboardShown = true;
+								scrollToBottom();
+							}
+						}
+						// keep track of whether or not the keyboard was just
+						// shown. For some reason this callback is called even
+						// when the layout doesn't seem to change much and this
+						// prevents duplicate calls
+						else {
+							isKeyboardShown = false;
+						}
+					}
+				});
+
 	}
 }

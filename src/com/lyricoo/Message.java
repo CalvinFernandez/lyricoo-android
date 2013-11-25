@@ -165,14 +165,25 @@ public class Message {
 	/**
 	 * Check if two messages are equal.
 	 * 
-	 * @param msg
-	 * @return
+	 * @param msg An object to check for equality
+	 * @return True if the messages are equal and false otherwise
 	 */
-	public boolean equals(Message msg) {
-		// if the message is null they are not equal by default
-		if (msg == null){
+	@Override
+	public boolean equals(Object object) {
+		// if the object is null they are not equal by default
+		if (object == null){
 			return false;
 		}
+		
+		if (object == this) {
+			return true;
+		}
+		
+		if (!(object instanceof Message)) {
+			return false;
+		}
+		
+		Message msg = (Message) object;
 
 		// if the message ids are equal the messages are equal
 		if (msg.getMessageId() == mMessageId){
@@ -217,4 +228,5 @@ public class Message {
 		// if we got through all the checks then the messages must be equal
 		return true;
 	}
+	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
 }

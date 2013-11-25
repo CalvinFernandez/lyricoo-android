@@ -10,12 +10,12 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.lyricoo.LyricooAPI;
 import com.lyricoo.R;
 
 import com.lyricoo.Session;
 
 import com.lyricoo.Utility;
+import com.lyricoo.api.LyricooApi;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -100,16 +100,16 @@ public class SignUpActivity extends Activity {
 		params.put("username", data.username);
 		params.put("phone_number", data.number);
 
-		LyricooAPI.post("users/new", params, new JsonHttpResponseHandler() {
+		LyricooApi.post("users", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
 				// store user credentials
-				Session.create(response);
+				Session.create(mContext, response);
 
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
-			}
+			}		
 
 			@Override
 			public void onFailure(Throwable error, JSONObject response) {
@@ -185,8 +185,8 @@ public class SignUpActivity extends Activity {
 			}
 		} catch (JSONException e) {
 			// Can't get errors for some reason. Leave list empty
-		} catch (NullPointerException e){
-			
+		} catch (NullPointerException e) {
+
 		}
 
 		return result;

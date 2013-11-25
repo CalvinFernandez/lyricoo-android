@@ -63,6 +63,22 @@ public class Conversation {
 		return m;
 	}
 	
+	/**
+	 * Add a message to 
+	 * @param message
+	 */
+	public void add(Message message){
+		mMessages.add(message);
+	}
+	
+	/**
+	 * Remove the given if message from the conversation. If no matching message is found nothing is done
+	 * @param message
+	 */
+	public void remove(Message message){
+		mMessages.remove(message);
+	}
+	
 	public static ArrayList<Conversation> parseMessagesJson(JSONObject json) {
 		ArrayList<Conversation> conversations = new ArrayList<Conversation>();
 		
@@ -162,4 +178,6 @@ public class Conversation {
 		
 		return conversations;		
 	}
+	
+	
 }

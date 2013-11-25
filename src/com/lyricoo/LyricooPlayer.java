@@ -34,8 +34,7 @@ public class LyricooPlayer {
 		AudioManager audioManager = (AudioManager) context
 				.getSystemService(Context.AUDIO_SERVICE);
 		int volume = LyricooSettings.getUserSettings().getVolume();
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume,
-				0);
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 	}
 
 	/**
@@ -111,13 +110,15 @@ public class LyricooPlayer {
 	 * 
 	 */
 	public void stop() {
-		try {
-			mPlayer.stop();
-			mPlayer.setOnPreparedListener(null);
-			mPlayer.prepareAsync();
-		} catch (Exception e) {
-			// reset the player if something went wrong
-			reset();
+		if (mPlayer.isPlaying()) {
+			try {
+				mPlayer.stop();
+				mPlayer.setOnPreparedListener(null);
+				mPlayer.prepareAsync();
+			} catch (Exception e) {
+				// reset the player if something went wrong
+				reset();
+			}
 		}
 
 	}
@@ -158,11 +159,12 @@ public class LyricooPlayer {
 		return mPlayer.isPlaying();
 	}
 
-	/** Stop music and free all player resources
+	/**
+	 * Stop music and free all player resources
 	 * 
 	 */
 	public void destroy() {
-		mPlayer.release();		
+		mPlayer.release();
 	}
 
 }

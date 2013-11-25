@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lyricoo.api.LyricooApi;
+
 /** This class encapsulates the song model of the backend
  *
  */
@@ -89,7 +91,7 @@ public class Song {
 	 * @return
 	 */
 	public String getUrl() {
-		return LyricooAPI.BASE_URL + mPath;
+		return LyricooApi.BASE_URL + mPath;
 	}
 
 	public String getCategory() {
