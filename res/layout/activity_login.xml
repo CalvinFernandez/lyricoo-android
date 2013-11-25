@@ -31,13 +31,25 @@
         android:layout_below="@+id/username_field"
         android:hint="@string/password_field"/>
     
+    <CheckBox 
+        android:id="@+id/rememberme_box"
+        android:layout_below="@+id/password_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <TextView 
+        android:layout_alignBaseline="@id/rememberme_box"
+        android:layout_toRightOf="@id/rememberme_box"
+     	android:layout_width="wrap_content"
+     	android:layout_height="wrap_content"
+        android:text="@string/rememberme_text"/>
     <Button
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/password_field"
+        android:layout_below="@id/rememberme_box"
         android:onClick="login"
         android:text="@string/login_label" />
 
@@ -47,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/password_field"
+        android:layout_below="@id/rememberme_box"
         android:onClick="signupClicked"
         android:text="@string/signup_label" />
 
