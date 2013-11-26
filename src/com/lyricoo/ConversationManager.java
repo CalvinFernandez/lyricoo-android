@@ -180,6 +180,23 @@ public class ConversationManager {
 		// alert listeners to changes
 		notifyDataUpdate(contact);
 	}
+	
+	/**
+	 * Add a message to the local conversation.
+	 * Will attempt to guess the appropriate conversation
+	 * to which the add the message, or initialize a new
+	 * conversation if the contact is in contacts but 
+	 * doesn't currently have a conversation thread 
+	 * with the user 
+	 * 
+	 * @param message
+	 */
+	public void receiveMessage(Message message) {
+		User contact = Session.getFriendManager().findFriend(message.getContactId());
+		if (contact != null) {
+			receiveMessage(message, contact);
+		}
+	}
 
 	/**
 	 * Force the ConversationManager to sync local data with server.

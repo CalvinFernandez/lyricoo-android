@@ -9,6 +9,8 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Bundle;
+
 /**
  * The message class represents a message that has been sent from one user to
  * another. Two copies are stored on the server, one belonging to the sender and
@@ -130,6 +132,30 @@ public class Message {
 		}
 	}
 
+	/**
+	 * Build a message from an android bundle
+	 * object
+	 * @param bundle
+	 * @throws MessageException 
+	 */
+	public Message(Bundle bundle) throws MessageException {
+		if (	bundle.containsKey("user_id") &&
+				bundle.containsKey("contact_id") &&
+				bundle.containsKey("sent") &&
+				bundle.containsKey("content")) {
+			
+			mUserId = (Integer) bundle.get("user_id");
+			mContactId = (Integer) bundle.get("contact_id");
+			mSent = (Boolean) bundle.get("sent");
+			mContent = (String) bundle.get("content");
+			
+			// TODO: Add Song and date to message
+			
+		} else {
+			throw new MessageException("Malformed message");
+		}
+	}
+	
 	public String getContent() {
 		return mContent;
 	}
