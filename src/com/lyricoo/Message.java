@@ -27,6 +27,8 @@ public class Message {
 	private Integer mMessageId;
 	private int mUserId; // this should reference Session id.
 	private int mContactId;
+	
+	
 	private boolean mSent;
 	// the Song included with this message. Null if none
 	private Song mSong;
@@ -144,16 +146,17 @@ public class Message {
 				bundle.containsKey("sent") &&
 				bundle.containsKey("content")) {
 			
-			mUserId = (Integer) bundle.get("user_id");
-			mContactId = (Integer) bundle.get("contact_id");
-			mSent = (Boolean) bundle.get("sent");
-			mContent = (String) bundle.get("content");
+			mUserId = Integer.parseInt(bundle.getString("user_id"));
+			mContactId = Integer.parseInt(bundle.getString("contact_id"));
+			mSent = Boolean.getBoolean(bundle.getString("sent"));
+			mContent = bundle.getString("content");
 			
 			// TODO: Add Song and date to message
 			
 		} else {
 			throw new MessageException("Malformed message");
 		}
+		
 	}
 	
 	public String getContent() {

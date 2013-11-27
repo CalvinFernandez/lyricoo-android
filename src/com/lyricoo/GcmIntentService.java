@@ -44,10 +44,12 @@ public class GcmIntentService extends IntentService {
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 				// Regular message hooray!
 				sendNotification("Received: " + extras.toString());
+				String contact = null;
 				try {
-					
-					Session.getConversationManager().receiveMessage(new Message(extras));
-					
+					if (extras.containsKey("contact")) {
+						contact = extras.getString("contact");
+					}
+					Session.getConversationManager().receiveMessage(new Message(extras), contact);
 				} catch (MessageException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

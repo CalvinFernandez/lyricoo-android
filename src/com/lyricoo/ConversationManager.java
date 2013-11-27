@@ -3,6 +3,7 @@ package com.lyricoo;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -191,13 +192,22 @@ public class ConversationManager {
 	 * 
 	 * @param message
 	 */
-	public void receiveMessage(Message message) {
+	public void receiveMessage(Message message, String _contact) {
 		User contact = Session.getFriendManager().findFriend(message.getContactId());
-		if (contact != null) {
+		if (contact == null) {
+			if (_contact != null) {
+				try {
+					contact = new User(_contact);
+					receiveMessage(message, contact);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} else {
 			receiveMessage(message, contact);
 		}
 	}
-
 	/**
 	 * Force the ConversationManager to sync local data with server.
 	 */
