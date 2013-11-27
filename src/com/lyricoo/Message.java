@@ -9,6 +9,14 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.loopj.android.http.RequestParams;
+import com.lyricoo.api.LyricooApi;
+import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.api.LyricooModel;
+import com.lyricoo.api.LyricooResponseAdapter;
+
+import android.os.Bundle;
+
 /**
  * The message class represents a message that has been sent from one user to
  * another. Two copies are stored on the server, one belonging to the sender and
@@ -18,14 +26,18 @@ import org.json.JSONObject;
  * 
  */
 
-public class Message {
+public class Message extends LyricooModel {
 	private String mContent;
 	// use integer because the message id can be null for locally created
 	// messages
 	private Integer mMessageId;
 	private int mUserId; // this should reference Session id.
 	private int mContactId;
+	
+	
 	private boolean mSent;
+	private boolean mRead;
+	
 	// the Song included with this message. Null if none
 	private Song mSong;
 	private Date mTime;
@@ -33,9 +45,13 @@ public class Message {
 	// format of the date that the server uses
 	// TODO: Adjust message time for user's timezone
 	private final String DATE_FORMAT = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'";
+	
+	private static String baseUrl = "messages";
 
 	public Message(String content, int userId, int contactId, boolean sent,
 			Song song, Date time) {
+		super();
+		
 		mContent = content;
 		mUserId = userId;
 		mContactId = contactId;
@@ -79,6 +95,8 @@ public class Message {
 	public Message(JSONObject json) {
 		// TODO: Make sure these json keys match what the server uses
 		// TODO: Handle exceptions on json parsing
+		super();
+		
 		try {
 			mMessageId = json.getInt("id");
 		} catch (JSONException e1) {
@@ -128,8 +146,42 @@ public class Message {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+			mRead = json.getBoolean("read");
+		} catch (JSONException e) {
+			
+		}
+		
+		setBaseUrl(baseUrl + "/" + mMessageId);
 	}
 
+	/**
+	 * Build a message from an android bundle
+	 * object
+	 * @param bundle
+	 * @throws MessageException 
+	 */
+	public Message(Bundle bundle) throws MessageException {
+		if (	bundle.containsKey("user_id") &&
+				bundle.containsKey("contact_id") &&
+				bundle.containsKey("sent") &&
+				bundle.containsKey("content") &&
+				bundle.containsKey("read")) {
+			
+			mUserId = Integer.parseInt(bundle.getString("user_id"));
+			mContactId = Integer.parseInt(bundle.getString("contact_id"));
+			mSent = Boolean.getBoolean(bundle.getString("sent"));
+			mContent = bundle.getString("content");
+			mRead = Boolean.getBoolean(bundle.getString("read"));
+			// TODO: Add Song and date to message
+			
+		} else {
+			throw new MessageException("Malformed message");
+		}
+		
+	}
+	
 	public String getContent() {
 		return mContent;
 	}
@@ -145,7 +197,19 @@ public class Message {
 	public boolean isSent() {
 		return mSent;
 	}
+	
+	public boolean isRead() {
+		return mRead;
+	}
+	
+	public boolean isUnread() {
+		return mRead == false;
+	}
 
+	public void read() {
+		mRead = true;
+	}
+	
 	public Song getSong() {
 		return mSong;
 	}
@@ -228,5 +292,38 @@ public class Message {
 		// if we got through all the checks then the messages must be equal
 		return true;
 	}
+	
+	/**
+	 * Converts an entire message into request parameters
+	 * @return
+	 */
+	public RequestParams parameterize() {
+		RequestParams params = new RequestParams();
+		
+		params.put("content", mContent);
+		params.put("user_id", Integer.toString(mUserId));
+		params.put("contact_id", Integer.toString(mContactId));
+		params.put("read", Boolean.toString(mRead));
+		params.put("sent", Boolean.toString(mSent));
+		params.put("id", Integer.toString(mMessageId));
+		
+		return params;
+	}
+	
+
+	/**
+	 * Custom put methods for updating a message
+	 * Use this if you want to update the message
+	 * content.
+	 * @param responseHandler
+	 */
+	public void put(LyricooApiResponseHandler responseHandler) {
+		put(parameterize(), responseHandler);
+	}
+	
+	public void put() {
+		put(new LyricooApiResponseHandler());
+	}
+	
 	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
 }

@@ -60,9 +60,14 @@ public class User extends LyricooModel {
 		}
 	}
 	
+	public User(String user) throws JSONException {
+		this(new JSONObject(user));
+	}
+	
 	public User() {
 		this(new JSONObject());
 	}
+	
 	
 	public String getEmail(){
 		return mEmail;

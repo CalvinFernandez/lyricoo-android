@@ -104,7 +104,22 @@ public class FriendManager {
 			}
 		});
 	}
-
+	
+	/**
+	 * Attempts to find the friend in the users 
+	 * friends list 
+	 * @param id
+	 * @return null if none found
+	 */
+	public User findFriend(int id) {
+		for (User friend : mFriends) {
+			if (friend.getUserId() == id) {
+				return friend;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Remove a friend from the user's friend list
 	 * 

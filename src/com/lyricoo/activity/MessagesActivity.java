@@ -111,10 +111,14 @@ public class MessagesActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				Conversation convo = mConversations.get(position);
 				// Pass selected user so conversationActivity knows whose
 				// conversation to display
-				User contact = mConversations.get(position).getContact();
-
+				User contact = convo.getContact();
+				
+				//  Mark conversation as read
+				convo.read();
+				
 				// convert to json to make it easy to pass to the object
 				String contactAsJson = Utility.toJson(contact);
 
