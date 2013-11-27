@@ -13,6 +13,7 @@ import com.lyricoo.R;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,9 @@ public class MessageListAdapter extends BaseAdapter {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.message_list_item, parent,
 				false);
+		
 
+		
 		TextView contactName = (TextView) rowView
 				.findViewById(R.id.message_contact_name);
 		TextView content = (TextView) rowView
@@ -59,6 +62,11 @@ public class MessageListAdapter extends BaseAdapter {
 
 		// get the last message in the conversation
 		Conversation convo = mConversations.get(position);
+		
+		if (convo.hasUnread()) {
+			rowView.setBackgroundColor(Color.RED);
+		}
+		
 		Message msg = convo.getMostRecentMessage();
 
 		contactName.setText(convo.getContact().getUsername());
