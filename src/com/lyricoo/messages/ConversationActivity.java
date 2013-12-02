@@ -225,8 +225,9 @@ public class ConversationActivity extends Activity {
 		String messageContent = conversationInputView.getText().toString();
 
 		// if content is blank and no song is selected don't do anything
-		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null)
+		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null){
 			return;
+		}
 
 		Message newMessage = new Message(messageContent, Session.currentUser()
 				.getUserId(), mContact.getUserId(), true, mSelectedLyricoo);
