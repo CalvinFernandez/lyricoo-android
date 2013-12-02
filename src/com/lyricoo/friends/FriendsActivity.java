@@ -1,37 +1,25 @@
-package com.lyricoo.activity;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.lyricoo.Conversation;
-import com.lyricoo.LyricooApp;
-
-import com.lyricoo.FriendManager;
-import com.lyricoo.R;
-import com.lyricoo.Session;
-import com.lyricoo.User;
-import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooApiResponseHandler;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.lyricoo.R;
+import com.lyricoo.Utility;
+import com.lyricoo.messages.ConversationActivity;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 public class FriendsActivity extends Activity {
 	private ArrayList<User> mFriends;

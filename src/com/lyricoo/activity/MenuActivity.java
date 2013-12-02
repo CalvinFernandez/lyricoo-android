@@ -5,6 +5,10 @@ package com.lyricoo.activity;
 
 
 import com.lyricoo.R;
+import com.lyricoo.friends.FriendsActivity;
+import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.music.LyricooSelectionActivity;
+import com.lyricoo.session.SettingsActivity;
 
 import android.os.Bundle;
 import android.app.Activity;

@@ -1,14 +1,6 @@
-package com.lyricoo.activity;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
-
-import com.lyricoo.ContactsListViewEntry;
-import com.lyricoo.Conversation;
-import com.lyricoo.Message;
-import com.lyricoo.PhoneContact;
-import com.lyricoo.R;
-
-import com.lyricoo.User;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.lyricoo.R;
 
 public class ContactsListAdapter extends BaseAdapter {
 	private ArrayList<ContactsListViewEntry> mContacts;

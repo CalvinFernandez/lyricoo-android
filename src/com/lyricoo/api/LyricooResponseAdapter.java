@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.lyricoo.Utility;
 
 /**
  * Use LyricooResponseAdapter to convert reliably from AsyncHttpResponse to

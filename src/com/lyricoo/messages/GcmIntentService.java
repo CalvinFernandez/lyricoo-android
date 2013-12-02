@@ -1,20 +1,14 @@
-package com.lyricoo;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.lyricoo.activity.MessagesActivity;
+package com.lyricoo.messages;
 
 import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.lyricoo.session.Session;
 
 public class GcmIntentService extends IntentService {
 	public static final int NOTIFICATION_ID = 1;
-	private NotificationManager mNotificationManager;
-	NotificationCompat.Builder builder;
 	
 	public GcmIntentService() {
 		super("GcmIntentService");

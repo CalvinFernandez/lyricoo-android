@@ -1,6 +1,7 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
-import com.lyricoo.activity.MessagesActivity;
+import com.lyricoo.R;
+import com.lyricoo.R.drawable;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,6 +26,7 @@ public class LyricooNotificationManager {
 		
 		// always use the same id so old notifications can be updated instead of
 		// creating duplicates
+		// TODO: Always using the same id might prevent new notifications from showing up
 		int id = 1;
 
 		// create the title and content of the notification

@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
@@ -7,14 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.lyricoo.Conversation;
-import com.lyricoo.Message;
 import com.lyricoo.R;
-
-import com.lyricoo.User;
+import com.lyricoo.session.User;
 
 
 public class FriendsListAdapter extends ArrayAdapter<User> {

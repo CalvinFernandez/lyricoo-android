@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
@@ -6,13 +6,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.view.View;
-import android.widget.ProgressBar;
 
 /**
  * Asynchronously gets all contacts on the phone. Returns a list
@@ -28,7 +25,7 @@ public class RetrieveContactsAsync extends
 		AsyncTask<Void, Integer, ArrayList<PhoneContact>>{
 	
 	private Context mContext;
-	private OnTaskCompleted mListener;
+	private onRetrieveCompleted mListener;
 
 	// In Android 3.0 (API version 11) and later, the Name column
 	// is Contacts.DISPLAY_NAME_PRIMARY; in versions previous to that,
@@ -37,13 +34,13 @@ public class RetrieveContactsAsync extends
 	private String NAME_INDEX = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? Contacts.DISPLAY_NAME_PRIMARY
 			: Contacts.DISPLAY_NAME;
 
-	public RetrieveContactsAsync(Context context, OnTaskCompleted listener) {
+	public RetrieveContactsAsync(Context context, onRetrieveCompleted listener) {
 		mContext = context;
 		mListener = listener;
 	}
 	
 	protected void onPostExecute(ArrayList<PhoneContact> result){
-		mListener.onTaskCompleted(result);
+		mListener.onCompleted(result);
 	}
 
 	@Override
@@ -129,5 +126,9 @@ public class RetrieveContactsAsync extends
 			}			
 		}
 		return result;
+	}
+	
+	public interface onRetrieveCompleted {
+		public void onCompleted(ArrayList<PhoneContact> result);
 	}
 }

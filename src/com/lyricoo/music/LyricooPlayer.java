@@ -1,6 +1,8 @@
-package com.lyricoo;
+package com.lyricoo.music;
 
 import java.io.IOException;
+
+import com.lyricoo.session.LyricooSettings;
 
 import android.content.Context;
 import android.media.AudioManager;

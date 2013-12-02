@@ -1,8 +1,7 @@
-package com.lyricoo;
+package com.lyricoo.session;
 
 import java.io.IOException;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,9 +12,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.friends.FriendManager;
+import com.lyricoo.messages.ConversationManager;
 
 public class Session {
 	
@@ -44,6 +45,7 @@ public class Session {
 	}
 
 	private static void storeRegistration(String _regid) {
+		// TODO: Store using shared preferences
 		regid = _regid;
 	}
 

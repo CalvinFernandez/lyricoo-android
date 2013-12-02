@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.session;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooModel;
+import com.lyricoo.friends.PhoneContact;
 
 /** The User class stores all data pertaining
  * to a logged in user.
