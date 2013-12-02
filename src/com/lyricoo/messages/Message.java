@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.os.Bundle;
 
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.api.LyricooModel;
 import com.lyricoo.music.Song;
@@ -30,6 +31,7 @@ public class Message extends LyricooModel {
 	// use integer because the message id can be null for locally created
 	// messages
 	private Integer mMessageId;
+	
 	private int mUserId; // this should reference Session id.
 	private int mContactId;
 	
@@ -108,10 +110,39 @@ public class Message extends LyricooModel {
 	}
 
 	public Message(JSONObject json) {
+		super();
+		setContent(json);
+	}
+
+	/**
+	 * Build a message from an android bundle
+	 * object
+	 * @param bundle
+	 * @throws MessageException 
+	 */
+	public Message(Bundle bundle) throws MessageException {
+		if (	bundle.containsKey("user_id") &&
+				bundle.containsKey("contact_id") &&
+				bundle.containsKey("sent") &&
+				bundle.containsKey("content") &&
+				bundle.containsKey("read")) {
+			
+			mUserId = Integer.parseInt(bundle.getString("user_id"));
+			mContactId = Integer.parseInt(bundle.getString("contact_id"));
+			mSent = Boolean.getBoolean(bundle.getString("sent"));
+			mContent = bundle.getString("content");
+			mRead = Boolean.getBoolean(bundle.getString("read"));
+			// TODO: Add Song and date to message
+			
+		} else {
+			throw new MessageException("Malformed message");
+		}
+		
+	}
+	
+	private void setContent(JSONObject json) {
 		// TODO: Make sure these json keys match what the server uses
 		// TODO: Handle exceptions on json parsing
-		super();
-		
 		try {
 			mMessageId = json.getInt("id");
 		} catch (JSONException e1) {
@@ -170,32 +201,6 @@ public class Message extends LyricooModel {
 		
 		setBaseUrl(baseUrl + "/" + mMessageId);
 	}
-
-	/**
-	 * Build a message from an android bundle
-	 * object
-	 * @param bundle
-	 * @throws MessageException 
-	 */
-	public Message(Bundle bundle) throws MessageException {
-		if (	bundle.containsKey("user_id") &&
-				bundle.containsKey("contact_id") &&
-				bundle.containsKey("sent") &&
-				bundle.containsKey("content") &&
-				bundle.containsKey("read")) {
-			
-			mUserId = Integer.parseInt(bundle.getString("user_id"));
-			mContactId = Integer.parseInt(bundle.getString("contact_id"));
-			mSent = Boolean.getBoolean(bundle.getString("sent"));
-			mContent = bundle.getString("content");
-			mRead = Boolean.getBoolean(bundle.getString("read"));
-			// TODO: Add Song and date to message
-			
-		} else {
-			throw new MessageException("Malformed message");
-		}
-		
-	}
 	
 	public String getContent() {
 		return mContent;
@@ -236,6 +241,7 @@ public class Message extends LyricooModel {
 	public Integer getMessageId() {
 		return mMessageId;
 	}
+	
 
 	public boolean getIsSent() {
 		return mSent;
@@ -309,18 +315,35 @@ public class Message extends LyricooModel {
 	}
 	
 	/**
+	 * Updates the message with new json data
+	 * @param json
+	 */
+	public void update(JSONObject json) {
+		setContent(json);
+	}
+	
+	/**
 	 * Converts an entire message into request parameters
 	 * @return
 	 */
 	public RequestParams parameterize() {
 		RequestParams params = new RequestParams();
 		
-		params.put("content", mContent);
+		if (mContent != null) {
+			params.put("content", mContent);
+		}
 		params.put("user_id", Integer.toString(mUserId));
 		params.put("contact_id", Integer.toString(mContactId));
 		params.put("read", Boolean.toString(mRead));
 		params.put("sent", Boolean.toString(mSent));
-		params.put("id", Integer.toString(mMessageId));
+		
+		if (mMessageId != null) {
+			params.put("id", Integer.toString(mMessageId));
+		}
+		
+		if (mSong != null) {
+			params.put("song_id", Integer.toString(mSong.getId()));
+		}
 		
 		return params;
 	}

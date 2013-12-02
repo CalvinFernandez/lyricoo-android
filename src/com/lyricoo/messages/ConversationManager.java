@@ -132,8 +132,7 @@ public class ConversationManager {
 
 			@Override
 			public void onSuccess(Object responseJson) {
-				// TODO: Have server messages#create return the message
-				// json so we can update the local copy with its new id
+				message.update((JSONObject) responseJson);
 			}
 			
 			public void onFailure(int statusCode, String responseBody, Throwable error){
