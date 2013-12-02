@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
 public class MessageException extends Exception {
 	public MessageException() {}

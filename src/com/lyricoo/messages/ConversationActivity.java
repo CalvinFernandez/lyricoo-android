@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.messages;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,15 +16,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.lyricoo.Conversation;
-import com.lyricoo.ConversationManager;
-import com.lyricoo.LyricooPlayer;
-import com.lyricoo.Message;
 import com.lyricoo.R;
-import com.lyricoo.Session;
-import com.lyricoo.Song;
-import com.lyricoo.User;
 import com.lyricoo.Utility;
+import com.lyricoo.music.LyricooPlayer;
+import com.lyricoo.music.LyricooSelectionActivity;
+import com.lyricoo.music.Song;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 /**
  * Display a conversation with another Lyricoo User. The conversation is simply

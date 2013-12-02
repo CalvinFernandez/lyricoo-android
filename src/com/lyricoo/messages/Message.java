@@ -1,6 +1,5 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,13 +8,12 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Bundle;
+
 import com.loopj.android.http.RequestParams;
-import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.api.LyricooModel;
-import com.lyricoo.api.LyricooResponseAdapter;
-
-import android.os.Bundle;
+import com.lyricoo.music.Song;
 
 /**
  * The message class represents a message that has been sent from one user to
@@ -27,6 +25,7 @@ import android.os.Bundle;
  */
 
 public class Message extends LyricooModel {
+	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
 	private String mContent;
 	// use integer because the message id can be null for locally created
 	// messages
@@ -290,7 +289,7 @@ public class Message extends LyricooModel {
 		}
 
 		// if we got through all the checks then the messages must be equal
-		return true;
+		return true;		
 	}
 	
 	/**
@@ -325,5 +324,5 @@ public class Message extends LyricooModel {
 		put(new LyricooApiResponseHandler());
 	}
 	
-	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
+	
 }

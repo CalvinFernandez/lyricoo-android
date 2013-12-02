@@ -1,18 +1,10 @@
 package com.lyricoo;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import java.io.UnsupportedEncodingException;
-
-import org.json.JSONException;
-import org.json.JSONTokener;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
 import android.content.Context;
 import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class Utility {
 	

@@ -1,42 +1,15 @@
-package com.lyricoo.activity;
-
+package com.lyricoo.session;
 
 import org.apache.http.Header;
-
-import java.io.IOException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-
 import org.json.JSONObject;
-import org.json.JSONArray;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-
-
-import com.lyricoo.R;
-import com.lyricoo.Session;
-import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooApi;
-import com.lyricoo.api.LyricooApiResponseHandler;
-import com.lyricoo.api.LyricooResponseAdapter;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -45,75 +18,81 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.lyricoo.R;
+import com.lyricoo.Utility;
+import com.lyricoo.activity.MenuActivity;
+import com.lyricoo.api.LyricooApi;
+import com.lyricoo.api.LyricooApiResponseHandler;
+
 public class LoginActivity extends Activity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	
+
 	private SharedPreferences mPrefs;
-	
-	String SENDER_ID = "69329840121";
-	String regid;
-	 
+
 	/**
 	 * GCM Tag
 	 */
-	static final String TAG = "GCM";
-	
-	GoogleCloudMessaging gcm;
-	
+	private static final String TAG = "GCM";
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		mPrefs = getSharedPreferences(Utility.PREFS_NAME, 0);
-		
+
 		setContentView(R.layout.activity_login);
-		
+
 		if (mPrefs.getBoolean("rememberable", false)) {
-		
+
 			EditText username = (EditText) findViewById(R.id.username_field);
 			EditText password = (EditText) findViewById(R.id.password_field);
 			CheckBox check = (CheckBox) findViewById(R.id.rememberme_box);
-			
+
 			check.setChecked(true);
 			username.setText(mPrefs.getString("username", ""));
 			password.setText(mPrefs.getString("password", ""));
-			
+
 		}
-		
+
 		// get progress bar
 		mProgress = (ProgressBar) findViewById(R.id.sign_in_progress);
 
 		// save context
 		mContext = this;
-		
+
 		if (!checkPlayServices()) {
 			Log.i(TAG, "No valid Google Play Services APK found");
 		}
 	}
 
 	/**
-	 * Check the device to make sure it has the Google Play Services APK. If
-	 * it doesn't, display a dialog that allows users to download the APK from
-	 * the Google Play Store or enable it in the device's system settings.
+	 * Check the device to make sure it has the Google Play Services APK. If it
+	 * doesn't, display a dialog that allows users to download the APK from the
+	 * Google Play Store or enable it in the device's system settings.
 	 */
 	private boolean checkPlayServices() {
-	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-	    if (resultCode != ConnectionResult.SUCCESS) {
-	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-	            GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-	                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
-	        } else {
-	            Log.i(TAG, "This device is not supported.");
-	            //finish();
-	        }
-	        return false;
-	    }
-	    return true;
+		int resultCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(getApplicationContext());
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			} else {
+				Log.i(TAG, "This device is not supported.");
+				// finish();
+			}
+			return false;
+		}
+		return true;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -128,19 +107,18 @@ public class LoginActivity extends Activity {
 		// Right now the server only accepts email
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
-		
 
 		String username = usernameView.getText().toString();
 		String password = passwordView.getText().toString();
 
 		final CheckBox remember = (CheckBox) findViewById(R.id.rememberme_box);
-		
+
 		if (remember.isChecked()) {
 			Session.storeRememberable(mPrefs, username, password);
 		} else {
 			Session.destroyRememberable(mPrefs);
 		}
-		
+
 		// debug helper for testing
 		if (username.equals("") && password.equals("")) {
 			username = "konakid@gmail.com";
@@ -155,33 +133,42 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onSuccess(Object responseJson) {
-				Session.create(getApplicationContext(), (JSONObject) responseJson);
-				
+				Session.create(getApplicationContext(),
+						(JSONObject) responseJson);
+
 				Session.registerGCM(mContext);
-				
+
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
 			}
-			
-			 @Override
-			 public void onFailure(int statusCode, String responseBody, Throwable error) {
-			 handleLoginFailure(email);
-			 }
 
-			
-			 @Override
-			 public void onFinish() {
-			 setIsLoading(false);
-			 }
+			@Override
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
+				handleLoginFailure(email, statusCode);
+			}
+
+			@Override
+			public void onFinish() {
+				setIsLoading(false);
+			}
 
 		});
 
 	}
 
-	private void handleLoginFailure(final String email) {
+	private void handleLoginFailure(final String email, int statusCode) {
+		String errorMesage;
+		switch(statusCode){
+		// TODO: Add cases for possible status codes and customize error messages for cause of failure
+		default :
+			errorMesage = "Sorry, there was a problem logging you in";
+			break;
+		}
+		
 		new AlertDialog.Builder(this)
 				.setTitle("Login Error")
-				.setMessage("Sorry, there was a problem logging you in")
+				.setMessage(errorMesage)
 				.setPositiveButton("Try Again",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
@@ -205,6 +192,7 @@ public class LoginActivity extends Activity {
 	 * @param email
 	 */
 	private void resetPassword(final String email) {
+		// TODO: Test this
 		RequestParams params = new RequestParams();
 		params.put("email", email);
 

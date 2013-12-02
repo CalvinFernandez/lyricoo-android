@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.messages;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,10 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.lyricoo.Conversation;
-import com.lyricoo.Message;
 import com.lyricoo.R;
-import com.lyricoo.Song;
+import com.lyricoo.music.Song;
 
 
 public class ConversationAdapter extends ArrayAdapter<Message> {

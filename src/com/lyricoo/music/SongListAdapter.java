@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.music;
 
 import java.util.ArrayList;
 
@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.lyricoo.Conversation;
-import com.lyricoo.Message;
 import com.lyricoo.R;
 
-import com.lyricoo.Song;
+import com.lyricoo.messages.Conversation;
+import com.lyricoo.messages.Message;
 
 public class SongListAdapter extends BaseAdapter {
 

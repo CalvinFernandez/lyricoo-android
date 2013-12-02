@@ -1,37 +1,25 @@
-package com.lyricoo.activity;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.lyricoo.ContactsListViewEntry;
-import com.lyricoo.OnTaskCompleted;
-import com.lyricoo.PhoneContact;
 
 import com.lyricoo.R;
-import com.lyricoo.RetrieveContactsAsync;
-import com.lyricoo.Session;
-import com.lyricoo.User;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 public class ContactsActivity extends Activity {
 	private ProgressBar mProgress;
@@ -53,19 +41,21 @@ public class ContactsActivity extends Activity {
 		mProgress = (ProgressBar) findViewById(R.id.contacts_loading_progress);
 
 		// retrieve contacts in background
-		new RetrieveContactsAsync(this, new OnTaskCompleted() {
+		new RetrieveContactsAsync(this,
+				new RetrieveContactsAsync.onRetrieveCompleted() {
 
-			@Override
-			public void onTaskCompleted(Object result) {
-				// save result. We know that result is a list of contacts, so
-				// just cast it and ignore the warning
-				mPhoneContacts = (ArrayList<PhoneContact>) result;
+					@Override
+					public void onCompleted(ArrayList<PhoneContact> result) {
+						// save result. We know that result is a list of
+						// contacts, so
+						// just cast it and ignore the warning
+						mPhoneContacts = (ArrayList<PhoneContact>) result;
 
-				// see which contacts already have accounts and display them
-				sortPhoneContacts();
-			}
-			// run the task
-		}).execute();
+						// see which contacts already have accounts and display
+						// them
+						sortPhoneContacts();
+					}
+				}).execute();// run the task
 	}
 
 	@Override
@@ -83,7 +73,8 @@ public class ContactsActivity extends Activity {
 			@Override
 			public void onSuccess(Object jsonObject) {
 				// parse json into users
-				ArrayList<User> lyricooUsers = User.parseUserJsonArray((JSONArray) jsonObject);
+				ArrayList<User> lyricooUsers = User
+						.parseUserJsonArray((JSONArray) jsonObject);
 
 				// initialize list
 				mContacts = new ArrayList<ContactsListViewEntry>();

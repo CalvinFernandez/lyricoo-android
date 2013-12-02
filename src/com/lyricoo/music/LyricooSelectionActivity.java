@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.music;
 
 import java.util.ArrayList;
 
@@ -7,18 +7,17 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.lyricoo.Conversation;
-import com.lyricoo.FriendManager;
 import com.lyricoo.LyricooApp;
-import com.lyricoo.LyricooPlayer;
 import com.lyricoo.R;
-import com.lyricoo.Session;
-import com.lyricoo.User;
 import com.lyricoo.Utility;
 
-import com.lyricoo.Song;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.friends.FriendManager;
+import com.lyricoo.messages.Conversation;
+import com.lyricoo.messages.ConversationActivity;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;

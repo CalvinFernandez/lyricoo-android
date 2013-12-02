@@ -1,5 +1,7 @@
 package com.lyricoo;
 
+import com.lyricoo.session.LyricooSettings;
+
 import android.app.Application;
 
 /*

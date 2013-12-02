@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.music;
 
 import java.util.ArrayList;
 

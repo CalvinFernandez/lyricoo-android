@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.session;
 
 import android.content.Context;
 import android.media.AudioManager;

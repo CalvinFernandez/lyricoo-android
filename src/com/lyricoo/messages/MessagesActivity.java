@@ -1,4 +1,4 @@
-package com.lyricoo.activity;
+package com.lyricoo.messages;
 
 import java.util.ArrayList;
 
@@ -11,15 +11,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
-import com.lyricoo.Conversation;
-import com.lyricoo.ConversationManager;
-import com.lyricoo.LyricooApp;
 import com.lyricoo.R;
-import com.lyricoo.Session;
-import com.lyricoo.User;
 import com.lyricoo.Utility;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 /**
  * This activity loads all of the users messages and shows a preview of the most
