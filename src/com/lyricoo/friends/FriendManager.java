@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,9 @@ import org.json.JSONArray;
 import android.content.Context;
 
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.session.User;
 
 public class FriendManager {
 	private User mUser;

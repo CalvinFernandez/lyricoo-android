@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.friends;
  
 /**
  * This class holds the information of one entry in the contacts ListView

@@ -1,8 +1,6 @@
-package com.lyricoo.activity;
+package com.lyricoo.session;
 
-import com.lyricoo.LyricooSettings;
 import com.lyricoo.R;
-import com.lyricoo.Session;
 
 import android.os.Bundle;
 import android.app.Activity;

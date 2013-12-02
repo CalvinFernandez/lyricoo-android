@@ -1,28 +1,17 @@
-package com.lyricoo.activity;
+package com.lyricoo.session;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.lyricoo.R;
-
-import com.lyricoo.Session;
-
-import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooApi;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.Html;
 import android.view.Menu;
@@ -30,7 +19,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.lyricoo.R;
+import com.lyricoo.Utility;
+import com.lyricoo.activity.MenuActivity;
+import com.lyricoo.api.LyricooApi;
 
 public class SignUpActivity extends Activity {
 	private Context mContext;

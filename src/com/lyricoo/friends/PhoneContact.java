@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.friends;
 
 import java.util.ArrayList;
 

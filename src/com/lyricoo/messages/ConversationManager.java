@@ -1,16 +1,17 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 /**
  * This class manages all of a user's conversations with other users.

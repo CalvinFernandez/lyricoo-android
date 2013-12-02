@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
 import android.app.Activity;
 import android.content.ComponentName;

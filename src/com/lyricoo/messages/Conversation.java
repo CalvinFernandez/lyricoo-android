@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.messages;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +7,9 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.lyricoo.music.Song;
+import com.lyricoo.session.User;
 
 /** A Conversation is a collection of all the messages
  * between a user and one of their contacts
@@ -18,8 +21,6 @@ public class Conversation {
 	private int mUserId; // This should go away and reference the session id
 						 // we don't want duplicate data
 						 // Duplicate data 
-	
-	private boolean read = true;
 	
 	public Conversation(ArrayList<Message> messages, User contact) {
 		this.mMessages = messages;

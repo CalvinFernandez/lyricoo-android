@@ -1,16 +1,6 @@
-package com.lyricoo.activity;
+package com.lyricoo.messages;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.lyricoo.Conversation;
-import com.lyricoo.Message;
-import com.lyricoo.R;
-
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.lyricoo.R;
 
 public class MessageListAdapter extends BaseAdapter {
 
