@@ -49,7 +49,7 @@ public class Message extends LyricooModel {
 	private static String baseUrl = "messages";
 
 	public Message(String content, int userId, int contactId, boolean sent,
-			Song song, Date time) {
+			Song song, Date time, Boolean read) {
 		super();
 		
 		mContent = content;
@@ -58,8 +58,24 @@ public class Message extends LyricooModel {
 		mSent = sent;
 		mSong = song;
 		mTime = time;
+		mRead = read;
 	}
 
+	/**
+	 * Message constructor without read boolean 
+	 * defaults to true. Use this if the message
+	 * is being sent by the user.
+	 * @param content
+	 * @param userId
+	 * @param contactId
+	 * @param sent
+	 * @param song
+	 * @param time
+	 */
+	public Message(String content, int userId, int contactId, boolean sent,
+			Song song, Date time) {
+		this(content, userId, contactId, sent, song, time, true);
+	}
 	/**
 	 * A new message with no date provided. Initialized to current time
 	 * 
