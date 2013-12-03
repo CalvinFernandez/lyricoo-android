@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.lyricoo.api.LyricooApi;
+import com.lyricoo.music.Song;
 
 public class MusicManager {
 	private ArrayList<Song> mSongs;
@@ -48,7 +50,7 @@ public class MusicManager {
 	}
 	
 	public void getAll(final MusicHandler handler) {
-		LyricooAPI.get("songs/all", null, new JsonHttpResponseHandler() {
+		LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray json) {
 				//	Add songs to our local storage 
