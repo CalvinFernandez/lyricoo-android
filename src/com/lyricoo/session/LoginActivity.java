@@ -1,6 +1,4 @@
-
 package com.lyricoo.session;
-
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -30,6 +28,7 @@ import com.lyricoo.Utility;
 import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
+
 /**
  * This activity is called on launch, and handles logging the user into the app.
  * All other activities extend LyricooActivity, but this only uses Activity
@@ -43,7 +42,6 @@ public class LoginActivity extends Activity {
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-
 	private SharedPreferences mPrefs;
 
 	/**
@@ -54,10 +52,17 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+
+		// Check if there is a session logged in. If so, skip the login page and
+		// go to the main menu
+		if(Session.isLoggedIn()){
+			Intent i = new Intent(this, MenuActivity.class);
+			startActivity(i);
+			return;
+		}
 
 		mPrefs = getSharedPreferences(Utility.PREFS_NAME, 0);
-
-		setContentView(R.layout.activity_login);
 
 		if (mPrefs.getBoolean("rememberable", false)) {
 
@@ -155,7 +160,6 @@ public class LoginActivity extends Activity {
 			}
 
 			@Override
-
 			public void onFailure(int statusCode, String responseBody,
 					Throwable error) {
 				handleLoginFailure(email, statusCode);
@@ -173,13 +177,14 @@ public class LoginActivity extends Activity {
 
 	private void handleLoginFailure(final String email, int statusCode) {
 		String errorMesage;
-		switch(statusCode){
-		// TODO: Add cases for possible status codes and customize error messages for cause of failure
-		default :
+		switch (statusCode) {
+		// TODO: Add cases for possible status codes and customize error
+		// messages for cause of failure
+		default:
 			errorMesage = "Sorry, there was a problem logging you in";
 			break;
 		}
-		
+
 		new AlertDialog.Builder(this)
 				.setTitle("Login Error")
 				.setMessage(errorMesage)
