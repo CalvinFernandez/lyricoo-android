@@ -1,6 +1,7 @@
 package com.lyricoo;
 
-import com.lyricoo.activity.LoginActivity;
+import com.lyricoo.session.LoginActivity;
+import com.lyricoo.session.Session;
 
 import android.app.Activity;
 import android.content.Intent;

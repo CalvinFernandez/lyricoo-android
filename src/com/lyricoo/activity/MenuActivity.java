@@ -4,6 +4,7 @@ package com.lyricoo.activity;
 
 
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +12,10 @@ import android.view.View;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
+import com.lyricoo.friends.FriendsActivity;
+import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.music.LyricooSelectionActivity;
+import com.lyricoo.session.SettingsActivity;
 
 public class MenuActivity extends LyricooActivity {
 

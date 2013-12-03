@@ -1,5 +1,8 @@
 package com.lyricoo;
 
+import com.lyricoo.messages.LyricooPollingService;
+import com.lyricoo.session.LyricooSettings;
+
 import android.app.Application;
 import android.content.Intent;
 
