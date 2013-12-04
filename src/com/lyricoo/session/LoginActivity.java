@@ -3,7 +3,6 @@ package com.lyricoo.session;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,22 +21,19 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
-import com.lyricoo.session.Session;
 import com.lyricoo.Utility;
 import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 
 /**
- * This activity is called on launch, and handles logging the user into the app.
- * All other activities extend LyricooActivity, but this only uses Activity
- * 
- * @author Eli
+ * This activity is called on launch and handles logging the user into the app.
  * 
  */
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends LyricooActivity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
