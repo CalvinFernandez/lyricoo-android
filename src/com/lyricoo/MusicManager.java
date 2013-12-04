@@ -24,7 +24,8 @@ public class MusicManager {
 		//	Custom handler for asynchronous http events
 		//	
 		void onSuccess(ArrayList<Song> songs, ArrayList<String> categories);
-		void onFailure(Throwable error);
+		void onFailure(int statusCode, org.apache.http.Header[] headers, 
+				java.lang.String responseBody, java.lang.Throwable e);
 	}
 	/** 
 	 * Turn a JSONArray of songs from the server into an ArrayList of Songs
@@ -57,7 +58,7 @@ public class MusicManager {
 	 * @param refresh
 	 */
 	public static void getAll(final MusicHandler handler, final Boolean refresh) {
-		if (!cachedSongs | refresh) { 
+		if (!cachedSongs || refresh) { 
 			LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
 				@Override
 				public void onSuccess(JSONArray json) {
@@ -70,10 +71,11 @@ public class MusicManager {
 				}
 
 				@Override
-				public void onFailure(Throwable error, JSONObject json) {
+				public void onFailure(int statusCode, org.apache.http.Header[] headers, 
+						java.lang.String responseBody, java.lang.Throwable e) {
 					// TODO: Handle failure
-					handler.onFailure(error);
-					Log.v("Songs: ", error.getMessage());
+					handler.onFailure(statusCode, headers, responseBody, e);
+					Log.v("Songs: ", e.getMessage());
 				}
 			});
 		} else {

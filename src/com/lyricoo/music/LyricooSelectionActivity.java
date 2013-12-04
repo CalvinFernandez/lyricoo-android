@@ -65,7 +65,7 @@ public class LyricooSelectionActivity extends Activity {
 		mContext = this;
 		mPlayer = new LyricooPlayer(this);
 
-		// Get resouces to use later
+		// Get resources to use later
 		mProgress = (ProgressBar) findViewById(R.id.progress);
 		mCategoryList = (ListView) findViewById(R.id.category_list);
 		mSongList = (ListView) findViewById(R.id.song_list);
@@ -111,8 +111,11 @@ public class LyricooSelectionActivity extends Activity {
 			}
 			
 			@Override
-			public void onFailure(Throwable error) {
-				// TODO Auto-generated method stub
+			public void onFailure(int statusCode, org.apache.http.Header[] headers, 
+					java.lang.String responseBody, java.lang.Throwable e) {
+				
+				String toast = "Error retrieving songs";
+				Utility.makeBasicToast(mContext, toast);
 			}
 		});
 	}
