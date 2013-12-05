@@ -339,7 +339,6 @@ public class ConversationManager {
 	 * from the server.
 	 */
 	public void checkForNewMessages() {
-		Utility.log("Checking for new messages...");
 		mUser.get(new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object json) {
@@ -347,10 +346,7 @@ public class ConversationManager {
 					JSONObject userJson = (JSONObject) json;
 					boolean synced = userJson.getBoolean("synced");
 					if (!synced) {
-						Utility.log("new messages found, syncing");
 						sync(null);
-					} else {
-						Utility.log("no new messages");
 					}
 				} catch (Exception e) {
 					Utility.log("Error parsing user json in ConversationManager.checkNewMessages()");
