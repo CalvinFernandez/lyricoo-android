@@ -153,6 +153,7 @@ public class LoginActivity extends LyricooActivity {
 
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
+				finish(); // Clear from history only after successful login
 			}
 
 			@Override

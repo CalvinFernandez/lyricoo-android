@@ -15,6 +15,7 @@ import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.MessagesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
+import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.SettingsActivity;
 
 public class MenuActivity extends LyricooActivity {
@@ -22,7 +23,19 @@ public class MenuActivity extends LyricooActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_menu);
+		boolean logout = getIntent().getBooleanExtra("logout", false);
+		if (logout) {
+			/*
+			 * If logout, go back to the LoginActivity.
+			 */
+			startActivity(new Intent(this, LoginActivity.class));
+			finish();
+		} else {
+			/*
+			 * Normal onCreate. Just build main menu
+			 */
+			setContentView(R.layout.activity_menu);
+		}
 	}
 
 	@Override

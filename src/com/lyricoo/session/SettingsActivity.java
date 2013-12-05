@@ -11,6 +11,8 @@ import android.widget.ToggleButton;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
+import com.lyricoo.activity.MenuActivity;
+
 
 public class SettingsActivity extends LyricooActivity {
 	private ToggleButton mNotificationToggle;
@@ -70,9 +72,22 @@ public class SettingsActivity extends LyricooActivity {
 		// delete local user info
 		Session.destroy();
 		
-		// return to the login activity
-		Intent i = new Intent(this, LoginActivity.class);
-		startActivity(i);		
+		/*
+		 * To logout, let's go back to MenuActivity and clear 
+		 * all of the history on top of MenuActivity. We cannot
+		 * simply go back to the login page as we destroyed it 
+		 * after we logged in so we'd have to build a new
+		 * intent instead of searching the back stack 
+		 * for the old intent. For a new intent
+		 * FLAG_ACTIVITY_CLEAR_TOP won't 
+		 * have any history on top of it to clear. 
+		 */
+		Intent i = new Intent(this, MenuActivity.class);
+		i.putExtra("logout", true);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);	// Clear all history on top of intent
+		startActivity(i);
+		
+		finish();
 	}
 	
 	public void notificationToggleClicked(View v){
