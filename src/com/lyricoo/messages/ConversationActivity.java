@@ -1,6 +1,6 @@
 package com.lyricoo.messages;
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.music.LyricooPlayer;
@@ -37,7 +38,7 @@ import com.lyricoo.session.User;
  * contact.
  * 
  */
-public class ConversationActivity extends Activity {
+public class ConversationActivity extends LyricooActivity {
 	private Conversation mConversation;
 	private User mContact;
 	private ConversationAdapter mConversationAdapter;
@@ -385,6 +386,5 @@ public class ConversationActivity extends Activity {
 						}
 					}
 				});
-
 	}
 }

@@ -2,7 +2,6 @@ package com.lyricoo.messages;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.session.Session;
@@ -23,7 +23,7 @@ import com.lyricoo.session.User;
  * conversation is loaded.
  * 
  */
-public class MessagesActivity extends Activity {
+public class MessagesActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
 	private MessageListAdapter mAdapter;
 	private Context mContext;

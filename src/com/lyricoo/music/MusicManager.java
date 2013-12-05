@@ -1,4 +1,4 @@
-package com.lyricoo;
+package com.lyricoo.music;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.lyricoo.api.LyricooApi;
-import com.lyricoo.music.Song;
 
 public class MusicManager {
 	private static Boolean cachedSongs = false;
@@ -95,7 +94,7 @@ public class MusicManager {
 	
 	
 	public static ArrayList<String> categories(Boolean refresh) {
-		if (!cachedCats | refresh) { 
+		if (!cachedCats || refresh) { 
 			mCategories = new ArrayList<String>();
 			for (Song song : mSongs) {
 				String category = song.getCategory();
@@ -113,7 +112,7 @@ public class MusicManager {
 	}
 	
 	public static Song get(int id) {
-		return null;
-		
+		// TODO
+		return null;		
 	}
 }

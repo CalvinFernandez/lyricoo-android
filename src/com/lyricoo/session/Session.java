@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.LyricooApp;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.friends.FriendManager;
@@ -89,23 +90,15 @@ public class Session {
 								// TODO: DO something here (maybe just UI
 								// indication of
 								// registration success ..
-								System.out.print("Success user registered");
+								Utility.log("Success user registered");
+								((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(true);
 							}
 
 							@Override
 							public void onFailure(int statusCode,
 									String responseBody, Throwable error) {
-								// TODO: Do something when server errors! (maybe
-								// keep trying
-								// ... this is a big problem if this happens
-								// because no one
-								// will be able to communicate with the user
-								// because our server
-								// will not know the users's gcm id. Perhaps we
-								// should implement
-								// an http polling feature if this fails.
-								System.out
-										.print("Error! User unable to register!");
+								Utility.log("Error! User unable to register!");
+								((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(false);
 							}
 
 						});
@@ -118,6 +111,7 @@ public class Session {
 					// If there is an error, don't just keep trying to register.
 					// Require the user to click a button again, or perform
 					// exponential back-off.
+					((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(false);
 				}
 				return msg;
 			}
@@ -135,6 +129,8 @@ public class Session {
 		String regID = getRegistrationId();
 		if (Utility.isStringBlank(regID)) {
 			registerInBackground(context);
+		} else {
+			((LyricooApp)mContext.getApplicationContext()).setIsGcmRegistered(true);
 		}
 	}
 

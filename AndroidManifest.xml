@@ -39,6 +39,11 @@
         </receiver>
         <service android:name="com.lyricoo.messages.GcmIntentService" />
         
+        <service
+            android:name="com.lyricoo.messages.LyricooPollingService"
+            android:exported="false"/>
+        
+        
         <activity
             android:name="com.lyricoo.session.LoginActivity"
             android:windowSoftInputMode="stateVisible"

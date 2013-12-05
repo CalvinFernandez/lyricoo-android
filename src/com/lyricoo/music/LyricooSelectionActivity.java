@@ -1,40 +1,38 @@
 package com.lyricoo.music;
 
 import java.util.ArrayList;
-import com.lyricoo.MusicManager;
-import com.lyricoo.MusicManager.MusicHandler;
 
-import com.lyricoo.R;
-import com.lyricoo.Utility;
-
-import com.lyricoo.messages.ConversationActivity;
-import com.lyricoo.session.Session;
-import com.lyricoo.session.User;
-
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.lyricoo.LyricooActivity;
+import com.lyricoo.R;
+import com.lyricoo.Utility;
+import com.lyricoo.messages.ConversationActivity;
+import com.lyricoo.music.MusicManager.MusicHandler;
+import com.lyricoo.session.Session;
+import com.lyricoo.session.User;
 
 /**
  * List all available songs and allow playback on click
  * 
  * 
  */
-public class LyricooSelectionActivity extends Activity {
+public class LyricooSelectionActivity extends LyricooActivity {
 	// Request code when launched for result
 	public static final int SELECT_LYRICOO_REQUEST = 0;
 
@@ -291,6 +289,7 @@ public class LyricooSelectionActivity extends Activity {
 	 * selected lyricoo to the clicked friend
 	 */
 	private void showFriendsList() {
+
 		final ArrayList<User> friends = Session.getFriendManager().getFriends();
 
 		// get list of just friend names to show in dialog
@@ -343,6 +342,7 @@ public class LyricooSelectionActivity extends Activity {
 	 */
 	private void sendLyricooToFriend(final Song song, User friend) {
 		// convert to json to make it easy to pass to the conversation activity
+
 		String contactAsJson = Utility.toJson(friend);
 		String songAsJson = Utility.toJson(song);
 

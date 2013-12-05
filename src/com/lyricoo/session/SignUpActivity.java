@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,12 +21,14 @@ import android.widget.ProgressBar;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
+import com.lyricoo.session.Session;
 import com.lyricoo.Utility;
 import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
 
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends LyricooActivity {
 	private Context mContext;
 	private ProgressBar mProgress;
 

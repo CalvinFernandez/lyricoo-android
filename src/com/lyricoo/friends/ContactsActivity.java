@@ -15,13 +15,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 
-public class ContactsActivity extends Activity {
+public class ContactsActivity extends LyricooActivity {
 	private ProgressBar mProgress;
 	// contacts list from our phone
 	private ArrayList<PhoneContact> mPhoneContacts;

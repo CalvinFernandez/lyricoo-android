@@ -3,7 +3,6 @@ package com.lyricoo.session;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,13 +21,19 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 
-public class LoginActivity extends Activity {
+/**
+ * This activity is called on launch and handles logging the user into the app.
+ * 
+ */
+
+public class LoginActivity extends LyricooActivity {
 	private ProgressBar mProgress;
 	private Context mContext;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -40,14 +45,20 @@ public class LoginActivity extends Activity {
 	 */
 	private static final String TAG = "GCM";
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+
+		// Check if there is a session logged in. If so, skip the login page and
+		// go to the main menu
+		if(Session.isLoggedIn()){
+			Intent i = new Intent(this, MenuActivity.class);
+			startActivity(i);
+			return;
+		}
 
 		mPrefs = getSharedPreferences(Utility.PREFS_NAME, 0);
-
-		setContentView(R.layout.activity_login);
 
 		if (mPrefs.getBoolean("rememberable", false)) {
 
@@ -78,6 +89,7 @@ public class LoginActivity extends Activity {
 	 * Google Play Store or enable it in the device's system settings.
 	 */
 	private boolean checkPlayServices() {
+
 		int resultCode = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(getApplicationContext());
 		if (resultCode != ConnectionResult.SUCCESS) {
@@ -90,6 +102,7 @@ public class LoginActivity extends Activity {
 			}
 			return false;
 		}
+
 		return true;
 	}
 
@@ -147,6 +160,7 @@ public class LoginActivity extends Activity {
 			public void onFailure(int statusCode, String responseBody,
 					Throwable error) {
 				handleLoginFailure(email, statusCode);
+
 			}
 
 			@Override
@@ -160,13 +174,14 @@ public class LoginActivity extends Activity {
 
 	private void handleLoginFailure(final String email, int statusCode) {
 		String errorMesage;
-		switch(statusCode){
-		// TODO: Add cases for possible status codes and customize error messages for cause of failure
-		default :
+		switch (statusCode) {
+		// TODO: Add cases for possible status codes and customize error
+		// messages for cause of failure
+		default:
 			errorMesage = "Sorry, there was a problem logging you in";
 			break;
 		}
-		
+
 		new AlertDialog.Builder(this)
 				.setTitle("Login Error")
 				.setMessage(errorMesage)

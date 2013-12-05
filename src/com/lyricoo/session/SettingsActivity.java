@@ -1,18 +1,20 @@
 package com.lyricoo.session;
 
-import com.lyricoo.R;
-import com.lyricoo.activity.MenuActivity;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ToggleButton;
 
-public class SettingsActivity extends Activity {
+import com.lyricoo.LyricooActivity;
+import com.lyricoo.R;
+import com.lyricoo.activity.MenuActivity;
+
+
+public class SettingsActivity extends LyricooActivity {
 	private ToggleButton mNotificationToggle;
 	private SeekBar mVolumeSeek;
 	private LyricooSettings mSettings;
