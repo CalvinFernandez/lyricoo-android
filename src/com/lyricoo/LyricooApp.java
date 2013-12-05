@@ -1,9 +1,16 @@
 package com.lyricoo;
 
+import java.util.ArrayList;
+
+import org.apache.http.Header;
+
 import com.lyricoo.messages.LyricooPollingService;
+import com.lyricoo.music.MusicManager;
+import com.lyricoo.music.Song;
 import com.lyricoo.session.LyricooSettings;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
 /*
@@ -21,7 +28,29 @@ public class LyricooApp extends Application {
 
 		// Initialize user settings
 		LyricooSettings.initUserSettings(getApplicationContext());
+		
+		// do an initial sync of songs
+		loadSongs();
 
+	}
+
+	private void loadSongs() {
+		final Context context = this;
+		MusicManager.getAll(new MusicManager.MusicHandler() {
+			
+			@Override
+			public void onSuccess(ArrayList<Song> songs, ArrayList<String> categories) {
+				// Don't need to do anything
+				
+			}
+			
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseBody, Throwable e) {
+				Utility.makeBasicToast(context, "Unable to load Lyricoos");
+				
+			}
+		});
 	}
 
 	/**

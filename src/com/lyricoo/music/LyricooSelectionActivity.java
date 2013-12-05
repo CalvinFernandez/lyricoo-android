@@ -2,16 +2,12 @@ package com.lyricoo.music;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,12 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.api.LyricooApi;
 import com.lyricoo.messages.ConversationActivity;
+import com.lyricoo.music.MusicManager.MusicHandler;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 
@@ -65,11 +60,10 @@ public class LyricooSelectionActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lyricoo_selection);
-
 		mContext = this;
 		mPlayer = new LyricooPlayer(this);
 
-		// Get resouces to use later
+		// Get resources to use later
 		mProgress = (ProgressBar) findViewById(R.id.progress);
 		mCategoryList = (ListView) findViewById(R.id.category_list);
 		mSongList = (ListView) findViewById(R.id.song_list);
@@ -103,46 +97,25 @@ public class LyricooSelectionActivity extends LyricooActivity {
 	private void loadSongs() {
 		// load song list
 		// TODO: Cache songs instead of downloading every time
-		LyricooApi.get("songs/all", null, new JsonHttpResponseHandler() {
+		
+		MusicManager.getAll(new MusicHandler() {
 			@Override
-			public void onSuccess(JSONArray json) {
-				// parse json into songs
-				mSongs = Song.parseJsonArray(json);
-
-				// get list of categories from songs
-				buildCategoryList();
-
-				// hide progress bar
+			public void onSuccess(ArrayList<Song> songs,
+					ArrayList<String> categories) {
+				mSongs = songs;
+				mCategories = categories;
 				mProgress.setVisibility(View.GONE);
-
-				// Show the songs to the user
 				displayCategories();
 			}
-
+			
 			@Override
-			public void onFailure(Throwable error, JSONObject json) {
-				// TODO: Handle failure
-				Log.v("Songs", error.getMessage());
+			public void onFailure(int statusCode, org.apache.http.Header[] headers, 
+					java.lang.String responseBody, java.lang.Throwable e) {
+				
+				String toast = "Error retrieving songs";
+				Utility.makeBasicToast(mContext, toast);
 			}
 		});
-	}
-
-	/**
-	 * Populate the local list of categories by looking at all the songs.
-	 */
-	protected void buildCategoryList() {
-		// TODO: Cache this list locally. Also, is it more efficient to make a
-		// call to categories/all?
-		mCategories = new ArrayList<String>();
-
-		// go through each song and add it's category to the list if it hasn't
-		// been added yet
-		for (Song song : mSongs) {
-			String category = song.getCategory();
-			if (!mCategories.contains(category)) {
-				mCategories.add(category);
-			}
-		}
 	}
 
 	protected void displayCategories() {
