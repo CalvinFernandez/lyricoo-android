@@ -104,6 +104,8 @@ public class SignUpActivity extends Activity {
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
+				
+				finish(); // Cleared from history
 			}
 
 			@Override
