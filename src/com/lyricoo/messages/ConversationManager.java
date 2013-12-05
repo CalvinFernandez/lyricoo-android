@@ -134,8 +134,9 @@ public class ConversationManager {
 			public void onSuccess(Object responseJson) {
 				message.update((JSONObject) responseJson);
 			}
-			
-			public void onFailure(int statusCode, String responseBody, Throwable error){
+
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
 				// TODO: Customize and error based on statusCode
 				handleMessageSendFailure(conversation, message);
 			}
@@ -181,19 +182,18 @@ public class ConversationManager {
 		// alert listeners to changes
 		notifyDataUpdate(contact);
 	}
-	
+
 	/**
-	 * Add a message to the local conversation.
-	 * Will attempt to guess the appropriate conversation
-	 * to which the add the message, or initialize a new
-	 * conversation if the contact is in contacts but 
-	 * doesn't currently have a conversation thread 
-	 * with the user 
+	 * Add a message to the local conversation. Will attempt to guess the
+	 * appropriate conversation to which the add the message, or initialize a
+	 * new conversation if the contact is in contacts but doesn't currently have
+	 * a conversation thread with the user
 	 * 
 	 * @param message
 	 */
 	public void receiveMessage(Message message, String _contact) {
-		User contact = Session.getFriendManager().findFriend(message.getContactId());
+		User contact = Session.getFriendManager().findFriend(
+				message.getContactId());
 		if (contact == null) {
 			if (_contact != null) {
 				try {
@@ -208,6 +208,7 @@ public class ConversationManager {
 			receiveMessage(message, contact);
 		}
 	}
+
 	/**
 	 * Force the ConversationManager to sync local data with server.
 	 */
@@ -215,10 +216,11 @@ public class ConversationManager {
 		// Send request to server to get all of our user's messages
 		mUser.get("messages", new LyricooApiResponseHandler() {
 			@Override
-			public void onSuccess(Object responseJson) {				
+			public void onSuccess(Object responseJson) {
 				// This will create all new Conversation objects, unlinking any
 				// copies that activities may be using
-				mConversations = Conversation.parseMessagesJson((JSONObject) responseJson);
+				mConversations = Conversation
+						.parseMessagesJson((JSONObject) responseJson);
 
 				// Alert listeners that their old data copies are no longer
 				// linked
@@ -233,10 +235,12 @@ public class ConversationManager {
 			}
 
 			@Override
-			public void onFailure(int statusCode, String responseBody, Throwable error) {
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
 				mIsSynced = false;
 
-				// TODO: Create specific error messages based on response code and error
+				// TODO: Create specific error messages based on response code
+				// and error
 				if (listener != null) {
 					listener.onFailure("Could not sync");
 				}
@@ -278,6 +282,7 @@ public class ConversationManager {
 
 	/**
 	 * Remove a listener that was registered
+	 * 
 	 * @param listener
 	 */
 	public void unregisterOnDataChangedListener(OnDataChangedListener listener) {
@@ -327,6 +332,42 @@ public class ConversationManager {
 		for (OnDataChangedListener listener : mOnDataChangedListeners) {
 			listener.onDataReset();
 		}
+	}
+
+	/**
+	 * Check if our user has received new messages. If so they are retrieved
+	 * from the server.
+	 */
+	public void checkForNewMessages() {
+		Utility.log("Checking for new messages...");
+		mUser.get(new LyricooApiResponseHandler() {
+			@Override
+			public void onSuccess(Object json) {
+				try {
+					JSONObject userJson = (JSONObject) json;
+					boolean synced = userJson.getBoolean("synced");
+					if (!synced) {
+						Utility.log("new messages found, syncing");
+						sync(null);
+					} else {
+						Utility.log("no new messages");
+					}
+				} catch (Exception e) {
+					Utility.log("Error parsing user json in ConversationManager.checkNewMessages()");
+				}
+			}
+
+			@Override
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
+				// TODO: If the internet/server is out and the Poller keeps
+				// calling us this toast will be made continually. Maybe add a
+				// check so it's not called every ten seconds in that case
+				Utility.makeBasicToast(mContext,
+						"Error retrieving new messages");
+			}
+		});
+
 	}
 
 }

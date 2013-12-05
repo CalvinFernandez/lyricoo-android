@@ -1,10 +1,10 @@
 package com.lyricoo.messages;
 
-import com.lyricoo.session.Session;
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
+
+import com.lyricoo.session.Session;
 
 /**
  * This service handles polling to the server when gcm isn't working for
@@ -31,11 +31,9 @@ public class LyricooPollingService extends IntentService {
 
 	public LyricooPollingService() {
 		super("Lyricoo Polling");
-
-		// initialize static variables the first time this is called
+		
+		// setup the polling system as static variables so it can be updated later
 		if (mHandler == null) {
-			mIsPolling = false;
-
 			// Use a handler to schedule method calls at intervals
 			mHandler = new Handler();
 
@@ -75,7 +73,6 @@ public class LyricooPollingService extends IntentService {
 
 	private void stopPolling() {
 		mIsPolling = false;
-
 		// if we pass null, all callbacks are removed
 		mHandler.removeCallbacksAndMessages(null);
 	}
@@ -84,12 +81,10 @@ public class LyricooPollingService extends IntentService {
 	 * Poll the server for updates
 	 */
 	private void poll() {
-		// Just tell the conversation manager to do a sync
-		// TODO: More sophisticated/efficient polling
 		ConversationManager conversationManager = Session
 				.getConversationManager();
 		if (conversationManager != null) {
-			conversationManager.sync(null);
+			conversationManager.checkForNewMessages();
 		}
 	}
 

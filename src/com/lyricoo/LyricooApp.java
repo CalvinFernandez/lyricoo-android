@@ -14,47 +14,50 @@ import android.content.Intent;
 
 public class LyricooApp extends Application {
 	private boolean mIsGcmRegistered;
-	
+
 	@Override
-	  public void onCreate()
-	  {
-	    super.onCreate();
-	    
-	    // Initialize user settings
-	    LyricooSettings.initUserSettings(getApplicationContext());	    
-	    
-	  }
-	
+	public void onCreate() {
+		super.onCreate();
+
+		// Initialize user settings
+		LyricooSettings.initUserSettings(getApplicationContext());
+
+	}
+
 	/**
 	 * Set whether or not the app successfully registered an id with gcm
+	 * 
 	 * @param registered
 	 */
-	public void setIsGcmRegistered(boolean registered){
+	public void setIsGcmRegistered(boolean registered) {
 		mIsGcmRegistered = registered;
 	}
-	
+
 	/**
 	 * Get whether or not we are registered with gcm
+	 * 
 	 * @return
 	 */
-	public boolean getIsGcmRegistered(){
+	public boolean getIsGcmRegistered() {
 		return mIsGcmRegistered;
 	}
-	
-	/** Called when a LyricooActivity pauses
+
+	/**
+	 * Called when a LyricooActivity pauses
 	 * 
 	 */
-	public void pause(){
-		if(!mIsGcmRegistered){
+	public void pause() {
+		if (!mIsGcmRegistered) {
 			setPollingStatus(false);
 		}
 	}
-	
-	/** Called when a LyricooActivity resumes
+
+	/**
+	 * Called when a LyricooActivity resumes
 	 * 
 	 */
-	public void resume(){
-		if(!mIsGcmRegistered){
+	public void resume() {
+		if (!mIsGcmRegistered) {
 			setPollingStatus(true);
 		}
 	}
@@ -63,7 +66,6 @@ public class LyricooApp extends Application {
 		Intent pollingIntent = new Intent(this, LyricooPollingService.class);
 		pollingIntent.putExtra("doPolling", doPolling);
 		this.startService(pollingIntent);
-		
 	}
 
 }
