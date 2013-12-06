@@ -25,7 +25,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApi;
-import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.messages.InboxActivity;
 
 public class SignUpActivity extends LyricooActivity {
 	private Context mContext;
@@ -105,7 +105,7 @@ public class SignUpActivity extends LyricooActivity {
 				Session.create(mContext, response);
 
 				// navigate to main activity
-				Intent i = new Intent(mContext, MessagesActivity.class);
+				Intent i = new Intent(mContext, InboxActivity.class);
 				startActivity(i);
 
 				finish(); // Cleared from history

@@ -48,12 +48,12 @@ public class LyricooNotificationManager {
 		builder.setNumber(numMessages);
 
 		// Launch the messages activity when the notification is clicked
-		Intent resultIntent = new Intent(context, MessagesActivity.class);
+		Intent resultIntent = new Intent(context, InboxActivity.class);
 
 		// Create a back stack for the activity
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MessagesActivity.class);
+		stackBuilder.addParentStack(InboxActivity.class);
 		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,

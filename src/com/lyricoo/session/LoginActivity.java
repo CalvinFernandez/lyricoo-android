@@ -26,7 +26,7 @@ import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
-import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.messages.InboxActivity;
 
 /**
  * This activity is called on launch and handles logging the user into the app.
@@ -56,7 +56,7 @@ public class LoginActivity extends LyricooActivity {
 		// Check if there is a session logged in. If so, skip the login page and
 		// go to the main menu
 		if (Session.isLoggedIn()) {
-			Intent i = new Intent(this, MessagesActivity.class);
+			Intent i = new Intent(this, InboxActivity.class);
 			startActivity(i);
 			finish();
 		}
@@ -165,7 +165,7 @@ public class LoginActivity extends LyricooActivity {
 
 				Session.registerGCM(mContext);
 
-				Intent i = new Intent(mContext, MessagesActivity.class);
+				Intent i = new Intent(mContext, InboxActivity.class);
 				startActivity(i);
 				finish(); // Clear from history only after successful login
 			}

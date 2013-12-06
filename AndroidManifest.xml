@@ -68,7 +68,7 @@
             android:label="@string/title_activity_conversation" >
         </activity>       
         <activity
-            android:name="com.lyricoo.messages.MessagesActivity"
+            android:name="com.lyricoo.messages.InboxActivity"
             android:label="@string/title_activity_messages" >
         </activity>
         <activity
