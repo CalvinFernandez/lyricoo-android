@@ -21,6 +21,7 @@ import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 public class ContactsActivity extends LyricooActivity {
 	private ProgressBar mProgress;
@@ -33,7 +34,7 @@ public class ContactsActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_contacts);
-
+		SlidingMenuHelper.addMenuToActivity(this);
 		loadContacts();
 	}
 

@@ -19,7 +19,7 @@ import com.lyricoo.Utility;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 import com.lyricoo.ui.SlidingMenuAdapter;
-import com.lyricoo.ui.SlidingMenuSettings;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
  * This activity loads all of the users messages and shows a preview of the most
@@ -39,17 +39,15 @@ public class MessagesActivity extends LyricooActivity {
 	private ListView mMessageList;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_messages);
+		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
 		
-		DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView mDrawerList = (ListView) findViewById(R.id.sliding_menu_list);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new SlidingMenuAdapter(this,
-                R.layout.sliding_menu_item, SlidingMenuSettings.getMenuEntries()));
+		
+		
 
 
 		// load conversation data

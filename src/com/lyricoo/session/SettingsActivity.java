@@ -12,6 +12,7 @@ import android.widget.ToggleButton;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.activity.MenuActivity;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 
 public class SettingsActivity extends LyricooActivity {
@@ -24,6 +25,7 @@ public class SettingsActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
+		SlidingMenuHelper.addMenuToActivity(this);
 		
 		// retrieve resources for later
 		mNotificationToggle = (ToggleButton) findViewById(R.id.notification_toggle);

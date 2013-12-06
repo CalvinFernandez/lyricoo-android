@@ -23,8 +23,10 @@
     </RelativeLayout>
 
     <!-- The navigation drawer -->
-    
-    <include layout="@layout/sliding_menu" android:id="@+id/sliding_menu_list"></include>"
 
+    <include
+        android:id="@+id/sliding_menu_list"
+        layout="@layout/sliding_menu" >
+    </include>
 
 </android.support.v4.widget.DrawerLayout>
