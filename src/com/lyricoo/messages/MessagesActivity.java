@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lyricoo.LyricooActivity;
@@ -16,6 +18,8 @@ import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuAdapter;
+import com.lyricoo.ui.SlidingMenuSettings;
 
 /**
  * This activity loads all of the users messages and shows a preview of the most
@@ -39,6 +43,14 @@ public class MessagesActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
 		mContext = this;
+		
+		DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView mDrawerList = (ListView) findViewById(R.id.sliding_menu_list);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new SlidingMenuAdapter(this,
+                R.layout.sliding_menu_item, SlidingMenuSettings.getMenuEntries()));
+
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
