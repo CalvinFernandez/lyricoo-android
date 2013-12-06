@@ -49,6 +49,9 @@ public class LoginActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+		// hide action bar for this activity
+		getSupportActionBar().hide();
 
 		// Check if there is a session logged in. If so, skip the login page and
 		// go to the main menu

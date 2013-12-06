@@ -37,6 +37,9 @@ public class SignUpActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 
+		// hide action bar for this activity
+		getSupportActionBar().hide();
+
 		// get progress bar
 		mProgress = (ProgressBar) findViewById(R.id.sign_up_progress);
 
@@ -105,7 +108,7 @@ public class SignUpActivity extends LyricooActivity {
 				// navigate to main activity
 				Intent i = new Intent(mContext, MenuActivity.class);
 				startActivity(i);
-				
+
 				finish(); // Cleared from history
 			}
 
@@ -125,9 +128,11 @@ public class SignUpActivity extends LyricooActivity {
 				} catch (Exception ex) {
 					// json exception
 				}
-				
-				// if that didn't work then something went wrong in the connection with the server
-				Utility.makeBasicToast(mContext, "Unable to create a new account, please try again");
+
+				// if that didn't work then something went wrong in the
+				// connection with the server
+				Utility.makeBasicToast(mContext,
+						"Unable to create a new account, please try again");
 			}
 
 			@Override
