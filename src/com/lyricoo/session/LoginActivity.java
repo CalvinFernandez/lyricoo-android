@@ -24,9 +24,9 @@ import com.loopj.android.http.RequestParams;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.messages.MessagesActivity;
 
 /**
  * This activity is called on launch and handles logging the user into the app.
@@ -49,16 +49,16 @@ public class LoginActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
+
 		// hide action bar for this activity
 		getSupportActionBar().hide();
 
 		// Check if there is a session logged in. If so, skip the login page and
 		// go to the main menu
-		if(Session.isLoggedIn()){
-			Intent i = new Intent(this, MenuActivity.class);
+		if (Session.isLoggedIn()) {
+			Intent i = new Intent(this, MessagesActivity.class);
 			startActivity(i);
-			return;
+			finish();
 		}
 
 		mPrefs = getSharedPreferences(Utility.PREFS_NAME, 0);
@@ -84,6 +84,17 @@ public class LoginActivity extends LyricooActivity {
 		if (!checkPlayServices()) {
 			Log.i(TAG, "No valid Google Play Services APK found");
 		}
+	}
+	
+	@Override
+	public void onBackPressed(){
+		// when back is pressed from the login activity, go back to the home screen
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
+		
+		finish();
 	}
 
 	/**
@@ -154,7 +165,7 @@ public class LoginActivity extends LyricooActivity {
 
 				Session.registerGCM(mContext);
 
-				Intent i = new Intent(mContext, MenuActivity.class);
+				Intent i = new Intent(mContext, MessagesActivity.class);
 				startActivity(i);
 				finish(); // Clear from history only after successful login
 			}

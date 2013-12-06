@@ -23,10 +23,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
-import com.lyricoo.session.Session;
 import com.lyricoo.Utility;
-import com.lyricoo.activity.MenuActivity;
 import com.lyricoo.api.LyricooApi;
+import com.lyricoo.messages.MessagesActivity;
 
 public class SignUpActivity extends LyricooActivity {
 	private Context mContext;
@@ -106,7 +105,7 @@ public class SignUpActivity extends LyricooActivity {
 				Session.create(mContext, response);
 
 				// navigate to main activity
-				Intent i = new Intent(mContext, MenuActivity.class);
+				Intent i = new Intent(mContext, MessagesActivity.class);
 				startActivity(i);
 
 				finish(); // Cleared from history

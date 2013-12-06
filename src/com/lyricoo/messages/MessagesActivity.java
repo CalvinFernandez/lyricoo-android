@@ -5,20 +5,18 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
+import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
-import com.lyricoo.ui.SlidingMenuAdapter;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
@@ -45,10 +43,6 @@ public class MessagesActivity extends LyricooActivity {
 		setContentView(R.layout.activity_messages);
 		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
-		
-		
-		
-
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
