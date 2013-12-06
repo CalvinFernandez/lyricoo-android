@@ -2,14 +2,15 @@ package com.lyricoo.ui;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.MessagesActivity;
@@ -22,6 +23,8 @@ public class SlidingMenuHelper {
 	// TODO: Drawer tutorial
 	// TODO: Highlight activity name when drawer opens in that activity
 	// TODO: Show messages count next to Messages label
+	// TODO: Make actionbar icon trigger drawer
+	// TODO: Add actionbar icon to indicate drawer
 
 	/**
 	 * Get a list of the items to place in the sliding menu
@@ -31,10 +34,14 @@ public class SlidingMenuHelper {
 	private static ArrayList<SlidingMenuItem> getMenuEntries() {
 		ArrayList<SlidingMenuItem> items = new ArrayList<SlidingMenuItem>();
 
-		items.add(new SlidingMenuItem(R.drawable.ic_action_unread, "Messages", MessagesActivity.class));
-		items.add(new SlidingMenuItem(R.drawable.ic_action_play, "Lyricoos", LyricooSelectionActivity.class));
-		items.add(new SlidingMenuItem(R.drawable.ic_action_person, "Friends", FriendsActivity.class));
-		items.add(new SlidingMenuItem(R.drawable.ic_action_settings, "Settings", SettingsActivity.class));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_unread, "Messages",
+				MessagesActivity.class));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_play, "Lyricoos",
+				LyricooSelectionActivity.class));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_person, "Friends",
+				FriendsActivity.class));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_settings,
+				"Settings", SettingsActivity.class));
 
 		return items;
 	}
@@ -42,9 +49,11 @@ public class SlidingMenuHelper {
 	/**
 	 * Adds a fully customized sliding menu to the activity. The activity xml
 	 * must be setup for a drawerlayout, otherwise nothing is done.
-	 * @param activity The activity to add the menu to
+	 * 
+	 * @param activity
+	 *            The activity to add the menu to
 	 */
-	public static void addMenuToActivity(final Activity activity) {
+	public static void addMenuToActivity(final LyricooActivity activity) {
 		final DrawerLayout drawerLayout = (DrawerLayout) activity
 				.findViewById(R.id.drawer_layout);
 
@@ -56,21 +65,70 @@ public class SlidingMenuHelper {
 			// Set the adapter for the list view
 			drawerList.setAdapter(new SlidingMenuAdapter(activity,
 					SlidingMenuHelper.getMenuEntries()));
-			
+
 			// Add click listener to change activities when an item is clicked
 			drawerList.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
 				public void onItemClick(AdapterView<?> parent, View v,
 						int position, long id) {
-					SlidingMenuItem item = (SlidingMenuItem) parent.getItemAtPosition(position);
-					
+					SlidingMenuItem item = (SlidingMenuItem) parent
+							.getItemAtPosition(position);
+
 					drawerList.setItemChecked(position, true);
-				    
-				    // load the selected activity
-				    activity.startActivity(new Intent(activity, item.getActivityToStart()));
-					
+
+					// load the selected activity
+					activity.startActivity(new Intent(activity, item
+							.getActivityToStart()));
+
 				}
+			});
+
+			// Remember the activity title so we can toggle it
+			final String title = activity.getSupportActionBar().getTitle()
+					.toString();
+
+			// Add drawer listener to listen for open and close events
+			// TODO: Change listener to be ActionBarDrawerToggle to faciliate
+			// interaction
+			// between the action bar and drawer. To do this, the actionbar
+			// needs a drawer icon
+			drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+
+				/**
+				 * Called when a drawer has settled in a completely closed
+				 * state.
+				 */
+				public void onDrawerClosed(View view) {
+					// change title back to activity name
+					activity.getSupportActionBar().setTitle(title);
+
+				}
+
+				/** Called when a drawer has settled in a completely open state. */
+				public void onDrawerOpened(View drawerView) {
+					// When the drawer is opened change the action bar text to
+					// the app name
+					activity.getSupportActionBar().setTitle("Lyricoo");
+
+					// TODO: Need to close contextual action views. Normally
+					// this is
+					// done with invalidateOptionsMenu(), but that is only
+					// available in API 11+
+				}
+
+				@Override
+				public void onDrawerSlide(View arg0, float arg1) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onDrawerStateChanged(int arg0) {
+					// TODO Auto-generated method stub
+
+				}
+
 			});
 		}
 	}
