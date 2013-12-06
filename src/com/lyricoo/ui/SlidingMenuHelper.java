@@ -57,79 +57,87 @@ public class SlidingMenuHelper {
 		final DrawerLayout drawerLayout = (DrawerLayout) activity
 				.findViewById(R.id.drawer_layout);
 
-		// not all activities have a drawer, eg login/signup
-		if (drawerLayout != null) {
-			final ListView drawerList = (ListView) activity
-					.findViewById(R.id.sliding_menu_list);
-
-			// Set the adapter for the list view
-			drawerList.setAdapter(new SlidingMenuAdapter(activity,
-					SlidingMenuHelper.getMenuEntries()));
-
-			// Add click listener to change activities when an item is clicked
-			drawerList.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View v,
-						int position, long id) {
-					SlidingMenuItem item = (SlidingMenuItem) parent
-							.getItemAtPosition(position);
-
-					drawerList.setItemChecked(position, true);
-
-					// load the selected activity
-					activity.startActivity(new Intent(activity, item
-							.getActivityToStart()));
-
-				}
-			});
-
-			// Remember the activity title so we can toggle it
-			final String title = activity.getSupportActionBar().getTitle()
-					.toString();
-
-			// Add drawer listener to listen for open and close events
-			// TODO: Change listener to be ActionBarDrawerToggle to faciliate
-			// interaction
-			// between the action bar and drawer. To do this, the actionbar
-			// needs a drawer icon
-			drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
-
-				/**
-				 * Called when a drawer has settled in a completely closed
-				 * state.
-				 */
-				public void onDrawerClosed(View view) {
-					// change title back to activity name
-					activity.getSupportActionBar().setTitle(title);
-
-				}
-
-				/** Called when a drawer has settled in a completely open state. */
-				public void onDrawerOpened(View drawerView) {
-					// When the drawer is opened change the action bar text to
-					// the app name
-					activity.getSupportActionBar().setTitle("Lyricoo");
-
-					// TODO: Need to close contextual action views. Normally
-					// this is
-					// done with invalidateOptionsMenu(), but that is only
-					// available in API 11+
-				}
-
-				@Override
-				public void onDrawerSlide(View arg0, float arg1) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void onDrawerStateChanged(int arg0) {
-					// TODO Auto-generated method stub
-
-				}
-
-			});
+		// make sure this activity actually has a drawer layout
+		if (drawerLayout == null) {
+			return;
 		}
+
+		final ListView drawerList = (ListView) activity
+				.findViewById(R.id.sliding_menu_list);
+
+		// Set the adapter for the list view
+		drawerList.setAdapter(new SlidingMenuAdapter(activity,
+				SlidingMenuHelper.getMenuEntries()));
+
+		addClickListener(activity, drawerList);
+		addDrawerListener(activity, drawerLayout);
 	}
+
+	private static void addClickListener(final LyricooActivity activity, final ListView drawerList) {
+		// Add click listener to change activities when an item is clicked
+		drawerList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				SlidingMenuItem item = (SlidingMenuItem) parent
+						.getItemAtPosition(position);
+
+				drawerList.setItemChecked(position, true);
+
+				// load the selected activity
+				activity.startActivity(new Intent(activity, item
+						.getActivityToStart()));
+
+			}
+		});
+	}
+
+	private static void addDrawerListener(final LyricooActivity activity,
+			DrawerLayout drawerLayout) {
+		// Remember the activity title so we can toggle it
+		final String title = activity.getSupportActionBar().getTitle()
+				.toString();
+
+		// Add drawer listener to listen for open and close events
+		// TODO: Change listener to be ActionBarDrawerToggle to faciliate
+		// interaction
+		// between the action bar and drawer. To do this, the actionbar
+		// needs a drawer icon
+		drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+
+			/**
+			 * Called when a drawer has settled in a completely closed state.
+			 */
+			public void onDrawerClosed(View view) {
+				// change title back to activity name
+				activity.getSupportActionBar().setTitle(title);
+
+			}
+
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView) {
+				// When the drawer is opened change the action bar text to
+				// the app name
+				activity.getSupportActionBar().setTitle("Lyricoo");
+
+				// TODO: Need to close contextual action views. Normally
+				// this is
+				// done with invalidateOptionsMenu(), but that is only
+				// available in API 11+
+			}
+
+			@Override
+			public void onDrawerSlide(View arg0, float arg1) {
+
+			}
+
+			@Override
+			public void onDrawerStateChanged(int arg0) {
+
+			}
+
+		});
+	}
+
 }
