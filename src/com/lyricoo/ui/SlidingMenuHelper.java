@@ -15,17 +15,22 @@ public class SlidingMenuHelper {
 	 * 
 	 * @return An arraylist of objects to add to the sliding menu
 	 */
-	public static ArrayList<SlidingMenuItem> getMenuEntries() {
+	private static ArrayList<SlidingMenuItem> getMenuEntries() {
 		ArrayList<SlidingMenuItem> items = new ArrayList<SlidingMenuItem>();
 
-		items.add(new SlidingMenuItem(R.drawable.abc_ic_search, "Messages"));
-		items.add(new SlidingMenuItem(R.drawable.abc_ic_search, "Lyricoos"));
-		items.add(new SlidingMenuItem(R.drawable.abc_ic_search, "Friends"));
-		items.add(new SlidingMenuItem(R.drawable.abc_ic_search, "Settings"));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_unread, "Messages"));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_play, "Lyricoos"));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_person, "Friends"));
+		items.add(new SlidingMenuItem(R.drawable.ic_action_settings, "Settings"));
 
 		return items;
 	}
 
+	/**
+	 * Adds a fully customized sliding menu to the activity. The activity xml
+	 * must be setup for a drawerlayout, otherwise nothing is done.
+	 * @param activity The activity to add the menu to
+	 */
 	public static void addMenuToActivity(Activity activity) {
 		DrawerLayout mDrawerLayout = (DrawerLayout) activity
 				.findViewById(R.id.drawer_layout);
