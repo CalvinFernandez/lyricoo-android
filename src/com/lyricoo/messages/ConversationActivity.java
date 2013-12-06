@@ -71,6 +71,7 @@ public class ConversationActivity extends LyricooActivity {
 			// uh oh, no contact was passed... TODO: What do? Error message and
 			// return to main menu
 		}
+		
 
 		// load the conversation data
 		mConversation = Session.getConversationManager().getConversation(

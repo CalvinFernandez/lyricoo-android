@@ -22,6 +22,7 @@
         android:textSize="30sp"
         android:layout_marginLeft="15sp"
         android:layout_centerVertical="true"
+        android:textColor="#ffffff"
         />
 
 </RelativeLayout>
