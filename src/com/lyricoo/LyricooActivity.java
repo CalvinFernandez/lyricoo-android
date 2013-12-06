@@ -7,8 +7,9 @@ import com.lyricoo.session.SignUpActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-public class LyricooActivity extends Activity {
+public class LyricooActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
