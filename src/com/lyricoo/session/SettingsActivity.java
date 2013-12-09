@@ -1,6 +1,5 @@
 package com.lyricoo.session;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,53 +10,53 @@ import android.widget.ToggleButton;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
-import com.lyricoo.activity.MenuActivity;
-
+import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 public class SettingsActivity extends LyricooActivity {
 	private ToggleButton mNotificationToggle;
 	private SeekBar mVolumeSeek;
 	private LyricooSettings mSettings;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
-		
+		SlidingMenuHelper.addMenuToActivity(this);
+
 		// retrieve resources for later
 		mNotificationToggle = (ToggleButton) findViewById(R.id.notification_toggle);
 		mVolumeSeek = (SeekBar) findViewById(R.id.volume_seek);
-		
+
 		// Get the user settings
 		mSettings = LyricooSettings.getUserSettings();
-		
+
 		// Update layout to reflect user's settings
 		mVolumeSeek.setMax(mSettings.getMaxVolume());
 		mVolumeSeek.setProgress(mSettings.getVolume());
 		mNotificationToggle.setChecked(mSettings.showNotifications());
-		
+
 		// setup callback for volume setting changed
 		mVolumeSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
+
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// Save the new volume
-				mSettings.setVolume(progress);				
+				mSettings.setVolume(progress);
 			}
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				// Don't care				
+				// Don't care
 			}
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				// Don't care				
+				// Don't care
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -71,30 +70,17 @@ public class SettingsActivity extends LyricooActivity {
 	public void logoutClicked(View v) {
 		// delete local user info
 		Session.destroy();
-		
-		/*
-		 * To logout, let's go back to MenuActivity and clear 
-		 * all of the history on top of MenuActivity. We cannot
-		 * simply go back to the login page as we destroyed it 
-		 * after we logged in so we'd have to build a new
-		 * intent instead of searching the back stack 
-		 * for the old intent. For a new intent
-		 * FLAG_ACTIVITY_CLEAR_TOP won't 
-		 * have any history on top of it to clear. 
-		 */
-		Intent i = new Intent(this, MenuActivity.class);
-		i.putExtra("logout", true);
-		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);	// Clear all history on top of intent
-		startActivity(i);
-		
+
+		// TODO: A way to clear the back stack when logging out
+		startActivity(new Intent(this, LoginActivity.class));
 		finish();
 	}
-	
-	public void notificationToggleClicked(View v){
+
+	public void notificationToggleClicked(View v) {
 		// Is the toggle on?
-	    boolean on = ((ToggleButton) v).isChecked();
-	    
-	    mSettings.setShowNotifications(on);
+		boolean on = ((ToggleButton) v).isChecked();
+
+		mSettings.setShowNotifications(on);
 	}
 
 }

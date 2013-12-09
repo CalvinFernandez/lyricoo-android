@@ -1,4 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +13,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ContactsActivity" >
-    
+
     <EditText
         android:id="@+id/username_field"
         android:layout_width="wrap_content"
@@ -16,11 +22,10 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/add_friend_button"
         android:ems="10"
-        android:maxLines="1"
-        android:hint="Friend&apos;s Username" >
-
+        android:hint="Friend&apos;s Username"
+        android:maxLines="1" >
     </EditText>
-    
+
     <Button
         android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
@@ -29,23 +34,28 @@
         android:layout_alignParentRight="true"
         android:onClick="addFriendClicked"
         android:text="Add" />
-    
+
     <ProgressBar
         android:id="@+id/contacts_loading_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />    
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
     <ListView
         android:id="@+id/contacts_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/username_field">
+        android:layout_below="@+id/username_field" >
     </ListView>
 
-    
-
-    
-
 </RelativeLayout>
+
+    <!-- The navigation drawer -->
+
+    <include
+        android:id="@+id/sliding_menu_list"
+        layout="@layout/sliding_menu" >
+    </include>
+
+</android.support.v4.widget.DrawerLayout>

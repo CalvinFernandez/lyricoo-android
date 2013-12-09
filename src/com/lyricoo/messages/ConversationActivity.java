@@ -24,6 +24,7 @@ import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
  * Display a conversation with another Lyricoo User. The conversation is simply
@@ -61,6 +62,7 @@ public class ConversationActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
+		SlidingMenuHelper.addMenuToActivity(this);
 
 		// get the User who we are talking to
 		String contactAsJson = getIntent().getStringExtra("contact");
@@ -69,6 +71,7 @@ public class ConversationActivity extends LyricooActivity {
 			// uh oh, no contact was passed... TODO: What do? Error message and
 			// return to main menu
 		}
+		
 
 		// load the conversation data
 		mConversation = Session.getConversationManager().getConversation(
