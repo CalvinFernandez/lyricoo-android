@@ -1,6 +1,7 @@
 package com.lyricoo.session;
 
 import org.apache.http.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
@@ -26,7 +27,8 @@ import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
-import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.messages.InboxActivity;
+import com.lyricoo.music.LyricooSelectionActivity;
 
 /**
  * This activity is called on launch and handles logging the user into the app.
@@ -56,7 +58,7 @@ public class LoginActivity extends LyricooActivity {
 		// Check if there is a session logged in. If so, skip the login page and
 		// go to the main menu
 		if (Session.isLoggedIn()) {
-			Intent i = new Intent(this, MessagesActivity.class);
+			Intent i = new Intent(this, InboxActivity.class);
 			startActivity(i);
 			finish();
 		}
@@ -85,15 +87,16 @@ public class LoginActivity extends LyricooActivity {
 			Log.i(TAG, "No valid Google Play Services APK found");
 		}
 	}
-	
+
 	@Override
-	public void onBackPressed(){
-		// when back is pressed from the login activity, go back to the home screen
+	public void onBackPressed() {
+		// when back is pressed from the login activity, go back to the home
+		// screen
 		Intent startMain = new Intent(Intent.ACTION_MAIN);
 		startMain.addCategory(Intent.CATEGORY_HOME);
 		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(startMain);
-		
+
 		finish();
 	}
 
@@ -160,14 +163,8 @@ public class LoginActivity extends LyricooActivity {
 
 			@Override
 			public void onSuccess(Object responseJson) {
-				Session.create(getApplicationContext(),
-						(JSONObject) responseJson);
+				handleLoginSuccess((JSONObject) responseJson);
 
-				Session.registerGCM(mContext);
-
-				Intent i = new Intent(mContext, MessagesActivity.class);
-				startActivity(i);
-				finish(); // Clear from history only after successful login
 			}
 
 			@Override
@@ -184,6 +181,17 @@ public class LoginActivity extends LyricooActivity {
 
 		});
 
+	}
+
+	protected void handleLoginSuccess(JSONObject responseJson) {
+		Session.create(getApplicationContext(), (JSONObject) responseJson);
+
+		Session.registerGCM(mContext);
+
+		Intent i = new Intent(mContext, InboxActivity.class);
+		startActivity(i);
+		// Clear from history only after successful login
+		finish();
 	}
 
 	private void handleLoginFailure(final String email, int statusCode) {
@@ -232,8 +240,6 @@ public class LoginActivity extends LyricooActivity {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers,
 							byte[] responseBody) {
-						// TODO: Right now response failure is in json not in
-						// error codes. Change that on the server
 						String msg = "New password sent to " + email;
 						Utility.makeBasicToast(mContext, msg);
 					}
@@ -250,7 +256,36 @@ public class LoginActivity extends LyricooActivity {
 
 	public void signupClicked(View v) {
 		Intent i = new Intent(this, SignUpActivity.class);
-		startActivity(i);
+		startActivityForResult(i, SignUpActivity.SIGNUP_REQUEST);
+	}
+
+	// called after the signup activity successfully finishes
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == SignUpActivity.SIGNUP_REQUEST) {
+
+			if (resultCode == RESULT_OK) {
+				// a successful user registration returns the same response as a
+				// user logging in. Continue with the normal login flow
+				String sessionJson = data.getStringExtra("sessionJson");
+				JSONObject response = null;
+				try {
+					response = new JSONObject(sessionJson);
+				} catch (JSONException e) {
+					response = null;
+				}
+				
+				// log the user in if successful, otherwise alert the user to the problem
+				if (response != null){
+					handleLoginSuccess(response);
+				} else {
+					Utility.makeBasicToast(mContext, "Error handling signup response");
+				}
+			}
+			if (resultCode == RESULT_CANCELED) {
+				// Don't do anything if a user account wasn't created
+			}
+		}
 	}
 
 	/**

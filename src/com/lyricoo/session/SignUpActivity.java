@@ -25,9 +25,10 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApi;
-import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.messages.InboxActivity;
 
 public class SignUpActivity extends LyricooActivity {
+	public static final int SIGNUP_REQUEST = 1;
 	private Context mContext;
 	private ProgressBar mProgress;
 
@@ -101,14 +102,12 @@ public class SignUpActivity extends LyricooActivity {
 		LyricooApi.post("users", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
-				// store user credentials
-				Session.create(mContext, response);
+				// return the new user's data to the login activity so they can be signed in
+				Intent returnIntent = new Intent();
+				returnIntent.putExtra("sessionJson", response.toString());
+				setResult(RESULT_OK, returnIntent);
 
-				// navigate to main activity
-				Intent i = new Intent(mContext, MessagesActivity.class);
-				startActivity(i);
-
-				finish(); // Cleared from history
+				finish();
 			}
 
 			@Override

@@ -25,7 +25,7 @@ import com.lyricoo.ui.SlidingMenuHelper;
  * conversation is loaded.
  * 
  */
-public class MessagesActivity extends LyricooActivity {
+public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
 	private MessageListAdapter mAdapter;
 	private Context mContext;

@@ -10,7 +10,7 @@ import android.widget.ToggleButton;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
-import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.messages.InboxActivity;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 public class SettingsActivity extends LyricooActivity {
