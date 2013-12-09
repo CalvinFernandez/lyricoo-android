@@ -27,7 +27,7 @@ import com.lyricoo.ui.SlidingMenuHelper;
  */
 public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
-	private MessageListAdapter mAdapter;
+	private InboxAdapter mAdapter;
 	private Context mContext;
 
 	// Callback listener for when messages are updated
@@ -37,10 +37,10 @@ public class InboxActivity extends LyricooActivity {
 	private ListView mMessageList;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {		
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.activity_messages);
+
+		setContentView(R.layout.activity_inbox);
 		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
 
@@ -83,8 +83,15 @@ public class InboxActivity extends LyricooActivity {
 			Session.getConversationManager().unregisterOnDataChangedListener(
 					mConversationListener);
 		} catch (Exception e) {
-			// thrown if conversation manager if null
+			// thrown if conversation manager is null
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		updateConversations();
 	}
 
 	/**
@@ -92,7 +99,6 @@ public class InboxActivity extends LyricooActivity {
 	 * view
 	 */
 	protected void updateConversations() {
-		// TODO: Show indicators for new messages
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -101,7 +107,7 @@ public class InboxActivity extends LyricooActivity {
 	 */
 	private void displayConversations() {
 		// Create a new adapter for this conversation data
-		mAdapter = new MessageListAdapter(mContext, mConversations);
+		mAdapter = new InboxAdapter(mContext, mConversations);
 
 		mMessageList.setAdapter(mAdapter);
 
@@ -112,19 +118,28 @@ public class InboxActivity extends LyricooActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Conversation convo = mConversations.get(position);
-				// Pass selected user so conversationActivity knows whose
-				// conversation to display
-				User contact = convo.getContact();
-				
-				//  Mark conversation as read
-				convo.read();
-				
-				// convert to json to make it easy to pass to the object
-				String contactAsJson = Utility.toJson(contact);
 
-				Intent i = new Intent(mContext, ConversationActivity.class);
-				i.putExtra("contact", contactAsJson);
-				startActivity(i);
+				// if the play button was clicked, play the song
+				if (view.equals(findViewById(R.id.play_button))) {
+					Utility.log("play clicked");
+				}
+
+				// otherwise load the conversation
+				else {
+					// Pass selected user so conversationActivity knows whose
+					// conversation to display
+					User contact = convo.getContact();
+
+					// Mark conversation as read
+					convo.read();
+
+					// convert to json to make it easy to pass to the object
+					String contactAsJson = Utility.toJson(contact);
+
+					Intent i = new Intent(mContext, ConversationActivity.class);
+					i.putExtra("contact", contactAsJson);
+					startActivity(i);
+				}
 			}
 		});
 	}
@@ -132,7 +147,7 @@ public class InboxActivity extends LyricooActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.messages, menu);
+		getMenuInflater().inflate(R.menu.inbox, menu);
 		return true;
 	}
 
