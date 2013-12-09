@@ -16,13 +16,13 @@ public class MusicManager {
 	private static Boolean cachedCats = false;
 	
 	private static ArrayList<Song> mSongs = new ArrayList<Song>();
-	private static ArrayList<String> mCategories;
+	private static ArrayList<Category> mCategories;
 	
 	public interface MusicHandler {
 		//
 		//	Custom handler for asynchronous http events
 		//	
-		void onSuccess(ArrayList<Song> songs, ArrayList<String> categories);
+		void onSuccess(ArrayList<Song> songs, ArrayList<Category> categories);
 		void onFailure(int statusCode, org.apache.http.Header[] headers, 
 				java.lang.String responseBody, java.lang.Throwable e);
 	}
@@ -47,6 +47,23 @@ public class MusicManager {
 		return result;		
 	}
 	
+	private static ArrayList<Category> parseCategories(JSONArray json) {
+		ArrayList<Category> result = new ArrayList<Category>();
+		int numCats = json.length();
+		
+		for (int i = 0; i < numCats; i ++) {
+			JSONObject catJson;
+			try {
+				catJson = json.getJSONObject(i);
+				result.add(new Category(catJson));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Retrieves all songs. If refresh is true, songs
 	 * will be fetched from the server. If refresh is false
@@ -68,6 +85,7 @@ public class MusicManager {
 					//	Call success method with songs and categories
 					handler.onSuccess(mSongs, categories(refresh));
 				}
+				
 
 				@Override
 				public void onFailure(int statusCode, org.apache.http.Header[] headers, 
@@ -93,11 +111,11 @@ public class MusicManager {
 	}
 	
 	
-	public static ArrayList<String> categories(Boolean refresh) {
+	public static ArrayList<Category> categories(Boolean refresh) {
 		if (!cachedCats || refresh) { 
-			mCategories = new ArrayList<String>();
+			mCategories = new ArrayList<Category>();
 			for (Song song : mSongs) {
-				String category = song.getCategory();
+				Category category = song.getCategory();
 				if (!mCategories.contains(category)) {
 					mCategories.add(category);
 				}
@@ -105,6 +123,35 @@ public class MusicManager {
 			cachedCats = true;
 		}
 		return mCategories;
+	}
+	
+	/**
+	 * Fetches all the categories from the server and updates mCategories 
+	 * with a complete array of categories. 
+	 * 
+	 * @param handler
+	 */
+	public static void getAllCategories(final MusicHandler handler) {
+		if (cachedCats == true) {
+			handler.onSuccess(null, mCategories);
+		} else {
+			LyricooApi.get("categories", null, new JsonHttpResponseHandler() {
+				@Override
+				public void onSuccess(JSONArray json) {
+					cachedCats = true;
+					mCategories = parseCategories(json);
+					handler.onSuccess(null, mCategories);
+				}
+
+				@Override
+				public void onFailure(int statusCode, org.apache.http.Header[] headers, 
+						java.lang.String responseBody, java.lang.Throwable e) {
+					// TODO: Handle failure
+					handler.onFailure(statusCode, headers, responseBody, e);
+					Log.v("Categories: ", e.getMessage());
+				}
+			});
+		}
 	}
 	
 	private static void setSongs(ArrayList<Song> songs) {

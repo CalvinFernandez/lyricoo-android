@@ -14,6 +14,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.MessagesActivity;
+import com.lyricoo.music.CategoriesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.SettingsActivity;
@@ -51,8 +52,12 @@ public class MenuActivity extends LyricooActivity {
 	}
 	
 	public void lyricoosClicked(View v){
-		Intent i = new Intent(this, LyricooSelectionActivity.class);
+		Intent i = new Intent(this, CategoriesActivity.class);
 		startActivity(i);
+		
+		/*
+		Intent i = new Intent(this, LyricooSelectionActivity.class);
+		startActivity(i);*/
 	}
 	
 	public void friendsClicked(View v){
