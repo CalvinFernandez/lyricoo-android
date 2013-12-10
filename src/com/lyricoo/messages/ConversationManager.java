@@ -136,7 +136,8 @@ public class ConversationManager {
 			@Override
 			public void onSuccess(Object responseJson) {
 				message.update((JSONObject) responseJson);
-				// TODO: Cleaner way to mark a sent message as read with the server
+				// TODO: Cleaner way to mark a sent message as read with the
+				// server
 				message.read();
 				message.put(new LyricooApiResponseHandler() {
 					public void onSuccess(Object responseJson) {
@@ -381,17 +382,18 @@ public class ConversationManager {
 		});
 
 	}
-	
+
 	/**
 	 * Get the total number of unread messages for this user
+	 * 
 	 * @return
 	 */
-	public int getUnreadCount(){
+	public int getUnreadCount() {
 		int count = 0;
-		for(Conversation c : mConversations){
+		for (Conversation c : mConversations) {
 			count += c.getUnreadCount();
 		}
-		
+
 		return count;
 	}
 
@@ -406,8 +408,19 @@ public class ConversationManager {
 
 	private class ConversationComparator implements Comparator<Conversation> {
 		public int compare(Conversation left, Conversation right) {
-			return right.getMostRecentMessage().getTime()
-					.compareTo(left.getMostRecentMessage().getTime());
+			try {
+				return right.getMostRecentMessage().getTime()
+						.compareTo(left.getMostRecentMessage().getTime());
+			} catch (Exception e) {
+				// Something went wrong accessing the most recent message times.
+				if (right != null && right.getMostRecentMessage() != null
+						&& right.getMostRecentMessage().getTime() != null) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+
 		}
 	}
 

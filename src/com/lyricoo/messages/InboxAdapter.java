@@ -100,8 +100,9 @@ public class InboxAdapter extends BaseAdapter {
 		if (song != null) {
 			contactInitial.setVisibility(View.GONE);
 			playButton.setVisibility(View.VISIBLE);
-			
-			// Place the song data in the view tag so it can be accessed on click
+
+			// Place the song data in the view tag so it can be accessed on
+			// click
 			playButton.setTag(song);
 		} else {
 			contactInitial.setVisibility(View.VISIBLE);
@@ -109,39 +110,42 @@ public class InboxAdapter extends BaseAdapter {
 			// set the first letter of the contact to be the icon
 			contactInitial.setText(contact.substring(0, 1).toUpperCase());
 			// set color
-			int color = mContext.getResources().getColor(getLetterColor(position));
+			int color = mContext.getResources().getColor(
+					getLetterColor(contact));
 			contactInitial.setTextColor(color);
 		}
-		
 
 		return rowView;
 	}
 
 	/**
-	 * Get a color for this message's contact initial based on position in the
-	 * list
+	 * Get a color for this message's contact initial based on a hash of the
+	 * username
 	 * 
-	 * @param position
-	 * @return
+	 * @param username
+	 *            The username to get a color for
+	 * @return A R.color resource id
 	 */
-	private int getLetterColor(int position) {
-		int color = position % 6;
-		switch (color) {
-		case 0:
-			return R.color.red;
-		case 1:
-			return R.color.LimeGreen;
-		case 2:
-			return R.color.blue;
-		case 3:
-			return R.color.Orange;
-		case 4:
-			return R.color.purple;
-		case 5:
-			return R.color.RoyalBlue;
-		default:
-			return R.color.DarkSeaGreen;
-		}
+	private int getLetterColor(String username) {
+		int[] colors = new int[] { R.color.red, R.color.green, R.color.blue,
+				R.color.Orange, R.color.purple, R.color.teal,
+				R.color.DarkSalmon, R.color.DarkRed, R.color.DarkGoldenrod,
+				R.color.MediumVioletRed, R.color.MediumOrchid,
+				R.color.MediumPurple, R.color.Coral, R.color.Crimson,
+				R.color.DeepPink, R.color.FireBrick, R.color.MediumSeaGreen,
+				R.color.MediumSpringGreen, R.color.SeaGreen,
+				R.color.GreenYellow, R.color.LimeGreen, R.color.IndianRed,
+				R.color.Indigo, R.color.MediumAquamarine, R.color.MediumBlue,
+				R.color.MediumSlateBlue, R.color.MidnightBlue,
+				R.color.BlueViolet, R.color.DarkBlue, R.color.DarkSlateBlue,
+				R.color.DarkTurquoise, R.color.OrangeRed, R.color.Orchid,
+				R.color.DarkOliveGreen };
+
+		// get an index into the colors array using the hash of the username.
+		// Use bitwise AND to guarantee hashcode is positive
+		int colorIndex = (username.hashCode() & 0x7FFFFFFF) % colors.length;
+		return colors[colorIndex];
+
 	}
 
 }

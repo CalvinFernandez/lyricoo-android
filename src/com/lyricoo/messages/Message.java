@@ -42,7 +42,9 @@ public class Message extends LyricooModel {
 	
 	// the Song included with this message. Null if none
 	private Song mSong;
-	private Date mTime;
+	
+	// default date to right now 
+	private Date mTime = new Date();
 
 	// format of the date that the server uses
 	// TODO: Adjust message time for user's timezone
