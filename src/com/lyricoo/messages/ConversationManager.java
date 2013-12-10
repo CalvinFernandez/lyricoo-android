@@ -381,6 +381,19 @@ public class ConversationManager {
 		});
 
 	}
+	
+	/**
+	 * Get the total number of unread messages for this user
+	 * @return
+	 */
+	public int getUnreadCount(){
+		int count = 0;
+		for(Conversation c : mConversations){
+			count += c.getUnreadCount();
+		}
+		
+		return count;
+	}
 
 	/**
 	 * Sort conversations by most recent
