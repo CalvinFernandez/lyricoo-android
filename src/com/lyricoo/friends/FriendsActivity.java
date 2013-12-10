@@ -20,6 +20,7 @@ import com.lyricoo.Utility;
 import com.lyricoo.messages.ConversationActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 public class FriendsActivity extends LyricooActivity {
         private ArrayList<User> mFriends;
@@ -34,7 +35,7 @@ public class FriendsActivity extends LyricooActivity {
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_friends);
-
+                SlidingMenuHelper.addMenuToActivity(this);
                 mContext = this;
 
                 // get list view

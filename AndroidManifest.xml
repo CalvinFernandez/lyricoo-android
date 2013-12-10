@@ -66,13 +66,9 @@
         <activity
             android:name="com.lyricoo.messages.ConversationActivity"
             android:label="@string/title_activity_conversation" >
-        </activity>
+        </activity>       
         <activity
-            android:name="com.lyricoo.activity.MenuActivity"
-            android:label="@string/title_activity_menu" >
-        </activity>
-        <activity
-            android:name="com.lyricoo.messages.MessagesActivity"
+            android:name="com.lyricoo.messages.InboxActivity"
             android:label="@string/title_activity_messages" >
         </activity>
         <activity

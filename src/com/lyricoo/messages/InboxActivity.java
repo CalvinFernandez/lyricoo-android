@@ -14,8 +14,10 @@ import android.widget.ListView;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
+import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
  * This activity loads all of the users messages and shows a preview of the most
@@ -23,7 +25,7 @@ import com.lyricoo.session.User;
  * conversation is loaded.
  * 
  */
-public class MessagesActivity extends LyricooActivity {
+public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
 	private MessageListAdapter mAdapter;
 	private Context mContext;
@@ -35,9 +37,11 @@ public class MessagesActivity extends LyricooActivity {
 	private ListView mMessageList;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_messages);
+		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
 
 		// load conversation data

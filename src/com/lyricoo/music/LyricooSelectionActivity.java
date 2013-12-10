@@ -26,6 +26,7 @@ import com.lyricoo.messages.ConversationActivity;
 import com.lyricoo.music.MusicManager.MusicHandler;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
  * List all available songs and allow playback on click
@@ -60,6 +61,7 @@ public class LyricooSelectionActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lyricoo_selection);
+		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
 		mPlayer = new LyricooPlayer(this);
 
