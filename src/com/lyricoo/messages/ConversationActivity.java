@@ -1,6 +1,5 @@
 package com.lyricoo.messages;
 
-
 import java.util.Date;
 
 import android.app.AlertDialog;
@@ -73,7 +72,6 @@ public class ConversationActivity extends LyricooActivity {
 			// uh oh, no contact was passed... TODO: What do? Error message and
 			// return to main menu
 		}
-		
 
 		// load the conversation data
 		mConversation = Session.getConversationManager().getConversation(
@@ -85,7 +83,7 @@ public class ConversationActivity extends LyricooActivity {
 
 			@Override
 			public void onDataUpdated(User user) {
-				// only update our view if we our contact was updated
+				// only update our view if our contact was updated
 				if (user.equals(mContact)) {
 					updateConversation();
 				}
@@ -142,11 +140,11 @@ public class ConversationActivity extends LyricooActivity {
 		// Stop the music if the activity looses focus
 		mPlayer.stop();
 	}
-	
+
 	@Override
-	protected void onDestroy(){
+	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		try {
 			Session.getConversationManager().unregisterOnDataChangedListener(
 					mConversationListener);
@@ -160,8 +158,16 @@ public class ConversationActivity extends LyricooActivity {
 	 * view
 	 */
 	protected void updateConversation() {
-		mConversationAdapter.notifyDataSetChanged();
-		scrollToBottom();
+		// Make sure that this is run on the UI thread so it can update the
+		// view. The call can originate from a GCM message update, which is a
+		// background thread
+		runOnUiThread(new Runnable() {
+			public void run() {
+				mConversationAdapter.notifyDataSetChanged();
+				scrollToBottom();
+			}
+		});
+
 	}
 
 	private void displayConversation() {
@@ -231,7 +237,7 @@ public class ConversationActivity extends LyricooActivity {
 		String messageContent = conversationInputView.getText().toString();
 
 		// if content is blank and no song is selected don't do anything
-		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null){
+		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null) {
 			return;
 		}
 

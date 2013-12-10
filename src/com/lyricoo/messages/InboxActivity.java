@@ -61,9 +61,18 @@ public class InboxActivity extends LyricooActivity {
 
 			@Override
 			public void onDataUpdated(User user) {
-				// we care about conversations with all contacts, so
-				// update everything
-				updateConversations();
+
+				// Make sure that this is run on the UI thread so it can update
+				// the view. The call can originate from a GCM message update,
+				// which is a background thread
+				runOnUiThread(new Runnable() {
+					public void run() {
+						// we care about conversations with all contacts, so
+						// update everything
+						updateConversations();
+					}
+				});
+
 			}
 
 			@Override
@@ -159,30 +168,33 @@ public class InboxActivity extends LyricooActivity {
 		getMenuInflater().inflate(R.menu.inbox, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.action_compose:
-	            newMessage();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_compose:
+			newMessage();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
-	
-	private void newMessage(){
-		Session.getFriendManager().showFriendPicker(this, "Send message to friend", new OnFriendSelectedListener() {			
-			@Override
-			public void onFriendSelected(User friend) {
-				// open the conversation activity with the selected friend
-				String contactAsJson = Utility.toJson(friend);
-				Intent i = new Intent(mContext, ConversationActivity.class);
-				i.putExtra("contact", contactAsJson);
-				startActivity(i);				
-			}
-		});
+
+	private void newMessage() {
+		Session.getFriendManager().showFriendPicker(this,
+				"Send message to friend", new OnFriendSelectedListener() {
+					@Override
+					public void onFriendSelected(User friend) {
+						// open the conversation activity with the selected
+						// friend
+						String contactAsJson = Utility.toJson(friend);
+						Intent i = new Intent(mContext,
+								ConversationActivity.class);
+						i.putExtra("contact", contactAsJson);
+						startActivity(i);
+					}
+				});
 	}
 
 	public void playButtonClicked(View v) {
