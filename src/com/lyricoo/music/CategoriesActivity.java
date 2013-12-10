@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.http.Header;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.GridView;
 
@@ -12,18 +13,22 @@ import com.lyricoo.R;
 import com.lyricoo.music.MusicManager.MusicHandler;
 
 public class CategoriesActivity extends LyricooActivity {
-
+	private Context mContext;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_categories);
-		GridView gridview = (GridView) findViewById(R.id.categories_grid);
+		final GridView gridview = (GridView) findViewById(R.id.categories_grid);
+		mContext = this;
+		
 		MusicManager.getAllCategories(new MusicHandler() {
 
 			@Override
 			public void onSuccess(ArrayList<Song> songs,
 					ArrayList<Category> categories) {
 				
+				gridview.setAdapter(new CategoryAdapter(mContext, categories));
 			}
 
 			@Override
@@ -34,7 +39,7 @@ public class CategoriesActivity extends LyricooActivity {
 			}
 			
 		});
-		gridview.setAdapter(new CategoryAdapter(this));
+		
 		
 	}
 }
