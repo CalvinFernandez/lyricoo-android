@@ -2,6 +2,7 @@ package com.lyricoo.friends;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import org.json.JSONArray;
 
@@ -214,6 +215,19 @@ public class FriendManager {
 		for (User friend : newData) {
 			mFriends.add(friend);
 		}
+		
+		// sort alphabetically by username
+		Collections.sort(mFriends, new FriendComparator());
+	}
+	
+	/**
+	 * Basic comparator to sort friends list alphabetically by username
+	 *
+	 */
+	private class FriendComparator implements Comparator<User>{
+		public int compare(User left, User right) {
+	        return left.getUsername().compareTo(right.getUsername());
+	    }
 	}
 
 	/**
@@ -289,9 +303,6 @@ public class FriendManager {
 		for (User friend : mFriends) {
 			names.add(friend.getUsername());
 		}
-		
-		// alphabetize list
-		Collections.sort(names);
 
 		// convert ArrayList to Array so AlertDialog can use it
 		String[] namesArray = new String[names.size()];
