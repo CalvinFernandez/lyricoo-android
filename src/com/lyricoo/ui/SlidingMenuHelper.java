@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -14,6 +15,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.InboxActivity;
+import com.lyricoo.music.CategoriesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.session.SettingsActivity;
 
@@ -37,7 +39,7 @@ public class SlidingMenuHelper {
 		items.add(new SlidingMenuItem(R.drawable.ic_action_unread, "Messages",
 				InboxActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_play, "Lyricoos",
-				LyricooSelectionActivity.class));
+				CategoriesActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_person, "Friends",
 				FriendsActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_settings,
@@ -96,9 +98,11 @@ public class SlidingMenuHelper {
 	private static void addDrawerListener(final LyricooActivity activity,
 			DrawerLayout drawerLayout) {
 		// Remember the activity title so we can toggle it
-		final String title = activity.getSupportActionBar().getTitle()
-				.toString();
-
+		final String title = "Test"; // weird null bug right now
+		/*
+		final String title = activity.getActionBar().getTitle().toString();
+		*/
+		
 		// Add drawer listener to listen for open and close events
 		// TODO: Change listener to be ActionBarDrawerToggle to faciliate
 		// interaction
