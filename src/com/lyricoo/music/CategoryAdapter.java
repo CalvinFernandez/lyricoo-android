@@ -7,43 +7,26 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class CategoryAdapter extends BaseAdapter {
-	private Context mContext;
-	private ArrayList<Category> mCategories;
+public class CategoryAdapter extends ArrayAdapter<Category> {
 	
-	public CategoryAdapter(Context c, ArrayList<Category> categories) {
-		mContext = c;
-		mCategories = categories;
-	}
-	
-	@Override
-	public int getCount() {
-		return mCategories.size();
-	}
-
-	@Override
-	public Object getItem(int arg0) {
-		return mCategories.get(arg0);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public CategoryAdapter(Context c, int resource, ArrayList<Category> categories) {
+		super(c, resource, categories);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) mContext
+		LayoutInflater inflater = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		Category category = mCategories.get(position);
+		Category category = getItem(position);
 		
 		View gridItem = inflater.inflate(R.layout.category_grid_item, parent, false);
 		TextView name = (TextView) gridItem.findViewById(R.id.name);
+		
 		name.setText(category.name());
 		return gridItem;
 	}

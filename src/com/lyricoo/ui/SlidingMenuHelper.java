@@ -99,6 +99,7 @@ public class SlidingMenuHelper {
 			DrawerLayout drawerLayout) {
 		// Remember the activity title so we can toggle it
 		final String title = "Test"; // weird null bug right now
+		
 		/*
 		final String title = activity.getActionBar().getTitle().toString();
 		*/

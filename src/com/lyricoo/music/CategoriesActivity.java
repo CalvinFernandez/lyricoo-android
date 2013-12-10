@@ -11,6 +11,7 @@ import android.widget.GridView;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.music.MusicManager.MusicHandler;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 public class CategoriesActivity extends LyricooActivity {
 	private Context mContext;
@@ -21,6 +22,7 @@ public class CategoriesActivity extends LyricooActivity {
 		setContentView(R.layout.activity_categories);
 		final GridView gridview = (GridView) findViewById(R.id.categories_grid);
 		mContext = this;
+		SlidingMenuHelper.addMenuToActivity(this);
 		
 		MusicManager.getAllCategories(new MusicHandler() {
 
@@ -28,7 +30,8 @@ public class CategoriesActivity extends LyricooActivity {
 			public void onSuccess(ArrayList<Song> songs,
 					ArrayList<Category> categories) {
 				
-				gridview.setAdapter(new CategoryAdapter(mContext, categories));
+				gridview.setAdapter(new CategoryAdapter(mContext, 
+						R.layout.category_grid_item, categories));
 			}
 
 			@Override
