@@ -17,7 +17,7 @@
             android:layout_width="@dimen/inbox_item_icon"
             android:layout_height="@dimen/inbox_item_icon"
             android:layout_centerInParent="true"
-            
+            android:onClick="playButtonClicked"
             android:layout_marginLeft="@dimen/inbox_item_left_margin"
             android:src="@drawable/ic_inbox_play" />
 

@@ -100,6 +100,9 @@ public class InboxAdapter extends BaseAdapter {
 		if (song != null) {
 			contactInitial.setVisibility(View.GONE);
 			playButton.setVisibility(View.VISIBLE);
+			
+			// Place the song data in the view tag so it can be accessed on click
+			playButton.setTag(song);
 		} else {
 			contactInitial.setVisibility(View.VISIBLE);
 			playButton.setVisibility(View.GONE);
@@ -109,6 +112,7 @@ public class InboxAdapter extends BaseAdapter {
 			int color = mContext.getResources().getColor(getLetterColor(position));
 			contactInitial.setTextColor(color);
 		}
+		
 
 		return rowView;
 	}
