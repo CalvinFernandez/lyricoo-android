@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -116,7 +117,6 @@ public class SlidingMenuHelper {
 			public void onDrawerClosed(View view) {
 				// change title back to activity name
 				activity.getSupportActionBar().setTitle(title);
-
 			}
 
 			/** Called when a drawer has settled in a completely open state. */

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -14,7 +17,9 @@ import android.widget.ListView;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.session.LoginActivity;
+import com.lyricoo.friends.FriendManager.OnFriendSelectedListener;
+import com.lyricoo.music.LyricooPlayer;
+import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 import com.lyricoo.ui.SlidingMenuHelper;
@@ -27,8 +32,9 @@ import com.lyricoo.ui.SlidingMenuHelper;
  */
 public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
-	private MessageListAdapter mAdapter;
+	private InboxAdapter mAdapter;
 	private Context mContext;
+	private LyricooPlayer mPlayer;
 
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
@@ -37,12 +43,15 @@ public class InboxActivity extends LyricooActivity {
 	private ListView mMessageList;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {		
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.activity_messages);
+
+		setContentView(R.layout.activity_inbox);
 		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
+
+		// initialize player
+		mPlayer = new LyricooPlayer(this);
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
@@ -52,9 +61,18 @@ public class InboxActivity extends LyricooActivity {
 
 			@Override
 			public void onDataUpdated(User user) {
-				// we care about conversations with all contacts, so
-				// update everything
-				updateConversations();
+
+				// Make sure that this is run on the UI thread so it can update
+				// the view. The call can originate from a GCM message update,
+				// which is a background thread
+				runOnUiThread(new Runnable() {
+					public void run() {
+						// we care about conversations with all contacts, so
+						// update everything
+						updateConversations();
+					}
+				});
+
 			}
 
 			@Override
@@ -83,8 +101,15 @@ public class InboxActivity extends LyricooActivity {
 			Session.getConversationManager().unregisterOnDataChangedListener(
 					mConversationListener);
 		} catch (Exception e) {
-			// thrown if conversation manager if null
+			// thrown if conversation manager is null
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		updateConversations();
 	}
 
 	/**
@@ -92,7 +117,6 @@ public class InboxActivity extends LyricooActivity {
 	 * view
 	 */
 	protected void updateConversations() {
-		// TODO: Show indicators for new messages
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -101,7 +125,7 @@ public class InboxActivity extends LyricooActivity {
 	 */
 	private void displayConversations() {
 		// Create a new adapter for this conversation data
-		mAdapter = new MessageListAdapter(mContext, mConversations);
+		mAdapter = new InboxAdapter(mContext, mConversations);
 
 		mMessageList.setAdapter(mAdapter);
 
@@ -112,19 +136,28 @@ public class InboxActivity extends LyricooActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Conversation convo = mConversations.get(position);
-				// Pass selected user so conversationActivity knows whose
-				// conversation to display
-				User contact = convo.getContact();
-				
-				//  Mark conversation as read
-				convo.read();
-				
-				// convert to json to make it easy to pass to the object
-				String contactAsJson = Utility.toJson(contact);
 
-				Intent i = new Intent(mContext, ConversationActivity.class);
-				i.putExtra("contact", contactAsJson);
-				startActivity(i);
+				// if the play button was clicked, play the song
+				if (view.equals(findViewById(R.id.play_button))) {
+					Utility.log("play clicked");
+				}
+
+				// otherwise load the conversation
+				else {
+					// Pass selected user so conversationActivity knows whose
+					// conversation to display
+					User contact = convo.getContact();
+
+					// Mark conversation as read
+					convo.read();
+
+					// convert to json to make it easy to pass to the object
+					String contactAsJson = Utility.toJson(contact);
+
+					Intent i = new Intent(mContext, ConversationActivity.class);
+					i.putExtra("contact", contactAsJson);
+					startActivity(i);
+				}
 			}
 		});
 	}
@@ -132,8 +165,51 @@ public class InboxActivity extends LyricooActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.messages, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.inbox, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_compose:
+			newMessage();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void newMessage() {
+		Session.getFriendManager().showFriendPicker(this,
+				"Send message to friend", new OnFriendSelectedListener() {
+					@Override
+					public void onFriendSelected(User friend) {
+						// open the conversation activity with the selected
+						// friend
+						String contactAsJson = Utility.toJson(friend);
+						Intent i = new Intent(mContext,
+								ConversationActivity.class);
+						i.putExtra("contact", contactAsJson);
+						startActivity(i);
+					}
+				});
+	}
+
+	public void playButtonClicked(View v) {
+		// retrieve the song from the view tag
+		Song song = (Song) v.getTag();
+
+		// TODO: Make the player better. Animate play button on touch, show
+		// loading, refactor play code, etc
+		mPlayer.loadSongFromUrl(song.getUrl(), new OnPreparedListener() {
+
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				mPlayer.play(null);
+			}
+		});
 	}
 
 }

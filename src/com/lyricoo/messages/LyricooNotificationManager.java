@@ -22,11 +22,9 @@ public class LyricooNotificationManager {
 	 * @param numMessages
 	 */
 	public static void newMessageNotification(Context context, int numMessages) {
-		// TODO: Test this. Completely untested atm
 		
 		// always use the same id so old notifications can be updated instead of
 		// creating duplicates
-		// TODO: Always using the same id might prevent new notifications from showing up
 		int id = 1;
 
 		// create the title and content of the notification
@@ -39,9 +37,10 @@ public class LyricooNotificationManager {
 			msg = "You have an unread Lyricoo.";
 		}
 
-		// TODO: Update with custom icon
+		
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
+		// TODO: Update with custom icon
 		builder.setSmallIcon(R.drawable.ic_launcher);
 		builder.setContentTitle(title);
 		builder.setContentText(msg);

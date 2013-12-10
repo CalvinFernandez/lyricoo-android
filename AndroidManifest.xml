@@ -69,7 +69,7 @@
         </activity>       
         <activity
             android:name="com.lyricoo.messages.InboxActivity"
-            android:label="@string/title_activity_messages" >
+            android:label="@string/title_activity_inbox" >
         </activity>
         <activity
             android:name="com.lyricoo.friends.FriendsActivity"

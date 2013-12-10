@@ -37,11 +37,14 @@ public class Message extends LyricooModel {
 	
 	
 	private boolean mSent;
-	private boolean mRead;
+	// default read to true
+	private boolean mRead = true;
 	
 	// the Song included with this message. Null if none
 	private Song mSong;
-	private Date mTime;
+	
+	// default date to right now 
+	private Date mTime = new Date();
 
 	// format of the date that the server uses
 	// TODO: Adjust message time for user's timezone
@@ -50,7 +53,7 @@ public class Message extends LyricooModel {
 	private static String baseUrl = "messages";
 
 	public Message(String content, int userId, int contactId, boolean sent,
-			Song song, Date time, Boolean read) {
+			Song song, Date time, boolean read) {
 		super();
 		
 		mContent = content;
@@ -196,7 +199,7 @@ public class Message extends LyricooModel {
 		try {
 			mRead = json.getBoolean("read");
 		} catch (JSONException e) {
-			
+			Utility.log("error setting read");
 		}
 		
 		setBaseUrl(baseUrl + "/" + mMessageId);
@@ -223,7 +226,7 @@ public class Message extends LyricooModel {
 	}
 	
 	public boolean isUnread() {
-		return mRead == false;
+		return !mRead;
 	}
 
 	public void read() {
