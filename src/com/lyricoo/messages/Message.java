@@ -320,7 +320,6 @@ public class Message extends LyricooModel {
 	 * @param json
 	 */
 	public void update(JSONObject json) {
-		Utility.log(json.toString());
 		setContent(json);
 	}
 	
