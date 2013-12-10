@@ -1,14 +1,20 @@
 package com.lyricoo.friends;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.json.JSONArray;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 
 import com.loopj.android.http.RequestParams;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.messages.ConversationActivity;
+import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 
 public class FriendManager {
@@ -106,10 +112,10 @@ public class FriendManager {
 			}
 		});
 	}
-	
+
 	/**
-	 * Attempts to find the friend in the users 
-	 * friends list 
+	 * Attempts to find the friend in the users friends list
+	 * 
 	 * @param id
 	 * @return null if none found
 	 */
@@ -121,7 +127,7 @@ public class FriendManager {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Remove a friend from the user's friend list
 	 * 
@@ -232,6 +238,7 @@ public class FriendManager {
 
 	/**
 	 * Remove a callback that was registered
+	 * 
 	 * @param listener
 	 */
 	public void unregisterOnFriendsUpdatedListener(
@@ -261,5 +268,92 @@ public class FriendManager {
 		for (OnFriendsUpdatedListener listener : mOnFriendsUpdatedListeners) {
 			listener.onFriendsUpdated();
 		}
+	}
+
+	/**
+	 * Build a dialog that allows the user to select a friend from their current
+	 * friend list or add a new friend. On selection the friend is passed back
+	 * to the calling activity through the listener
+	 * 
+	 * @param context
+	 *            The activity the dialog will be shown in
+	 * @param title
+	 *            The text to title the dialog with
+	 * @param listener
+	 *            Callback listener to pass the selected friend to
+	 */
+	public void showFriendPicker(final Context context, String title,
+			final OnFriendSelectedListener listener) {
+		// get list of just friend names to show in dialog
+		ArrayList<String> names = new ArrayList<String>();
+		for (User friend : mFriends) {
+			names.add(friend.getUsername());
+		}
+		
+		// alphabetize list
+		Collections.sort(names);
+
+		// convert ArrayList to Array so AlertDialog can use it
+		String[] namesArray = new String[names.size()];
+		namesArray = names.toArray(namesArray);
+
+		// create a new dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setTitle(title);
+
+		// if the user doesn't have any friends show them a different dialog
+		if (names.isEmpty()) {
+			builder.setMessage("You haven't added any friends yet! Add a friend to get started sending Lyricoos!");
+		}
+
+		// otherwise show them a list of their friends to select from
+		else {
+			builder.setItems(namesArray, new DialogInterface.OnClickListener() {
+				// handle clicking on an option
+				public void onClick(DialogInterface dialog, int which) {
+					// get the friend that was selected and
+					// pass it to the listener
+					try {
+						User friend = mFriends.get(which);
+						listener.onFriendSelected(friend);
+					} catch (Exception e) {
+						// If this gets caught it's probably index out of bound
+						// error. TODO: Log it so we can see
+						// why it happened
+					}
+				}
+			});
+		}
+
+		// give option to add a new friend
+		builder.setPositiveButton("Add New Friend",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// TODO: Start activity for result maybe
+						context.startActivity(new Intent(context,
+								ContactsActivity.class));
+					}
+				});
+
+		builder.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// User cancelled the dialog
+					}
+				});
+
+		builder.create().show();
+	}
+
+	/**
+	 * Callback for when a friend is selected from the friend picker
+	 * 
+	 */
+	public interface OnFriendSelectedListener {
+		/**
+		 * Called when a friend is picked
+		 * 
+		 */
+		void onFriendSelected(User friend);
 	}
 }

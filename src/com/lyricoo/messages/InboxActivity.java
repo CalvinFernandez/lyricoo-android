@@ -17,6 +17,7 @@ import android.widget.ListView;
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
+import com.lyricoo.friends.FriendManager.OnFriendSelectedListener;
 import com.lyricoo.music.LyricooPlayer;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
@@ -172,7 +173,16 @@ public class InboxActivity extends LyricooActivity {
 	}
 	
 	private void newMessage(){
-		Utility.log("new message clicked");
+		Session.getFriendManager().showFriendPicker(this, "Send message to friend", new OnFriendSelectedListener() {			
+			@Override
+			public void onFriendSelected(User friend) {
+				// open the conversation activity with the selected friend
+				String contactAsJson = Utility.toJson(friend);
+				Intent i = new Intent(mContext, ConversationActivity.class);
+				i.putExtra("contact", contactAsJson);
+				startActivity(i);				
+			}
+		});
 	}
 
 	public void playButtonClicked(View v) {
