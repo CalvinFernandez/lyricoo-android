@@ -94,7 +94,9 @@ public class SlidingMenuHelper {
 			}
 		});
 	}
-	/** Add drawer listener to listen for open and close events
+
+	/**
+	 * Add drawer listener to listen for open and close events
 	 * 
 	 * @param activity
 	 * @param drawerLayout
@@ -102,7 +104,6 @@ public class SlidingMenuHelper {
 	private static void addDrawerListener(final LyricooActivity activity,
 			DrawerLayout drawerLayout) {
 
-		
 		// TODO: Change listener to be ActionBarDrawerToggle to facilitate
 		// interaction
 		// between the action bar and drawer. To do this, the actionbar
@@ -116,7 +117,6 @@ public class SlidingMenuHelper {
 			public void onDrawerClosed(View view) {
 				// change title back to activity name
 				activity.getSupportActionBar().setTitle(title);
-
 			}
 
 			/** Called when a drawer has settled in a completely open state. */
