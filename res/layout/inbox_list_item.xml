@@ -18,7 +18,6 @@
             android:layout_height="@dimen/inbox_item_icon"
             android:layout_centerInParent="true"
             android:onClick="playButtonClicked"
-            android:layout_marginLeft="@dimen/inbox_item_left_margin"
             android:src="@drawable/ic_inbox_play" />
 
         <TextView
@@ -27,6 +26,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/inbox_item_username_initial" />
+
+        <ProgressBar
+            android:id="@+id/load_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true" />
+
     </RelativeLayout>
 
     <TextView
@@ -69,6 +76,17 @@
             android:text="3"
             android:textColor="@color/white"
             android:textSize="@dimen/inbox_item_unread_text" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/unread_count"
+            android:layout_alignBottom="@+id/unread_count"
+            android:layout_alignParentLeft="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
     </RelativeLayout>
 
 </RelativeLayout>
