@@ -42,6 +42,7 @@ public class InboxActivity extends LyricooActivity {
 	private LyricooPlayer mPlayer;
 
 	// remember which play button is pressed so we can revert it's state
+	// TODO: Create custom view for play button
 	private ImageView mPlayButton;
 
 	// Callback listener for when messages are updated
@@ -121,10 +122,8 @@ public class InboxActivity extends LyricooActivity {
 		mPlayer.pause();
 
 		// set the play button back to default state
-		if (mPlayButton != null) {
-			mPlayButton.setImageResource(R.drawable.ic_inbox_play);
-			mPlayButton = null;
-		}
+		resetPlayButton(mPlayButton);
+		mPlayButton = null;
 	}
 
 	@Override
@@ -219,15 +218,22 @@ public class InboxActivity extends LyricooActivity {
 				});
 	}
 
+	/**
+	 * Handle a play button being pressed. There is a different button for each
+	 * inbox item that has a song, so we need to keep track of multiple buttons
+	 * and make sure they are managed accordingly without collisions
+	 * 
+	 * @param v The ImageView containing the play button that was pressed
+	 */
 	public void playButtonClicked(View v) {
 		ImageView playButton = (ImageView) v;
+
+		// reset the last play button pressed
+		resetPlayButton(mPlayButton);
 
 		// pause the music if it's playing
 		if (mPlayer.isPlaying()) {
 			mPlayer.pause();
-
-			// change the button back to stopped state
-			mPlayButton.setImageResource(R.drawable.ic_inbox_play);
 
 			// if a different button was clicked from the last song that was
 			// playing, play the new song
@@ -262,25 +268,50 @@ public class InboxActivity extends LyricooActivity {
 
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				// TODO: It's possible for the user to navigate away from the
-				// activity before the song loads. The music then starts playing
-				// from the other activity, and the play button icons get messed
-				// up.
+				// don't play the song if it's no longer selected
+				if (mPlayButton == null) {
+					return;
+				}
 
-				// hide loading and show pause button
-				progress.setVisibility(View.GONE);
-				playButton.setImageResource(R.drawable.ic_inbox_pause);
-				playButton.setVisibility(View.VISIBLE);
-				mPlayer.play(new OnCompletionListener() {
+				try {
+					// hide loading and show pause button
+					progress.setVisibility(View.GONE);
+					playButton.setImageResource(R.drawable.ic_inbox_pause);
+					playButton.setVisibility(View.VISIBLE);
+					mPlayer.play(new OnCompletionListener() {
 
-					@Override
-					public void onCompletion(MediaPlayer mp) {
-						// set button back to stopped state
-						mPlayButton.setImageResource(R.drawable.ic_inbox_play);
-					}
-				});
+						@Override
+						public void onCompletion(MediaPlayer mp) {
+							// set button back to stopped state
+							resetPlayButton(playButton);
+						}
+					});
+				} catch (Exception e) {
+					resetPlayButton(playButton);
+				}
 			}
 		});
+	}
+
+	private void resetPlayButton(ImageView playButton) {
+		if (playButton == null) {
+			return;
+		}
+
+		// hide progress bar
+		try {
+			RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
+
+			ProgressBar progress = (ProgressBar) iconLayout
+					.findViewById(R.id.load_progress);
+			progress.setVisibility(View.GONE);
+		} catch (Exception e) {
+			// error getting button parent
+		}
+
+		// reset play button image
+		mPlayButton.setVisibility(View.VISIBLE);
+		mPlayButton.setImageResource(R.drawable.ic_inbox_play);
 	}
 
 }
