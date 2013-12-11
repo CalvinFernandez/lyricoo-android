@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:drawSelectorOnTop="true"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/inbox_divider_height" >
         </ListView>
