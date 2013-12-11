@@ -73,20 +73,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="3"
             android:textColor="@color/white"
-            android:textSize="@dimen/inbox_item_unread_text" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/unread_count"
-            android:layout_alignBottom="@+id/unread_count"
-            android:layout_alignParentLeft="true"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textSize="@dimen/inbox_item_unread_text" />        
 
     </RelativeLayout>
+    
+    <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/inbox_item_time_right_margin"
+            android:layout_marginTop="@dimen/inbox_item_time_top_margin"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
 
 </RelativeLayout>

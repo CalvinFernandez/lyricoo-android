@@ -1,9 +1,11 @@
 package com.lyricoo.messages;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,13 +74,18 @@ public class InboxAdapter extends BaseAdapter {
 		// number unread. Otherwise hide it
 		RelativeLayout unreadNotification = (RelativeLayout) rowView
 				.findViewById(R.id.unread_message_counter);
+		TextView time = (TextView) rowView.findViewById(R.id.time);
 		if (convo.hasUnread()) {
 			unreadNotification.setVisibility(View.VISIBLE);
 			TextView unreadCount = (TextView) rowView
 					.findViewById(R.id.unread_count);
 			unreadCount.setText(Integer.toString(convo.getUnreadCount()));
+
+			// don't show the time when the unread notification is visible
+			time.setVisibility(View.GONE);
 		} else {
-			unreadNotification.setVisibility(View.GONE);
+			unreadNotification.setVisibility(View.INVISIBLE);
+			time.setVisibility(View.VISIBLE);
 		}
 
 		// set the message content
@@ -89,6 +96,9 @@ public class InboxAdapter extends BaseAdapter {
 
 		// set the contact name
 		contactName.setText(contact);
+
+		// set the time
+		setTime(time, msg.getTime());
 
 		// if there is a song, show the play button, otherwise show the
 		// contact's initial
@@ -116,6 +126,16 @@ public class InboxAdapter extends BaseAdapter {
 		}
 
 		return rowView;
+	}
+
+	/**
+	 * Populate the text view with the given time
+	 * 
+	 * @param time
+	 * @param date
+	 */
+	private void setTime(TextView time, Date date) {
+		time.setText(DateUtils.getRelativeTimeSpanString(date.getTime()));
 	}
 
 	/**

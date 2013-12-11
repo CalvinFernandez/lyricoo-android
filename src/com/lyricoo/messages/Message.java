@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +48,7 @@ public class Message extends LyricooModel {
 	private Date mTime = new Date();
 
 	// format of the date that the server uses
-	// TODO: Adjust message time for user's timezone
-	private final String DATE_FORMAT = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'";
+	private final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	private static String baseUrl = "messages";
 
@@ -183,11 +183,16 @@ public class Message extends LyricooModel {
 
 		}
 
-		// Parse date string into usable java format
+		// Parse date string into usable java format for the user's timezone
 		try {
 			String createdAt = json.getString("created_at");
-			mTime = new SimpleDateFormat(DATE_FORMAT, Locale.US)
-					.parse(createdAt);
+			
+			SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			
+			Date date = format.parse(createdAt);
+			
+			mTime = date;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
