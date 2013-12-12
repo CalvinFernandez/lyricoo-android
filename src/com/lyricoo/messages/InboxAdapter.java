@@ -99,7 +99,7 @@ public class InboxAdapter extends BaseAdapter {
 		contactName.setText(contact);
 
 		// set the time
-		setTime(time, msg.getTime());
+		time.setText(msg.getDisplayableTime());
 
 		// if there is a song, show the play button, otherwise show the
 		// contact's initial
@@ -127,16 +127,6 @@ public class InboxAdapter extends BaseAdapter {
 		}
 
 		return rowView;
-	}
-
-	/**
-	 * Populate the text view with the given time
-	 * 
-	 * @param time
-	 * @param date
-	 */
-	private void setTime(TextView time, Date date) {
-		time.setText(DateUtils.getRelativeTimeSpanString(date.getTime()));
 	}
 
 	/**

@@ -8,8 +8,9 @@ import org.json.JSONObject;
 
 import com.lyricoo.api.LyricooApi;
 
-/** This class encapsulates the song model of the backend
- *
+/**
+ * This class encapsulates the song model of the backend
+ * 
  */
 public class Song {
 	private int mId;
@@ -18,7 +19,7 @@ public class Song {
 	private String mPath;
 	private String mCategory;
 	private int mCategoryId;
-	
+
 	public Song(int id, String title, String artist, String path,
 			String category) {
 		super();
@@ -28,7 +29,7 @@ public class Song {
 		this.mPath = path;
 		this.mCategory = category;
 	}
-	
+
 	public Song(JSONObject json) {
 		try {
 			mId = json.getInt("id");
@@ -48,29 +49,32 @@ public class Song {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// in songs the key is "path" and in messages the key is "url"... TODO: Make this consistent
+
+		// in songs the key is "path" and in messages the key is "url"... TODO:
+		// Make this consistent
 		try {
 			mPath = json.getString("path");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			mCategoryId = json.getInt("category_id");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// In some cases the JSON will include a key for the category with detailed category info
+
+		// In some cases the JSON will include a key for the category with
+		// detailed category info
 		JSONObject category = null;
 		try {
 			category = json.getJSONObject("category");
 			mCategory = category.getString("name");
 		} catch (Exception e) {
-			// Will get called if there is no category key. In this case we just have category_id
+			// Will get called if there is no category key. In this case we just
+			// have category_id
 		}
 	}
 
@@ -86,7 +90,8 @@ public class Song {
 		return mArtist;
 	}
 
-	/** The http location of the song for streaming
+	/**
+	 * The http location of the song for streaming
 	 * 
 	 * @return
 	 */
@@ -97,16 +102,17 @@ public class Song {
 	public String getCategory() {
 		return mCategory;
 	}
-	
-	/** 
+
+	/**
 	 * Turn a JSONArray of songs from the server into an ArrayList of Songs
+	 * 
 	 * @param json
 	 * @return
 	 */
-	public static ArrayList<Song> parseJsonArray(JSONArray json){
+	public static ArrayList<Song> parseJsonArray(JSONArray json) {
 		ArrayList<Song> result = new ArrayList<Song>();
 		int numSongs = json.length();
-		for(int i = 0; i < numSongs; i++){
+		for (int i = 0; i < numSongs; i++) {
 			JSONObject songJson;
 			try {
 				songJson = json.getJSONObject(i);
@@ -114,38 +120,34 @@ public class Song {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
+			}
 		}
-		return result;		
+		return result;
 	}
-	
 
+	@Override
 	public boolean equals(Object obj) {
-        if (obj == null){
+		if (obj == null) {
 			return false;
-        }
-            
-        if (obj == this){
-        	return true;
-        }
-            
-        if (!(obj instanceof Song)){
-        	return false;
-        }
-            
+		}
 
-        // songs are equal if they have the same id
-        Song song = (Song) obj;
-        return mId == song.getId();
-    }
-	
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof Song)) {
+			return false;
+		}
+
+		// songs are equal if they have the same id
+		Song song = (Song) obj;
+		return mId == song.getId();
+	}
+
+	@Override
 	public int hashCode() {
 		// base the hashcode on the song id
-        return Integer.valueOf(mId).hashCode();
-    }
-	
-	
-	
-	
-	
+		return Integer.valueOf(mId).hashCode();
+	}
+
 }

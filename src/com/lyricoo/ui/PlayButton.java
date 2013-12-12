@@ -79,7 +79,7 @@ public class PlayButton extends RelativeLayout {
 		layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 		// default to not shown
-		mProgress.setVisibility(View.GONE);
+		mProgress.setVisibility(View.INVISIBLE);
 
 		addView(mProgress);
 	}
@@ -120,7 +120,7 @@ public class PlayButton extends RelativeLayout {
 		}
 
 		mProgress.setVisibility(View.VISIBLE);
-		mImage.setVisibility(View.GONE);
+		mImage.setVisibility(View.INVISIBLE);
 
 		// if the song hasn't been loaded yet load it!
 		if (!loaded) {
@@ -145,7 +145,7 @@ public class PlayButton extends RelativeLayout {
 		if (playing) {
 			mImage.setImageResource(ICON_RESOURCE_PAUSE);
 
-			mProgress.setVisibility(View.GONE);
+			mProgress.setVisibility(View.INVISIBLE);
 			mImage.setVisibility(View.VISIBLE);
 
 			mPlayer.play(new OnCompletionListener() {
@@ -169,7 +169,7 @@ public class PlayButton extends RelativeLayout {
 			mPlayer.pause();
 		}
 
-		mProgress.setVisibility(View.GONE);
+		mProgress.setVisibility(View.INVISIBLE);
 		mImage.setVisibility(View.VISIBLE);
 		mImage.setImageResource(ICON_RESOURCE_PLAY);
 		setClickable(true);

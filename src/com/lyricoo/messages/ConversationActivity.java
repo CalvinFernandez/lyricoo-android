@@ -25,6 +25,7 @@ import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.PlayButton;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
@@ -48,8 +49,8 @@ public class ConversationActivity extends LyricooActivity {
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
 
-	// player to handle playing lyricoos from messages
-	private LyricooPlayer mPlayer;
+	// The last used play button
+	private PlayButton mPlayButton;
 
 	// Layout resources to display message sending options
 	private TextView mLyricooTitle;
@@ -102,9 +103,6 @@ public class ConversationActivity extends LyricooActivity {
 		Session.getConversationManager().registerOnDataChangedListener(
 				mConversationListener);
 
-		// initialize player
-		mPlayer = new LyricooPlayer(this);
-
 		// set activity title to reflect contact's name
 		setTitle(mContact.getUsername());
 
@@ -138,7 +136,10 @@ public class ConversationActivity extends LyricooActivity {
 	protected void onPause() {
 		super.onPause();
 		// Stop the music if the activity looses focus
-		mPlayer.stop();
+		if (mPlayButton != null) {
+			mPlayButton.stop();
+			mPlayButton = null;
+		}
 	}
 
 	@Override
@@ -185,13 +186,7 @@ public class ConversationActivity extends LyricooActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// Get the message that was clicked and play attached lyricoo if
-				// applicable
-				Message msg = mConversation.getMessages().get(position);
-				Song song = msg.getSong();
-				if (song != null) {
-					playSong(song);
-				}
+				// TODO: Allow interaction on click
 			}
 		});
 
@@ -200,7 +195,7 @@ public class ConversationActivity extends LyricooActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				// TODO: Show popup with message options
+				// TODO: Enter data selection mode
 
 				// Return true to signal that we have handled the click
 				return true;
@@ -255,14 +250,6 @@ public class ConversationActivity extends LyricooActivity {
 			return;
 
 		// play selected song
-		playSong(mSelectedLyricoo);
-	}
-
-	private void playSong(Song song) {
-		// TODO: Handle pausing if player is currently playing
-		// TODO: Show some indication of song playing.
-		// TODO: Cache song so it doesn't have to load every time
-		mPlayer.loadSongFromUrl(song.getUrl(), null);
 	}
 
 	// the button to select a lyricoo to include
@@ -305,6 +292,29 @@ public class ConversationActivity extends LyricooActivity {
 					}
 				});
 		builder.create().show();
+	}
+
+	/**
+	 * Called when a play button is pressed
+	 * 
+	 * @param v
+	 */
+	public void playButtonClicked(View v) {
+		PlayButton playButton = (PlayButton) v;
+
+		// if a new play button was hit, stop the old one and start the new one
+		if (!playButton.equals(mPlayButton)) {
+			if (mPlayButton != null) {
+				mPlayButton.stop();
+			}
+			mPlayButton = playButton;
+			mPlayButton.play();
+		}
+
+		// otherwise the same button was hit so toggle it's state
+		else {
+			playButton.toggle();
+		}
 	}
 
 	protected void removeLyricoo() {
