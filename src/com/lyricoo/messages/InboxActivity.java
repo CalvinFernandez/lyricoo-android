@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,7 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
@@ -35,6 +40,10 @@ public class InboxActivity extends LyricooActivity {
 	private InboxAdapter mAdapter;
 	private Context mContext;
 	private LyricooPlayer mPlayer;
+
+	// remember which play button is pressed so we can revert it's state
+	// TODO: Create custom view for play button
+	private ImageView mPlayButton;
 
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
@@ -103,6 +112,18 @@ public class InboxActivity extends LyricooActivity {
 		} catch (Exception e) {
 			// thrown if conversation manager is null
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		// pause any music that is playing
+		mPlayer.pause();
+
+		// set the play button back to default state
+		resetPlayButton(mPlayButton);
+		mPlayButton = null;
 	}
 
 	@Override
@@ -197,19 +218,100 @@ public class InboxActivity extends LyricooActivity {
 				});
 	}
 
+	/**
+	 * Handle a play button being pressed. There is a different button for each
+	 * inbox item that has a song, so we need to keep track of multiple buttons
+	 * and make sure they are managed accordingly without collisions
+	 * 
+	 * @param v The ImageView containing the play button that was pressed
+	 */
 	public void playButtonClicked(View v) {
-		// retrieve the song from the view tag
-		Song song = (Song) v.getTag();
+		ImageView playButton = (ImageView) v;
 
-		// TODO: Make the player better. Animate play button on touch, show
-		// loading, refactor play code, etc
+		// reset the last play button pressed
+		resetPlayButton(mPlayButton);
+
+		// pause the music if it's playing
+		if (mPlayer.isPlaying()) {
+			mPlayer.pause();
+
+			// if a different button was clicked from the last song that was
+			// playing, play the new song
+			if (!playButton.equals(mPlayButton)) {
+				play(playButton);
+			}
+		}
+
+		// otherwise play the song that was clicked
+		else {
+			play(playButton);
+		}
+
+		mPlayButton = playButton;
+	}
+
+	private void play(final ImageView playButton) {
+		// retrieve the song from the view tag
+		Song song = (Song) playButton.getTag();
+
+		// need to get the layout for this specific item so the right progress
+		// bar can be grabbed
+		RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
+
+		// change button to loading
+		playButton.setVisibility(View.GONE);
+		final ProgressBar progress = (ProgressBar) iconLayout
+				.findViewById(R.id.load_progress);
+		progress.setVisibility(View.VISIBLE);
+
 		mPlayer.loadSongFromUrl(song.getUrl(), new OnPreparedListener() {
 
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				mPlayer.play(null);
+				// don't play the song if it's no longer selected
+				if (mPlayButton == null) {
+					return;
+				}
+
+				try {
+					// hide loading and show pause button
+					progress.setVisibility(View.GONE);
+					playButton.setImageResource(R.drawable.ic_inbox_pause);
+					playButton.setVisibility(View.VISIBLE);
+					mPlayer.play(new OnCompletionListener() {
+
+						@Override
+						public void onCompletion(MediaPlayer mp) {
+							// set button back to stopped state
+							resetPlayButton(playButton);
+						}
+					});
+				} catch (Exception e) {
+					resetPlayButton(playButton);
+				}
 			}
 		});
+	}
+
+	private void resetPlayButton(ImageView playButton) {
+		if (playButton == null) {
+			return;
+		}
+
+		// hide progress bar
+		try {
+			RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
+
+			ProgressBar progress = (ProgressBar) iconLayout
+					.findViewById(R.id.load_progress);
+			progress.setVisibility(View.GONE);
+		} catch (Exception e) {
+			// error getting button parent
+		}
+
+		// reset play button image
+		mPlayButton.setVisibility(View.VISIBLE);
+		mPlayButton.setImageResource(R.drawable.ic_inbox_play);
 	}
 
 }

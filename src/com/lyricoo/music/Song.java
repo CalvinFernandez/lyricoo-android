@@ -119,6 +119,33 @@ public class Song {
 		return result;		
 	}
 	
+
+	public boolean equals(Object obj) {
+        if (obj == null){
+			return false;
+        }
+            
+        if (obj == this){
+        	return true;
+        }
+            
+        if (!(obj instanceof Song)){
+        	return false;
+        }
+            
+
+        // songs are equal if they have the same id
+        Song song = (Song) obj;
+        return mId == song.getId();
+    }
+	
+	public int hashCode() {
+		// base the hashcode on the song id
+        return Integer.valueOf(mId).hashCode();
+    }
+	
+	
+	
 	
 	
 }

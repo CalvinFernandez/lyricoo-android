@@ -84,6 +84,14 @@ public class LyricooPlayer {
 		} catch (IllegalStateException e) {
 		}
 	}
+	
+	/**
+	 * Get the last url that was loaded
+	 * @return The last url loaded using loadSongFromUrl()
+	 */
+	public String getUrl(){
+		return mUrl;
+	}
 
 	/**
 	 * Plays the song from the beginning
