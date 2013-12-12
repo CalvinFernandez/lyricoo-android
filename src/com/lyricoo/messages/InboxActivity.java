@@ -26,6 +26,7 @@ import com.lyricoo.music.LyricooPlayer;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.PlayButton;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
@@ -38,11 +39,9 @@ public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
 	private InboxAdapter mAdapter;
 	private Context mContext;
-	private LyricooPlayer mPlayer;
 
 	// remember which play button is pressed so we can revert it's state
-	// TODO: Create custom view for play button
-	private ImageView mPlayButton;
+	private PlayButton mPlayButton;
 
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
@@ -57,9 +56,6 @@ public class InboxActivity extends LyricooActivity {
 		setContentView(R.layout.activity_inbox);
 		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
-
-		// initialize player
-		mPlayer = new LyricooPlayer(this);
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
@@ -117,12 +113,12 @@ public class InboxActivity extends LyricooActivity {
 	protected void onPause() {
 		super.onPause();
 
-		// pause any music that is playing
-		mPlayer.pause();
-
-		// set the play button back to default state
-		resetPlayButton(mPlayButton);
-		mPlayButton = null;
+		// set the selected play button back to default state and clear the
+		// selection
+		if (mPlayButton != null) {
+			mPlayButton.stop();
+			mPlayButton = null;
+		}
 	}
 
 	@Override
@@ -155,29 +151,22 @@ public class InboxActivity extends LyricooActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				// load the conversation
 				Conversation convo = mConversations.get(position);
 
-				// if the play button was clicked, play the song
-				if (view.equals(findViewById(R.id.play_button))) {
-					Utility.log("play clicked");
-				}
+				// Pass selected user so conversationActivity knows whose
+				// conversation to display
+				User contact = convo.getContact();
 
-				// otherwise load the conversation
-				else {
-					// Pass selected user so conversationActivity knows whose
-					// conversation to display
-					User contact = convo.getContact();
+				// Mark conversation as read
+				convo.read();
 
-					// Mark conversation as read
-					convo.read();
+				// convert to json to make it easy to pass to the object
+				String contactAsJson = Utility.toJson(contact);
 
-					// convert to json to make it easy to pass to the object
-					String contactAsJson = Utility.toJson(contact);
-
-					Intent i = new Intent(mContext, ConversationActivity.class);
-					i.putExtra("contact", contactAsJson);
-					startActivity(i);
-				}
+				Intent i = new Intent(mContext, ConversationActivity.class);
+				i.putExtra("contact", contactAsJson);
+				startActivity(i);
 			}
 		});
 	}
@@ -222,95 +211,25 @@ public class InboxActivity extends LyricooActivity {
 	 * inbox item that has a song, so we need to keep track of multiple buttons
 	 * and make sure they are managed accordingly without collisions
 	 * 
-	 * @param v The ImageView containing the play button that was pressed
+	 * @param v
+	 *            The ImageView containing the play button that was pressed
 	 */
 	public void playButtonClicked(View v) {
-		ImageView playButton = (ImageView) v;
+		PlayButton playButton = (PlayButton) v;
 
-		// reset the last play button pressed
-		resetPlayButton(mPlayButton);
-
-		// pause the music if it's playing
-		if (mPlayer.isPlaying()) {
-			mPlayer.pause();
-
-			// if a different button was clicked from the last song that was
-			// playing, play the new song
-			if (!playButton.equals(mPlayButton)) {
-				play(playButton);
+		// if a new play button was hit, stop the old one and start the new one
+		if (!playButton.equals(mPlayButton)) {
+			if (mPlayButton != null) {
+				mPlayButton.stop();
 			}
+			mPlayButton = playButton;
+			mPlayButton.play();
 		}
 
-		// otherwise play the song that was clicked
+		// otherwise the same button was hit so toggle it's state
 		else {
-			play(playButton);
+			playButton.toggle();
 		}
-
-		mPlayButton = playButton;
-	}
-
-	private void play(final ImageView playButton) {
-		// retrieve the song from the view tag
-		Song song = (Song) playButton.getTag();
-
-		// need to get the layout for this specific item so the right progress
-		// bar can be grabbed
-		RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
-
-		// change button to loading
-		playButton.setVisibility(View.GONE);
-		final ProgressBar progress = (ProgressBar) iconLayout
-				.findViewById(R.id.load_progress);
-		progress.setVisibility(View.VISIBLE);
-
-		mPlayer.loadSongFromUrl(song.getUrl(), new OnPreparedListener() {
-
-			@Override
-			public void onPrepared(MediaPlayer mp) {
-				// don't play the song if it's no longer selected
-				if (mPlayButton == null) {
-					return;
-				}
-
-				try {
-					// hide loading and show pause button
-					progress.setVisibility(View.GONE);
-					playButton.setImageResource(R.drawable.ic_inbox_pause);
-					playButton.setVisibility(View.VISIBLE);
-					mPlayer.play(new OnCompletionListener() {
-
-						@Override
-						public void onCompletion(MediaPlayer mp) {
-							// set button back to stopped state
-							resetPlayButton(playButton);
-						}
-					});
-				} catch (Exception e) {
-					resetPlayButton(playButton);
-				}
-			}
-		});
-	}
-
-	private void resetPlayButton(ImageView playButton) {
-		if (playButton == null) {
-			return;
-		}
-
-		// hide progress bar
-		try {
-			RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
-
-			ProgressBar progress = (ProgressBar) iconLayout
-					.findViewById(R.id.load_progress);
-			progress.setVisibility(View.GONE);
-		} catch (Exception e) {
-			// error getting button parent
-		}
-
-		// reset play button image
-		mPlayButton.setVisibility(View.VISIBLE);
-		mPlayButton.setImageResource(R.drawable.ic_inbox_play);
 	}
 
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.music.Song;
+import com.lyricoo.ui.PlayButton;
 
 /**
  * This class is used to create a listview of the user's messages based on each
@@ -103,7 +104,7 @@ public class InboxAdapter extends BaseAdapter {
 		// if there is a song, show the play button, otherwise show the
 		// contact's initial
 		Song song = msg.getSong();
-		ImageView playButton = (ImageView) rowView
+		PlayButton playButton = (PlayButton) rowView
 				.findViewById(R.id.play_button);
 		TextView contactInitial = (TextView) rowView
 				.findViewById(R.id.username_letter);
@@ -113,7 +114,7 @@ public class InboxAdapter extends BaseAdapter {
 
 			// Place the song data in the view tag so it can be accessed on
 			// click
-			playButton.setTag(song);
+			playButton.setSong(song);
 		} else {
 			contactInitial.setVisibility(View.VISIBLE);
 			playButton.setVisibility(View.GONE);

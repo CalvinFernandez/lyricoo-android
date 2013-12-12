@@ -12,13 +12,12 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/inbox_item_left_margin" >
 
-        <ImageView
+        <com.lyricoo.ui.PlayButton
             android:id="@+id/play_button"
-            android:layout_width="@dimen/inbox_item_icon"
-            android:layout_height="@dimen/inbox_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:onClick="playButtonClicked"
-            android:src="@drawable/ic_inbox_play" />
+            android:onClick="playButtonClicked" />
 
         <TextView
             android:id="@+id/username_letter"
@@ -26,14 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/inbox_item_username_initial" />
-
-        <ProgressBar
-            android:id="@+id/load_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_centerInParent="true" />
-
+        
     </RelativeLayout>
 
     <TextView
@@ -41,9 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/inbox_item_text_top_margin"
         android:layout_marginLeft="@dimen/inbox_item_text_left_margin"
         android:layout_marginRight="@dimen/inbox_item_text_right_margin"
+        android:layout_marginTop="@dimen/inbox_item_text_top_margin"
         android:layout_toLeftOf="@+id/unread_message_counter"
         android:layout_toRightOf="@+id/message_icon"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -74,18 +66,16 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/inbox_item_unread_text" />        
-
+            android:textSize="@dimen/inbox_item_unread_text" />
     </RelativeLayout>
-    
-    <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/inbox_item_time_right_margin"
-            android:layout_marginTop="@dimen/inbox_item_time_top_margin"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/inbox_item_time_right_margin"
+        android:layout_marginTop="@dimen/inbox_item_time_top_margin"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
