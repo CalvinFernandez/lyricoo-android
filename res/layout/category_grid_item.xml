@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="130dp" 
-    android:background="@color/lyricoo_blue_green">
-    
+    android:layout_height="match_parent" >
+
+    <ImageView 
+        android:id="@+id/category_thumb_image"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        />  
+        
     <TextView
         android:id="@+id/name"
+        style="@android:style/TextAppearance.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:textColor="@color/lyricoo_black"
-        style="@android:style/TextAppearance.Small" />
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/lyricoo_white" />
+
 
 </RelativeLayout>
