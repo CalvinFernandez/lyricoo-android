@@ -91,6 +91,7 @@ public class PlayButton extends RelativeLayout {
 	 */
 	public void setSong(Song song) {
 		mSong = song;
+		loaded = false;
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class PlayButton extends RelativeLayout {
 
 	/**
 	 * Start the song playing and update the button view. A song must have first
-	 * been loaded with setSong() otherwise nothing will happend
+	 * been loaded with setSong() otherwise nothing will happen
 	 */
 	public void play() {
 		playing = true;
