@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/message_bar"
             android:layout_alignParentTop="true"
-            android:divider="@color/transparent" 
-            android:dividerHeight="10dp"/>
+            android:divider="@color/transparent"
+            android:dividerHeight="10dp" />
 
         <RelativeLayout
             android:id="@+id/message_bar"
@@ -41,9 +41,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="@dimen/conversation_text_input_top_margin"
                 android:layout_marginLeft="@dimen/conversation_text_input_left_margin"
                 android:layout_marginRight="@dimen/conversation_text_input_right_margin"
+                android:layout_marginTop="@dimen/conversation_text_input_top_margin"
                 android:layout_toLeftOf="@+id/send_button"
                 android:layout_toRightOf="@+id/song_selection_container"
                 android:background="@layout/conversation_edit_text"
@@ -76,6 +76,22 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:onClick="playButtonClicked"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/song_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/play_button"
+                    android:layout_marginTop="@dimen/conversation_song_title_top_margin"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/conversation_song_title_width"
+                    android:text="shot for me"
+                    android:gravity="left"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/conversation_song_title_text_size"
                     android:visibility="gone" />
             </RelativeLayout>
         </RelativeLayout>

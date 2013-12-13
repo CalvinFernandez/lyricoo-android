@@ -47,5 +47,9 @@
     <dimen name="conversation_text_input_right_margin">10dp</dimen>
     <dimen name="conversation_text_input_side_padding">10dp</dimen>
     <dimen name="conversation_text_input_top_margin">25dp</dimen>
+    <dimen name="conversation_song_title_width">60dp</dimen>
+    <dimen name="conversation_song_title_left_margin">5dp</dimen>
+    <dimen name="conversation_song_title_top_margin">15dp</dimen>
+    <dimen name="conversation_song_title_text_size">12dp</dimen>
 
 </resources>

@@ -10,6 +10,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
@@ -50,6 +51,7 @@ public class ConversationActivity extends LyricooActivity {
 	// Layout resources to display message sending options
 	private MessageList mMessageList;
 	private EditText mTextInput;
+	private TextView mSongTitle;
 
 	// The Lyricoo that the user selected to include in their message. Null if
 	// none selected
@@ -123,6 +125,8 @@ public class ConversationActivity extends LyricooActivity {
 				}
 			}
 		});
+		
+		mSongTitle = (TextView) findViewById(R.id.song_title);
 
 		mTextInput = (EditText) findViewById(R.id.conversation_input);
 
@@ -281,6 +285,9 @@ public class ConversationActivity extends LyricooActivity {
 	protected void removeLyricoo() {
 		// Remove the currently selected lyricoo from the user's message
 		mSelectedLyricoo = null;
+		
+		// hide song title
+		mSongTitle.setVisibility(View.GONE);
 	}
 
 	// After returning from the LyricooSelectionActivity this is called
@@ -334,5 +341,9 @@ public class ConversationActivity extends LyricooActivity {
 				.findViewById(R.id.play_button);
 		playButton.setVisibility(View.VISIBLE);
 		playButton.setSong(mSelectedLyricoo);
+		
+		// show song title
+		mSongTitle.setText(song.getTitle());
+		mSongTitle.setVisibility(View.VISIBLE);
 	}
 }
