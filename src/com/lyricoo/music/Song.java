@@ -60,6 +60,7 @@ public class Song {
 		}
 
 		try {
+			// category: {id  , name}
 			mCategoryId = json.getInt("category_id");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

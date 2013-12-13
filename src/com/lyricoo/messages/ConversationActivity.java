@@ -1,28 +1,20 @@
 package com.lyricoo.messages;
 
-import java.util.Date;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.music.LyricooPlayer;
+import com.lyricoo.messages.MessageList.onSizeChangedListener;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
@@ -55,7 +47,8 @@ public class ConversationActivity extends LyricooActivity {
 	private PlayButton mMessagePlayButton;
 
 	// Layout resources to display message sending options
-	private ListView mMessageList;
+	private MessageList mMessageList;
+	private EditText mTextInput;
 
 	// The Lyricoo that the user selected to include in their message. Null if
 	// none selected
@@ -108,29 +101,35 @@ public class ConversationActivity extends LyricooActivity {
 		setTitle(mContact.getUsername());
 
 		// Retrieve resources for later
-		//mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
-		mMessageList = (ListView) findViewById(R.id.messages_list);
-
-		// set callback for selected Lyricoo long click
-//		mLyricooTitle.setOnLongClickListener(new OnLongClickListener() {
-//
-//			@Override
-//			public boolean onLongClick(View v) {
-//				onLyricooTitleLongClick();
-//				// return true to signify we have handled the click
-//				return true;
-//			}
-//		});
+		// mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
+		mMessageList = (MessageList) findViewById(R.id.messages_list);
 
 		// build the list view for the messages in the conversation
 		displayConversation();
+
+		// listen for resizing of the message list as it indicates the keyboard
+		// popping up. When the keyboard pops up the bottom of the list gets
+		// covered, we should scroll down to return to the bottom.
+		mMessageList.setOnSizeChangedListener(new onSizeChangedListener() {
+
+			@Override
+			public void onSizeChanged(int w, int h, int oldw, int oldh) {
+				// if the height is much less than before the keyboard probably
+				// popped up. The height reduces slightly when the text input
+				// expands to multiple lines, but that is a much smaller change
+				if (oldh - h > 100) {
+					scrollToBottom();
+				}
+			}
+		});
+
+		mTextInput = (EditText) findViewById(R.id.conversation_input);
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
 		String songJson = getIntent().getStringExtra("song");
 		attachSong(songJson);
 
-		attachKeyboardListener();
 	}
 
 	@Override
@@ -229,8 +228,8 @@ public class ConversationActivity extends LyricooActivity {
 	 *            The view that called this
 	 */
 	public void sendMessage(View v) {
-		EditText conversationInputView = (EditText) findViewById(R.id.conversation_input);
-		String messageContent = conversationInputView.getText().toString();
+		mTextInput = (EditText) findViewById(R.id.conversation_input);
+		String messageContent = mTextInput.getText().toString();
 
 		// if content is blank and no song is selected don't do anything
 		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null) {
@@ -242,9 +241,9 @@ public class ConversationActivity extends LyricooActivity {
 
 		// send message
 		Session.getConversationManager().sendMessage(newMessage, mContact);
-		
+
 		// Clear out the input text
-		conversationInputView.setText("");
+		mTextInput.setText("");
 	}
 
 	// the button to select a lyricoo to include
@@ -291,7 +290,7 @@ public class ConversationActivity extends LyricooActivity {
 			if (resultCode == RESULT_OK) {
 				String songJson = data.getStringExtra("lyricoo");
 				attachSong(songJson);
-				
+
 			}
 			if (resultCode == RESULT_CANCELED) {
 				// Don't do anything if a lyricoo wasn't selected
@@ -327,48 +326,12 @@ public class ConversationActivity extends LyricooActivity {
 
 		// show play button and hide button to attach lyricoo
 		RelativeLayout buttonContainer = (RelativeLayout) findViewById(R.id.song_selection_container);
-		ImageView button = (ImageView) buttonContainer.findViewById(R.id.add_song_button);
+		ImageView button = (ImageView) buttonContainer
+				.findViewById(R.id.add_song_button);
 		button.setVisibility(View.GONE);
-		PlayButton playButton = (PlayButton) buttonContainer.findViewById(R.id.play_button);
+		PlayButton playButton = (PlayButton) buttonContainer
+				.findViewById(R.id.play_button);
 		playButton.setVisibility(View.VISIBLE);
 		playButton.setSong(mSelectedLyricoo);
-	}
-
-	/**
-	 * When the keyboard pops up to write a message the view size is changed and
-	 * the bottom of the message list is hidden. We can listen for the keyboard
-	 * and update the view accordingly
-	 */
-	private boolean isKeyboardShown = false;
-
-	private void attachKeyboardListener() {
-		final View activityRootView = findViewById(R.id.root_view);
-		activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new OnGlobalLayoutListener() {
-					@Override
-					public void onGlobalLayout() {
-						// if the height changes enough the keyboard was
-						// probably introduced
-						int heightDiff = activityRootView.getRootView()
-								.getHeight() - activityRootView.getHeight();
-						if (heightDiff > 100) { // if more than 100 pixels, its
-												// probably a keyboard...
-
-							// if the keyboard was just shown, scroll the
-							// messages down to the bottom
-							if (!isKeyboardShown) {
-								isKeyboardShown = true;
-								scrollToBottom();
-							}
-						}
-						// keep track of whether or not the keyboard was just
-						// shown. For some reason this callback is called even
-						// when the layout doesn't seem to change much and this
-						// prevents duplicate calls
-						else {
-							isKeyboardShown = false;
-						}
-					}
-				});
 	}
 }

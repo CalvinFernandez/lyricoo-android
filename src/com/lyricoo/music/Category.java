@@ -45,7 +45,23 @@ public class Category extends LyricooModel {
 		return mId;
 	}
 	
-	public boolean equals(Category category) {
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof Category)) {
+			return false;
+		}
+
+		// songs are equal if they have the same id
+		Category category = (Category) obj;
+		
 		if (category.mId != null && mId != null) {
 			return category.mId == mId;
 		} else if (mName != null) {
@@ -55,6 +71,7 @@ public class Category extends LyricooModel {
 		}
 	}
 	
+	@Override
 	public int hashCode() {
 		return Integer.valueOf(mId).hashCode();
 	}

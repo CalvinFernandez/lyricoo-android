@@ -29,7 +29,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 		TextView name = (TextView) gridItem.findViewById(R.id.name);
 		
 		ImageView thumb = (ImageView) gridItem.findViewById(R.id.category_thumb_image);
-		thumb.setImageResource(mThumbIds[position]);
+		thumb.setImageResource(mThumbIds[position % mThumbIds.length]);
 		
 		name.setText(category.name());
 		return gridItem;
