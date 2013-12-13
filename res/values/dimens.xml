@@ -28,18 +28,24 @@
     <!-- Positioning for the time -->
     <dimen name="inbox_item_time_right_margin">10dp</dimen>
     <dimen name="inbox_item_time_top_margin">5dp</dimen>
-    
-    
+
     <!-- Dimensions for an item in the Conversation Activity -->
-    <!-- The margin between the colored bar and the edge of the item  -->
+    <!-- The margin between the colored bar and the edge of the item -->
     <dimen name="conversation_item_bar_side_margin">8dp</dimen>
     <dimen name="conversation_item_bar_width">5dp</dimen>
     <dimen name="conversation_item_content_top_margin">5dp</dimen>
     <dimen name="conversation_item_playbutton_margin">10dp</dimen>
     <dimen name="conversation_item_content_to_bar_spacing">8dp</dimen>
     <dimen name="conversation_item_content_to_playbutton_spacing">40dp</dimen>
-    
-    
-    
+
+    <!-- Dimensions for the Conversation Activity message bar -->
+    <dimen name="conversation_send_button_size">40dp</dimen>
+    <dimen name="conversation_send_button_right_margin">7dp</dimen>
+    <dimen name="conversation_add_song_button_size">40dp</dimen>
+    <dimen name="conversation_add_song_button_left_margin">7dp</dimen>
+    <dimen name="conversation_text_input_left_margin">10dp</dimen>
+    <dimen name="conversation_text_input_right_margin">10dp</dimen>
+    <dimen name="conversation_text_input_side_padding">10dp</dimen>
+    <dimen name="conversation_text_input_top_margin">25dp</dimen>
 
 </resources>

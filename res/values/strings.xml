@@ -17,7 +17,7 @@
     <!-- /Login -->
     
     <!-- Conversations resources -->
-    <string name="conversation_input">Write Message</string>
+    <string name="conversation_input">Message text</string>
     <string name="conversation_submit">Send</string>
     <!--  /Conversations resources -->
     

@@ -14,7 +14,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyricoo.LyricooActivity;
@@ -49,11 +51,10 @@ public class ConversationActivity extends LyricooActivity {
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
 
-	// The last used play button
-	private PlayButton mPlayButton;
+	// The last used play button for songs in the messages list
+	private PlayButton mMessagePlayButton;
 
 	// Layout resources to display message sending options
-	private TextView mLyricooTitle;
 	private ListView mMessageList;
 
 	// The Lyricoo that the user selected to include in their message. Null if
@@ -107,19 +108,19 @@ public class ConversationActivity extends LyricooActivity {
 		setTitle(mContact.getUsername());
 
 		// Retrieve resources for later
-		mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
+		//mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
 		mMessageList = (ListView) findViewById(R.id.messages_list);
 
 		// set callback for selected Lyricoo long click
-		mLyricooTitle.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				onLyricooTitleLongClick();
-				// return true to signify we have handled the click
-				return true;
-			}
-		});
+//		mLyricooTitle.setOnLongClickListener(new OnLongClickListener() {
+//
+//			@Override
+//			public boolean onLongClick(View v) {
+//				onLyricooTitleLongClick();
+//				// return true to signify we have handled the click
+//				return true;
+//			}
+//		});
 
 		// build the list view for the messages in the conversation
 		displayConversation();
@@ -136,9 +137,9 @@ public class ConversationActivity extends LyricooActivity {
 	protected void onPause() {
 		super.onPause();
 		// Stop the music if the activity looses focus
-		if (mPlayButton != null) {
-			mPlayButton.stop();
-			mPlayButton = null;
+		if (mMessagePlayButton != null) {
+			mMessagePlayButton.stop();
+			mMessagePlayButton = null;
 		}
 	}
 
@@ -241,15 +242,9 @@ public class ConversationActivity extends LyricooActivity {
 
 		// send message
 		Session.getConversationManager().sendMessage(newMessage, mContact);
-	}
-
-	// When the lyricoo title is clicked
-	public void selectedLyricooClicked(View v) {
-		// play/pause the selected lyricoo if there is one
-		if (mSelectedLyricoo == null)
-			return;
-
-		// play selected song
+		
+		// Clear out the input text
+		conversationInputView.setText("");
 	}
 
 	// the button to select a lyricoo to include
@@ -261,40 +256,6 @@ public class ConversationActivity extends LyricooActivity {
 	}
 
 	/**
-	 * Handle a long click on the selected lyricoo
-	 * 
-	 */
-	private void onLyricooTitleLongClick() {
-		// if a lyricoo isn't currently selected do nothing
-		if (mSelectedLyricoo == null)
-			return;
-
-		// otherwise show an option to remove the lyricoo
-
-		// the options to show in the dialog list
-		String[] options = { "Remove Lyricoo" };
-		// create a new dialog
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		// set the title to be the song name
-		builder.setTitle(mSelectedLyricoo.getTitle())
-		// add the options to the list
-				.setItems(options, new DialogInterface.OnClickListener() {
-					// handle clicking on an option
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-						// "Remove Lyricoo" is the first option in the array
-						case 0:
-							removeLyricoo();
-							break;
-						default:
-							break;
-						}
-					}
-				});
-		builder.create().show();
-	}
-
-	/**
 	 * Called when a play button is pressed
 	 * 
 	 * @param v
@@ -303,12 +264,12 @@ public class ConversationActivity extends LyricooActivity {
 		PlayButton playButton = (PlayButton) v;
 
 		// if a new play button was hit, stop the old one and start the new one
-		if (!playButton.equals(mPlayButton)) {
-			if (mPlayButton != null) {
-				mPlayButton.stop();
+		if (!playButton.equals(mMessagePlayButton)) {
+			if (mMessagePlayButton != null) {
+				mMessagePlayButton.stop();
 			}
-			mPlayButton = playButton;
-			mPlayButton.play();
+			mMessagePlayButton = playButton;
+			mMessagePlayButton.play();
 		}
 
 		// otherwise the same button was hit so toggle it's state
@@ -320,9 +281,6 @@ public class ConversationActivity extends LyricooActivity {
 	protected void removeLyricoo() {
 		// Remove the currently selected lyricoo from the user's message
 		mSelectedLyricoo = null;
-
-		// update lyricoo text
-		mLyricooTitle.setText("No Lyricoo Selected");
 	}
 
 	// After returning from the LyricooSelectionActivity this is called
@@ -333,6 +291,7 @@ public class ConversationActivity extends LyricooActivity {
 			if (resultCode == RESULT_OK) {
 				String songJson = data.getStringExtra("lyricoo");
 				attachSong(songJson);
+				
 			}
 			if (resultCode == RESULT_CANCELED) {
 				// Don't do anything if a lyricoo wasn't selected
@@ -360,15 +319,19 @@ public class ConversationActivity extends LyricooActivity {
 		if (song == null) {
 			// TODO: Record this error
 			mSelectedLyricoo = null;
-			mLyricooTitle.setText("No Lyricoo Selected");
 			return;
 		}
 
 		// save the result as a private instance variable
 		mSelectedLyricoo = song;
 
-		// update display to show song
-		mLyricooTitle.setText(mSelectedLyricoo.getTitle());
+		// show play button and hide button to attach lyricoo
+		RelativeLayout buttonContainer = (RelativeLayout) findViewById(R.id.song_selection_container);
+		ImageView button = (ImageView) buttonContainer.findViewById(R.id.add_song_button);
+		button.setVisibility(View.GONE);
+		PlayButton playButton = (PlayButton) buttonContainer.findViewById(R.id.play_button);
+		playButton.setVisibility(View.VISIBLE);
+		playButton.setSong(mSelectedLyricoo);
 	}
 
 	/**
