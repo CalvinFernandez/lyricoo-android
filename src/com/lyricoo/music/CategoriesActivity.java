@@ -58,8 +58,8 @@ public class CategoriesActivity extends LyricooActivity {
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseBody, Throwable e) {
-				// TODO Auto-generated method stub
-
+				String toast = "Error retrieving categories";
+				Utility.makeBasicToast(mContext, toast);
 			}
 
 		});
