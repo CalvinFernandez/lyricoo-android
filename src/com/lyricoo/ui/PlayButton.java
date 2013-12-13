@@ -102,7 +102,6 @@ public class PlayButton extends RelativeLayout {
 
 		// determine the scale ratio to use in case a custom size was set
 		mScaleRatio = ((float) mSize) / dpToPixel(DEFAULT_SIZE_IN_DP);
-		Utility.log("scale ratio : " + mScaleRatio);
 
 		// create the image view to hold the play/pause image
 		mImage = new ImageView(context);

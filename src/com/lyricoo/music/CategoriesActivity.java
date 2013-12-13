@@ -50,7 +50,7 @@ public class CategoriesActivity extends LyricooActivity {
 					public void onItemClick(AdapterView<?> parent, View v,
 							int position, long id) {
 						Category category = mCategories.get(position);
-						Intent i = new Intent(mContext, CategoryActivity.class);
+						Intent i = new Intent(mContext, CategoryActivity.class);						
 						i.putExtra("category", Utility.toJson(category));
 						
 						if (getCallingActivity() != null) {
@@ -58,8 +58,7 @@ public class CategoriesActivity extends LyricooActivity {
 						} else {
 							startActivity(i);
 						}
-						
-						
+
 					}
 
 				});
