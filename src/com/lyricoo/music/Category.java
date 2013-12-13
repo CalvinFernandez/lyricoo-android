@@ -5,10 +5,13 @@ import org.json.JSONObject;
 
 import com.lyricoo.api.LyricooModel;
 
+
 public class Category extends LyricooModel {
 	
 	private Integer mId;
 	private String mName;
+	private Integer mPhotoId;
+	
 	private boolean mCached = false;
 	
 	private static String baseUrl = "categories";
@@ -17,6 +20,7 @@ public class Category extends LyricooModel {
 		super();
 		mId = id;
 		mName = title;
+		mPhotoId = CategoryHelper.mapToImage(mId);
 	}
 	
 	public Category(JSONObject json) {
@@ -33,7 +37,7 @@ public class Category extends LyricooModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		mPhotoId = CategoryHelper.mapToImage(mId);
 		setBaseUrl(baseUrl + "/" + mId);
 	}
 	
@@ -43,6 +47,10 @@ public class Category extends LyricooModel {
 	
 	public int id() {
 		return mId;
+	}
+	
+	public Integer photo() {
+		return mPhotoId;
 	}
 	
 	public boolean equals(Category category) {

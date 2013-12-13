@@ -55,15 +55,16 @@ public class CategoryActivity extends LyricooActivity {
 		mSongListView = (ListView) findViewById(R.id.category_song_list);
 		
 		String jCategory = getIntent().getStringExtra("category");
-		Integer position = getIntent().getIntExtra("position", 0);
+		//Integer position = getIntent().getIntExtra("position", 0);
+		mCategory = Utility.fromJson(jCategory, Category.class);
 		
 		ImageView categoryImage = new ImageView(this);
-		categoryImage.setImageResource(mThumbIds[position]);
+		categoryImage.setImageResource(mCategory.photo());
 		categoryImage.setScaleType(ScaleType.CENTER_CROP);
 		
 		mSongListView.addHeaderView(categoryImage);
 		
-		mCategory = Utility.fromJson(jCategory, Category.class);
+		
 
 		mPlayer = new LyricooPlayer(this);
 		mSongOptions = (RelativeLayout) findViewById(R.id.song_options);
@@ -256,17 +257,4 @@ public class CategoryActivity extends LyricooActivity {
 			}
 		});
 	}
-	
-	public Integer[] mThumbIds = {
-			R.drawable.flirty, R.drawable.loveyou, 
-			R.drawable.missyou, R.drawable.getiton,
-			R.drawable.outtatown, R.drawable.raunchy,
-			R.drawable.suck, R.drawable.rock,
-			R.drawable.birthday, R.drawable.fuckedup,
-			R.drawable.apology, R.drawable.friday,
-			R.drawable.jock, R.drawable.booze,
-			R.drawable.its420, R.drawable.lastnight,
-			R.drawable.selfie, R.drawable.bro,
-			R.drawable.help, R.drawable.hangin
-		};
 }
