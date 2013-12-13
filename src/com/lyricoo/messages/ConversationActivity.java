@@ -158,6 +158,31 @@ public class ConversationActivity extends LyricooActivity {
 			// thrown if conversation manager if null
 		}
 	}
+	
+	@Override 
+	protected void onSaveInstanceState(Bundle outState){
+		super.onSaveInstanceState(outState);
+		
+		// save the lyricoo that was selected
+		if(mSelectedLyricoo != null){
+			outState.putString("lyricoo", Utility.toJson(mSelectedLyricoo));
+		}
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState){
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		//  check for a previously attached song
+		String songJson = savedInstanceState.getString("lyricoo");
+		
+		if(songJson != null){
+			attachSong(songJson);
+		}		
+	}
+	
+	
+	
 
 	/**
 	 * Tell the adapter that the data has changed and it needs to update the
