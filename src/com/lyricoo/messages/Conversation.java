@@ -200,6 +200,21 @@ public class Conversation {
 	}
 	
 	/**
+	 * Get the number of unread messages in this conversation
+	 * @return The number of unread messages. 0 if all messages have been read
+	 */
+	public int getUnreadCount(){
+		// TODO: It is inefficient to do a count every time. Maybe keep a list of unread messages to reference
+		int count = 0;
+		for (Message message : mMessages) {
+			if (message.isUnread()) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
 	 * Updates all unread 
 	 * messages to the 'read' state
 	 */

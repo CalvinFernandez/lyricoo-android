@@ -1,6 +1,8 @@
 package com.lyricoo.messages;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,10 +115,11 @@ public class ConversationManager {
 	 * @param contact
 	 *            The user that the conversation is with
 	 */
-	public void sendMessage(final Message message, User contact) {
+	public void sendMessage(final Message message, final User contact) {
 		// add the message to the local conversation
 		final Conversation conversation = getConversation(contact);
 		conversation.add(message);
+		message.read();
 		notifyDataUpdate(contact);
 
 		// send a post request to server to create message
@@ -133,6 +136,17 @@ public class ConversationManager {
 			@Override
 			public void onSuccess(Object responseJson) {
 				message.update((JSONObject) responseJson);
+				// TODO: Cleaner way to mark a sent message as read with the
+				// server
+				message.read();
+				message.put(new LyricooApiResponseHandler() {
+					public void onSuccess(Object responseJson) {
+						message.read();
+						notifyDataUpdate(contact);
+					}
+				});
+				sortConversations(mConversations);
+				notifyDataUpdate(contact);
 			}
 
 			public void onFailure(int statusCode, String responseBody,
@@ -178,6 +192,7 @@ public class ConversationManager {
 		// Add message to the relevant conversation
 		Conversation conversation = getConversation(contact);
 		conversation.add(message);
+		sortConversations(mConversations);
 
 		// alert listeners to changes
 		notifyDataUpdate(contact);
@@ -221,6 +236,8 @@ public class ConversationManager {
 				// copies that activities may be using
 				mConversations = Conversation
 						.parseMessagesJson((JSONObject) responseJson);
+
+				sortConversations(mConversations);
 
 				// Alert listeners that their old data copies are no longer
 				// linked
@@ -364,6 +381,47 @@ public class ConversationManager {
 			}
 		});
 
+	}
+
+	/**
+	 * Get the total number of unread messages for this user
+	 * 
+	 * @return
+	 */
+	public int getUnreadCount() {
+		int count = 0;
+		for (Conversation c : mConversations) {
+			count += c.getUnreadCount();
+		}
+
+		return count;
+	}
+
+	/**
+	 * Sort conversations by most recent
+	 * 
+	 * @param conversations
+	 */
+	private void sortConversations(ArrayList<Conversation> conversations) {
+		Collections.sort(conversations, new ConversationComparator());
+	}
+
+	private class ConversationComparator implements Comparator<Conversation> {
+		public int compare(Conversation left, Conversation right) {
+			try {
+				return right.getMostRecentMessage().getTime()
+						.compareTo(left.getMostRecentMessage().getTime());
+			} catch (Exception e) {
+				// Something went wrong accessing the most recent message times.
+				if (right != null && right.getMostRecentMessage() != null
+						&& right.getMostRecentMessage().getTime() != null) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+
+		}
 	}
 
 }

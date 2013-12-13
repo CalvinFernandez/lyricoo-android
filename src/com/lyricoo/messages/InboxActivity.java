@@ -4,17 +4,27 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.session.LoginActivity;
+import com.lyricoo.friends.FriendManager.OnFriendSelectedListener;
+import com.lyricoo.music.LyricooPlayer;
+import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 import com.lyricoo.ui.SlidingMenuHelper;
@@ -27,8 +37,13 @@ import com.lyricoo.ui.SlidingMenuHelper;
  */
 public class InboxActivity extends LyricooActivity {
 	private ArrayList<Conversation> mConversations;
-	private MessageListAdapter mAdapter;
+	private InboxAdapter mAdapter;
 	private Context mContext;
+	private LyricooPlayer mPlayer;
+
+	// remember which play button is pressed so we can revert it's state
+	// TODO: Create custom view for play button
+	private ImageView mPlayButton;
 
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
@@ -37,12 +52,15 @@ public class InboxActivity extends LyricooActivity {
 	private ListView mMessageList;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {		
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.activity_messages);
+
+		setContentView(R.layout.activity_inbox);
 		SlidingMenuHelper.addMenuToActivity(this);
 		mContext = this;
+
+		// initialize player
+		mPlayer = new LyricooPlayer(this);
 
 		// load conversation data
 		mConversations = Session.getConversationManager().getConversations();
@@ -52,9 +70,18 @@ public class InboxActivity extends LyricooActivity {
 
 			@Override
 			public void onDataUpdated(User user) {
-				// we care about conversations with all contacts, so
-				// update everything
-				updateConversations();
+
+				// Make sure that this is run on the UI thread so it can update
+				// the view. The call can originate from a GCM message update,
+				// which is a background thread
+				runOnUiThread(new Runnable() {
+					public void run() {
+						// we care about conversations with all contacts, so
+						// update everything
+						updateConversations();
+					}
+				});
+
 			}
 
 			@Override
@@ -83,8 +110,27 @@ public class InboxActivity extends LyricooActivity {
 			Session.getConversationManager().unregisterOnDataChangedListener(
 					mConversationListener);
 		} catch (Exception e) {
-			// thrown if conversation manager if null
+			// thrown if conversation manager is null
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		// pause any music that is playing
+		mPlayer.pause();
+
+		// set the play button back to default state
+		resetPlayButton(mPlayButton);
+		mPlayButton = null;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		updateConversations();
 	}
 
 	/**
@@ -92,7 +138,6 @@ public class InboxActivity extends LyricooActivity {
 	 * view
 	 */
 	protected void updateConversations() {
-		// TODO: Show indicators for new messages
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -101,7 +146,7 @@ public class InboxActivity extends LyricooActivity {
 	 */
 	private void displayConversations() {
 		// Create a new adapter for this conversation data
-		mAdapter = new MessageListAdapter(mContext, mConversations);
+		mAdapter = new InboxAdapter(mContext, mConversations);
 
 		mMessageList.setAdapter(mAdapter);
 
@@ -112,19 +157,28 @@ public class InboxActivity extends LyricooActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Conversation convo = mConversations.get(position);
-				// Pass selected user so conversationActivity knows whose
-				// conversation to display
-				User contact = convo.getContact();
-				
-				//  Mark conversation as read
-				convo.read();
-				
-				// convert to json to make it easy to pass to the object
-				String contactAsJson = Utility.toJson(contact);
 
-				Intent i = new Intent(mContext, ConversationActivity.class);
-				i.putExtra("contact", contactAsJson);
-				startActivity(i);
+				// if the play button was clicked, play the song
+				if (view.equals(findViewById(R.id.play_button))) {
+					Utility.log("play clicked");
+				}
+
+				// otherwise load the conversation
+				else {
+					// Pass selected user so conversationActivity knows whose
+					// conversation to display
+					User contact = convo.getContact();
+
+					// Mark conversation as read
+					convo.read();
+
+					// convert to json to make it easy to pass to the object
+					String contactAsJson = Utility.toJson(contact);
+
+					Intent i = new Intent(mContext, ConversationActivity.class);
+					i.putExtra("contact", contactAsJson);
+					startActivity(i);
+				}
 			}
 		});
 	}
@@ -132,8 +186,132 @@ public class InboxActivity extends LyricooActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.messages, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.inbox, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_compose:
+			newMessage();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void newMessage() {
+		Session.getFriendManager().showFriendPicker(this,
+				"Send message to friend", new OnFriendSelectedListener() {
+					@Override
+					public void onFriendSelected(User friend) {
+						// open the conversation activity with the selected
+						// friend
+						String contactAsJson = Utility.toJson(friend);
+						Intent i = new Intent(mContext,
+								ConversationActivity.class);
+						i.putExtra("contact", contactAsJson);
+						startActivity(i);
+					}
+				});
+	}
+
+	/**
+	 * Handle a play button being pressed. There is a different button for each
+	 * inbox item that has a song, so we need to keep track of multiple buttons
+	 * and make sure they are managed accordingly without collisions
+	 * 
+	 * @param v The ImageView containing the play button that was pressed
+	 */
+	public void playButtonClicked(View v) {
+		ImageView playButton = (ImageView) v;
+
+		// reset the last play button pressed
+		resetPlayButton(mPlayButton);
+
+		// pause the music if it's playing
+		if (mPlayer.isPlaying()) {
+			mPlayer.pause();
+
+			// if a different button was clicked from the last song that was
+			// playing, play the new song
+			if (!playButton.equals(mPlayButton)) {
+				play(playButton);
+			}
+		}
+
+		// otherwise play the song that was clicked
+		else {
+			play(playButton);
+		}
+
+		mPlayButton = playButton;
+	}
+
+	private void play(final ImageView playButton) {
+		// retrieve the song from the view tag
+		Song song = (Song) playButton.getTag();
+
+		// need to get the layout for this specific item so the right progress
+		// bar can be grabbed
+		RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
+
+		// change button to loading
+		playButton.setVisibility(View.GONE);
+		final ProgressBar progress = (ProgressBar) iconLayout
+				.findViewById(R.id.load_progress);
+		progress.setVisibility(View.VISIBLE);
+
+		mPlayer.loadSongFromUrl(song.getUrl(), new OnPreparedListener() {
+
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				// don't play the song if it's no longer selected
+				if (mPlayButton == null) {
+					return;
+				}
+
+				try {
+					// hide loading and show pause button
+					progress.setVisibility(View.GONE);
+					playButton.setImageResource(R.drawable.ic_inbox_pause);
+					playButton.setVisibility(View.VISIBLE);
+					mPlayer.play(new OnCompletionListener() {
+
+						@Override
+						public void onCompletion(MediaPlayer mp) {
+							// set button back to stopped state
+							resetPlayButton(playButton);
+						}
+					});
+				} catch (Exception e) {
+					resetPlayButton(playButton);
+				}
+			}
+		});
+	}
+
+	private void resetPlayButton(ImageView playButton) {
+		if (playButton == null) {
+			return;
+		}
+
+		// hide progress bar
+		try {
+			RelativeLayout iconLayout = (RelativeLayout) playButton.getParent();
+
+			ProgressBar progress = (ProgressBar) iconLayout
+					.findViewById(R.id.load_progress);
+			progress.setVisibility(View.GONE);
+		} catch (Exception e) {
+			// error getting button parent
+		}
+
+		// reset play button image
+		mPlayButton.setVisibility(View.VISIBLE);
+		mPlayButton.setImageResource(R.drawable.ic_inbox_play);
 	}
 
 }

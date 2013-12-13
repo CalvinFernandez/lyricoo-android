@@ -1,5 +1,6 @@
 package com.lyricoo;
 
+import com.lyricoo.music.LyricooPlayer;
 import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.SignUpActivity;
@@ -35,7 +36,6 @@ public class LyricooActivity extends ActionBarActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-
 		((LyricooApp) getApplication()).pause();
 	}
 

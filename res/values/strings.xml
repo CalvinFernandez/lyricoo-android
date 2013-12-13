@@ -6,7 +6,7 @@
     <string name="title_activity_lyricoo_selection">Lyricoo Selection</string>
     <string name="title_activity_contacts">Add Friends</string>
     <string name="title_activity_conversation">Conversation</string>
-    <string name="title_activity_messages">Messages</string>
+    <string name="title_activity_inbox">Messages</string>
 
     <!-- Login resources -->
     <string name="username_field">Email</string>
@@ -25,6 +25,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sign_up">Sign Up</string>
     <string name="title_activity_settings">Settings</string>
+    
+    <!--  Action Bar -->
+    <string name="action_compose">New Message</string>
 
     <string name="categories_activity_title">Categories</string>
 </resources>

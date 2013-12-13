@@ -116,7 +116,6 @@ public class SlidingMenuHelper {
 			public void onDrawerClosed(View view) {
 				// change title back to activity name
 				activity.getSupportActionBar().setTitle(title);
-
 			}
 
 			/** Called when a drawer has settled in a completely open state. */

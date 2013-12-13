@@ -4,4 +4,28 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Dimensions for the Inbox -->
+    <dimen name="inbox_top_margin">6dp</dimen>
+    <dimen name="inbox_bottom_margin">0dp</dimen>
+    <dimen name="inbox_horizontal_margin">3dp</dimen>
+    <!-- The height of each message item in the list -->
+    <dimen name="inbox_item_height">80dp</dimen>
+    <!-- The divider height attribute of the inbox list (Spacing between each message) -->
+    <dimen name="inbox_divider_height">3dp</dimen>
+    <dimen name="inbox_item_left_margin">7dp</dimen>
+    <!-- The size of the play button -->
+    <dimen name="inbox_item_icon">40dp</dimen>
+    <!-- The text size of the one letter initial for the contact -->
+    <dimen name="inbox_item_username_initial">60dp</dimen>
+    <dimen name="inbox_item_text_left_margin">15dp</dimen>
+    <dimen name="inbox_item_text_right_margin">15dp</dimen>
+    <dimen name="inbox_item_text_top_margin">3dp</dimen>
+    <dimen name="inbox_item_text_bottom_margin">3dp</dimen>
+    <!-- The width of the box that shows the number of unread messages -->
+    <dimen name="inbox_item_unread_width">60dp</dimen>
+    <dimen name="inbox_item_unread_text">45dp</dimen>
+    <!-- Positioning for the time -->
+    <dimen name="inbox_item_time_right_margin">10dp</dimen>
+    <dimen name="inbox_item_time_top_margin">5dp</dimen>
+
 </resources>

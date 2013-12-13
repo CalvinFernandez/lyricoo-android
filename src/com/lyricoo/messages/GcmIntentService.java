@@ -9,7 +9,7 @@ import com.lyricoo.session.Session;
 
 public class GcmIntentService extends IntentService {
 	public static final int NOTIFICATION_ID = 1;
-	
+
 	public GcmIntentService() {
 		super("GcmIntentService");
 	}
@@ -18,24 +18,28 @@ public class GcmIntentService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-		//	The getMessageType() intent parameter must be the intent you
-		//  received in your BroadcastReceiver
+		// The getMessageType() intent parameter must be the intent you
+		// received in your BroadcastReceiver
 		String messageType = gcm.getMessageType(intent);
-		
+
 		if (!extras.isEmpty()) { // has effect of unparcelling Bundle
 			/*
-			 * Filter messages based on message type. Since it is likely that GCM
-			 * will be extended in the future with new message types, just ignore 
-			 * any messages that we're not interested in, or that we don't recognize.
+			 * Filter messages based on message type. Since it is likely that
+			 * GCM will be extended in the future with new message types, just
+			 * ignore any messages that we're not interested in, or that we
+			 * don't recognize.
 			 */
-			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
+					.equals(messageType)) {
 				// error
 				sendNotification("Send error: " + extras.toString());
-			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
+					.equals(messageType)) {
 				// error
-				 sendNotification("Deleted messages on server: " + 
-						extras.toString());
-			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+				sendNotification("Deleted messages on server: "
+						+ extras.toString());
+			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
+					.equals(messageType)) {
 				// Regular message hooray!
 				sendNotification("Received: " + extras.toString());
 				String contact = null;
@@ -43,7 +47,8 @@ public class GcmIntentService extends IntentService {
 					if (extras.containsKey("contact")) {
 						contact = extras.getString("contact");
 					}
-					Session.getConversationManager().receiveMessage(new Message(extras), contact);
+					Session.getConversationManager().receiveMessage(
+							new Message(extras), contact);
 				} catch (MessageException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -52,8 +57,16 @@ public class GcmIntentService extends IntentService {
 		}
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
-	
+
 	private void sendNotification(String msg) {
-		LyricooNotificationManager.newMessageNotification(getApplicationContext(), 1);
+		try {
+			int numUnread = Session.getConversationManager().getUnreadCount();
+			LyricooNotificationManager.newMessageNotification(
+					getApplicationContext(), numUnread);
+		} catch (Exception e) {
+			// If there is no conversation manager then no one is logged in and
+			// we shouldn't show a notification
+		}
+
 	}
 }

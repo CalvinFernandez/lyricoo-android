@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,20 +38,22 @@ public class Message extends LyricooModel {
 	
 	
 	private boolean mSent;
-	private boolean mRead;
+	// default read to true
+	private boolean mRead = true;
 	
 	// the Song included with this message. Null if none
 	private Song mSong;
-	private Date mTime;
+	
+	// default date to right now 
+	private Date mTime = new Date();
 
 	// format of the date that the server uses
-	// TODO: Adjust message time for user's timezone
-	private final String DATE_FORMAT = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'";
+	private final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	private static String baseUrl = "messages";
 
 	public Message(String content, int userId, int contactId, boolean sent,
-			Song song, Date time, Boolean read) {
+			Song song, Date time, boolean read) {
 		super();
 		
 		mContent = content;
@@ -180,11 +183,16 @@ public class Message extends LyricooModel {
 
 		}
 
-		// Parse date string into usable java format
+		// Parse date string into usable java format for the user's timezone
 		try {
 			String createdAt = json.getString("created_at");
-			mTime = new SimpleDateFormat(DATE_FORMAT, Locale.US)
-					.parse(createdAt);
+			
+			SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			
+			Date date = format.parse(createdAt);
+			
+			mTime = date;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,7 +204,7 @@ public class Message extends LyricooModel {
 		try {
 			mRead = json.getBoolean("read");
 		} catch (JSONException e) {
-			
+			Utility.log("error setting read");
 		}
 		
 		setBaseUrl(baseUrl + "/" + mMessageId);
@@ -223,7 +231,7 @@ public class Message extends LyricooModel {
 	}
 	
 	public boolean isUnread() {
-		return mRead == false;
+		return !mRead;
 	}
 
 	public void read() {
