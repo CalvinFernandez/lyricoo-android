@@ -163,7 +163,7 @@ public class MusicManager {
 		// every time
 		ArrayList<Song> songs = new ArrayList<Song>();
 		for (Song song : mSongs) {
-			if (category.isequal(song.getCategory())) {
+			if (category.equals(song.getCategory())) {
 				songs.add(song);
 			}
 		}

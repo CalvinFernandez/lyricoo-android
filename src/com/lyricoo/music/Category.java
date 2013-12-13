@@ -45,18 +45,18 @@ public class Category extends LyricooModel {
 		return mId;
 	}
 	
-	public boolean isequal(Category category) {
+	public boolean equals(Category category) {
 		if (category.mId != null && mId != null) {
-			if (category.mId == mId) {
-				return true;
-			} else {
-				return false;
-			}
+			return category.mId == mId;
 		} else if (mName != null) {
 			return mName.equals(category.name());
 		} else {
 			return false;
 		}
+	}
+	
+	public int hashCode() {
+		return Integer.valueOf(mId).hashCode();
 	}
 	
 	public boolean isCached() {
