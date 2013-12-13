@@ -48,7 +48,10 @@ public class CategoriesActivity extends LyricooActivity {
 							int position, long id) {
 						Category category = mCategories.get(position);
 						Intent i = new Intent(mContext, CategoryActivity.class);
+						
 						i.putExtra("category", Utility.toJson(category));
+						i.putExtra("position", position);
+						
 						startActivity(i);
 					}
 
