@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -49,9 +51,18 @@ public class CategoryActivity extends LyricooActivity {
 		setContentView(R.layout.activity_category);
 		mContext = this;
 
-		mSongListView = (ListView) findViewById(R.id.category_song_list);
 
+		mSongListView = (ListView) findViewById(R.id.category_song_list);
+		
 		String jCategory = getIntent().getStringExtra("category");
+		Integer position = getIntent().getIntExtra("position", 0);
+		
+		ImageView categoryImage = new ImageView(this);
+		categoryImage.setImageResource(mThumbIds[position]);
+		categoryImage.setScaleType(ScaleType.CENTER_CROP);
+		
+		mSongListView.addHeaderView(categoryImage);
+		
 		mCategory = Utility.fromJson(jCategory, Category.class);
 
 		mPlayer = new LyricooPlayer(this);
@@ -245,4 +256,17 @@ public class CategoryActivity extends LyricooActivity {
 			}
 		});
 	}
+	
+	public Integer[] mThumbIds = {
+			R.drawable.flirty, R.drawable.loveyou, 
+			R.drawable.missyou, R.drawable.getiton,
+			R.drawable.outtatown, R.drawable.raunchy,
+			R.drawable.suck, R.drawable.rock,
+			R.drawable.birthday, R.drawable.fuckedup,
+			R.drawable.apology, R.drawable.friday,
+			R.drawable.jock, R.drawable.booze,
+			R.drawable.its420, R.drawable.lastnight,
+			R.drawable.selfie, R.drawable.bro,
+			R.drawable.help, R.drawable.hangin
+		};
 }
