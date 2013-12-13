@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlayButton">
+        <!-- Whether the song title should be shown beneath the button -->
+       <attr name="showSongTitle" format="boolean" />
+       <!-- Color of the song title text if shown -->
+       <attr name="songTitleColor" format="color|reference" />
+       <!--  -->
+       <attr name="size" format="dimension|reference" />
+       <attr name="playSrc" format="reference" />
+       <attr name="pauseSrc" format="reference" /> 
+   </declare-styleable>
+    
+</resources>
