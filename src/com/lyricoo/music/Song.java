@@ -18,7 +18,6 @@ public class Song {
 	private String mArtist;
 	private String mPath;
 	private Category mCategory;
-	private int mCategoryId;
 
 	public Song(int id, String title, String artist, String path,
 			Category category) {
@@ -54,14 +53,6 @@ public class Song {
 		// Make this consistent
 		try {
 			mPath = json.getString("path");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			// category: {id  , name}
-			mCategoryId = json.getInt("category_id");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
