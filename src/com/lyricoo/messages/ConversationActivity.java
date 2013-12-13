@@ -15,6 +15,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.messages.MessageList.onSizeChangedListener;
+import com.lyricoo.music.CategoriesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
@@ -249,9 +250,9 @@ public class ConversationActivity extends LyricooActivity {
 	// the button to select a lyricoo to include
 	public void lyricooButtonClicked(View v) {
 		// Launch LyricooSelectionActivity for a result
-		Intent i = new Intent(this, LyricooSelectionActivity.class);
+		Intent i = new Intent(this, CategoriesActivity.class);
 		startActivityForResult(i,
-				LyricooSelectionActivity.SELECT_LYRICOO_REQUEST);
+				CategoriesActivity.SELECT_LYRICOO_REQUEST);
 	}
 
 	/**
@@ -285,7 +286,7 @@ public class ConversationActivity extends LyricooActivity {
 	// After returning from the LyricooSelectionActivity this is called
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (requestCode == LyricooSelectionActivity.SELECT_LYRICOO_REQUEST) {
+		if (requestCode == CategoriesActivity.SELECT_LYRICOO_REQUEST) {
 
 			if (resultCode == RESULT_OK) {
 				String songJson = data.getStringExtra("lyricoo");

@@ -68,7 +68,7 @@
                     android:layout_height="@dimen/conversation_add_song_button_size"
                     android:layout_centerInParent="true"
                     android:onClick="lyricooButtonClicked"
-                    android:src="@drawable/ic_conversation_add_lyricoo" />
+                    android:src="@drawable/ic_conversation_add_music" />
 
                 <com.lyricoo.ui.PlayButton
                     android:id="@+id/play_button"
