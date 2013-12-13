@@ -39,7 +39,7 @@ public class LyricooSelectionActivity extends LyricooActivity {
 	public static final int SELECT_LYRICOO_REQUEST = 0;
 
 	private ArrayList<Song> mSongs;
-	private ArrayList<String> mCategories;
+	private ArrayList<Category> mCategories;
 	private ProgressBar mProgress;
 	private Context mContext;
 	private LyricooPlayer mPlayer;
@@ -104,7 +104,7 @@ public class LyricooSelectionActivity extends LyricooActivity {
 		MusicManager.getAll(new MusicHandler() {
 			@Override
 			public void onSuccess(ArrayList<Song> songs,
-					ArrayList<String> categories) {
+					ArrayList<Category> categories) {
 				mSongs = songs;
 				mCategories = categories;
 				mProgress.setVisibility(View.GONE);
@@ -122,7 +122,7 @@ public class LyricooSelectionActivity extends LyricooActivity {
 	}
 
 	protected void displayCategories() {
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext,
+		ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(mContext,
 				R.layout.category_list_item, mCategories);
 
 		mCategoryList.setAdapter(adapter);
@@ -133,8 +133,8 @@ public class LyricooSelectionActivity extends LyricooActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// display songs from this category
-				String category = mCategories.get(position);
-				ArrayList<Song> songs = getSongsFromCategory(category);
+				Category category = mCategories.get(position);
+				ArrayList<Song> songs = getSongsFromCategory(category.name());
 				displaySongs(songs);
 			}
 		});
@@ -228,7 +228,7 @@ public class LyricooSelectionActivity extends LyricooActivity {
 
 		// set category button to show name of this category.
 		// Get category name from the first song in the song list
-		mCategoryButton.setText(songs.get(0).getCategory());
+		mCategoryButton.setText(songs.get(0).getCategory().name());
 
 	}
 

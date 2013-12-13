@@ -17,11 +17,11 @@ public class Song {
 	private String mTitle;
 	private String mArtist;
 	private String mPath;
-	private String mCategory;
+	private Category mCategory;
 	private int mCategoryId;
 
 	public Song(int id, String title, String artist, String path,
-			String category) {
+			Category category) {
 		super();
 		this.mId = id;
 		this.mTitle = title;
@@ -71,7 +71,8 @@ public class Song {
 		JSONObject category = null;
 		try {
 			category = json.getJSONObject("category");
-			mCategory = category.getString("name");
+			mCategory = new Category(category);
+			
 		} catch (Exception e) {
 			// Will get called if there is no category key. In this case we just
 			// have category_id
@@ -99,7 +100,7 @@ public class Song {
 		return LyricooApi.BASE_URL + mPath;
 	}
 
-	public String getCategory() {
+	public Category getCategory() {
 		return mCategory;
 	}
 

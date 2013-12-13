@@ -29,4 +29,5 @@
     <!--  Action Bar -->
     <string name="action_compose">New Message</string>
 
+    <string name="categories_activity_title">Categories</string>
 </resources>

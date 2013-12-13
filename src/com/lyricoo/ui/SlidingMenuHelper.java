@@ -15,6 +15,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.InboxActivity;
+import com.lyricoo.music.CategoriesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.session.SettingsActivity;
 
@@ -38,7 +39,7 @@ public class SlidingMenuHelper {
 		items.add(new SlidingMenuItem(R.drawable.ic_action_unread, "Messages",
 				InboxActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_play, "Lyricoos",
-				LyricooSelectionActivity.class));
+				CategoriesActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_person, "Friends",
 				FriendsActivity.class));
 		items.add(new SlidingMenuItem(R.drawable.ic_action_settings,
@@ -103,8 +104,6 @@ public class SlidingMenuHelper {
 	 */
 	private static void addDrawerListener(final LyricooActivity activity,
 			DrawerLayout drawerLayout) {
-
-		// TODO: Change listener to be ActionBarDrawerToggle to facilitate
 		// interaction
 		// between the action bar and drawer. To do this, the actionbar
 		// needs a drawer icon

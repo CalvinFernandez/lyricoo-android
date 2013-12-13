@@ -1,5 +1,7 @@
 package com.lyricoo.api;
 
+import org.json.JSONArray;
+
 public class LyricooApiResponseHandler {
 	/**
 	 * Called when the request has been returned and successfully parsed
