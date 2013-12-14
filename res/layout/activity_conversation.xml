@@ -76,7 +76,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     lyricoo:showSongTitle="true"
-                    lyricoo:size="100dp"
                     lyricoo:songTitleColor="@color/white"
                     android:layout_centerInParent="true"
                     android:onClick="playButtonClicked"

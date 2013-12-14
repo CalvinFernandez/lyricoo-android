@@ -59,5 +59,17 @@
     <dimen name="category_grid_item_padding_bottom">15dp</dimen>
     <dimen name="category_grid_item_padding_top">40dp</dimen>
     <dimen name="category_grid_item_font_size">20dp</dimen>
+    
+    <!-- Category song list -->
+    <dimen name="category_play_button_size">50dp</dimen>
+    <dimen name="category_selected_song_text_size">22dp</dimen>
+    <dimen name="category_play_button_margin_top">15dp</dimen>
+    <dimen name="category_play_button_margin_bottom">15dp</dimen>
+    <dimen name="category_play_button_margin_left">15dp</dimen>
+    <dimen name="category_play_button_margin_right">15dp</dimen>
+    <dimen name="category_send_button_margin_right">15dp</dimen>
+    <dimen name="category_send_button_margin_bottom">15dp</dimen>
+    <dimen name="category_send_button_margin_top">15dp</dimen>
+    <dimen name="category_send_button_margin_left">15dp</dimen>
 
 </resources>
