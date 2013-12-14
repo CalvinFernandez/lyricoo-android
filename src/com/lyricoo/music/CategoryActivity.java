@@ -30,6 +30,7 @@ import com.lyricoo.music.MusicManager.MusicHandler;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 import com.lyricoo.ui.PlayButton;
+import com.lyricoo.ui.SlidingMenuHelper;
 
 public class CategoryActivity extends LyricooActivity {
 	private Category mCategory;
@@ -49,6 +50,8 @@ public class CategoryActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category);
 		mContext = this;
+		
+		SlidingMenuHelper.addMenuToActivity(this);
 
 		mSongListView = (ListView) findViewById(R.id.category_song_list);
 
