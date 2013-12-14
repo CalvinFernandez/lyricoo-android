@@ -50,6 +50,8 @@ public class CategoryActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category);
 		mContext = this;
+		
+		
 
 
 		mSongListView = (ListView) findViewById(R.id.category_song_list);
@@ -57,6 +59,8 @@ public class CategoryActivity extends LyricooActivity {
 		String jCategory = getIntent().getStringExtra("category");
 		//Integer position = getIntent().getIntExtra("position", 0);
 		mCategory = Utility.fromJson(jCategory, Category.class);
+		
+		setTitle(mCategory.getName());
 		
 		ImageView categoryImage = new ImageView(this);
 		categoryImage.setImageResource(mCategory.photo());
