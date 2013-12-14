@@ -1,30 +1,27 @@
 package com.lyricoo.messages;
 
-import java.util.Date;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
-import com.lyricoo.music.LyricooPlayer;
+import com.lyricoo.messages.MessageList.onSizeChangedListener;
+import com.lyricoo.music.CategoriesActivity;
 import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
+import com.lyricoo.ui.PlayButton;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 /**
@@ -48,12 +45,12 @@ public class ConversationActivity extends LyricooActivity {
 	// Callback listener for when messages are updated
 	private ConversationManager.OnDataChangedListener mConversationListener;
 
-	// player to handle playing lyricoos from messages
-	private LyricooPlayer mPlayer;
+	// The last used play button for songs in the messages list
+	private PlayButton mMessagePlayButton;
 
 	// Layout resources to display message sending options
-	private TextView mLyricooTitle;
-	private ListView mMessageList;
+	private MessageList mMessageList;
+	private EditText mTextInput;
 
 	// The Lyricoo that the user selected to include in their message. Null if
 	// none selected
@@ -102,43 +99,49 @@ public class ConversationActivity extends LyricooActivity {
 		Session.getConversationManager().registerOnDataChangedListener(
 				mConversationListener);
 
-		// initialize player
-		mPlayer = new LyricooPlayer(this);
-
 		// set activity title to reflect contact's name
 		setTitle(mContact.getUsername());
 
 		// Retrieve resources for later
-		mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
-		mMessageList = (ListView) findViewById(R.id.messages_list);
-
-		// set callback for selected Lyricoo long click
-		mLyricooTitle.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				onLyricooTitleLongClick();
-				// return true to signify we have handled the click
-				return true;
-			}
-		});
+		// mLyricooTitle = (TextView) findViewById(R.id.lyricoo_title);
+		mMessageList = (MessageList) findViewById(R.id.messages_list);
 
 		// build the list view for the messages in the conversation
 		displayConversation();
+
+		// listen for resizing of the message list as it indicates the keyboard
+		// popping up. When the keyboard pops up the bottom of the list gets
+		// covered, we should scroll down to return to the bottom.
+		mMessageList.setOnSizeChangedListener(new onSizeChangedListener() {
+
+			@Override
+			public void onSizeChanged(int w, int h, int oldw, int oldh) {
+				// if the height is much less than before the keyboard probably
+				// popped up. The height reduces slightly when the text input
+				// expands to multiple lines, but that is a much smaller change
+				if (oldh - h > 100) {
+					scrollToBottom();
+				}
+			}
+		});
+
+		mTextInput = (EditText) findViewById(R.id.conversation_input);
 
 		// If a song was included with the activity intent then load it.
 		// retrieve data from intent, will be null if no song was included
 		String songJson = getIntent().getStringExtra("song");
 		attachSong(songJson);
 
-		attachKeyboardListener();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		// Stop the music if the activity looses focus
-		mPlayer.stop();
+		if (mMessagePlayButton != null) {
+			mMessagePlayButton.stop();
+			mMessagePlayButton = null;
+		}
 	}
 
 	@Override
@@ -152,6 +155,31 @@ public class ConversationActivity extends LyricooActivity {
 			// thrown if conversation manager if null
 		}
 	}
+	
+	@Override 
+	protected void onSaveInstanceState(Bundle outState){
+		super.onSaveInstanceState(outState);
+		
+		// save the lyricoo that was selected
+		if(mSelectedLyricoo != null){
+			outState.putString("lyricoo", Utility.toJson(mSelectedLyricoo));
+		}
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState){
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		//  check for a previously attached song
+		String songJson = savedInstanceState.getString("lyricoo");
+		
+		if(songJson != null){
+			attachSong(songJson);
+		}		
+	}
+	
+	
+	
 
 	/**
 	 * Tell the adapter that the data has changed and it needs to update the
@@ -185,13 +213,7 @@ public class ConversationActivity extends LyricooActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// Get the message that was clicked and play attached lyricoo if
-				// applicable
-				Message msg = mConversation.getMessages().get(position);
-				Song song = msg.getSong();
-				if (song != null) {
-					playSong(song);
-				}
+				// TODO: Allow interaction on click
 			}
 		});
 
@@ -200,7 +222,7 @@ public class ConversationActivity extends LyricooActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				// TODO: Show popup with message options
+				// TODO: Enter data selection mode
 
 				// Return true to signal that we have handled the click
 				return true;
@@ -233,8 +255,8 @@ public class ConversationActivity extends LyricooActivity {
 	 *            The view that called this
 	 */
 	public void sendMessage(View v) {
-		EditText conversationInputView = (EditText) findViewById(R.id.conversation_input);
-		String messageContent = conversationInputView.getText().toString();
+		mTextInput = (EditText) findViewById(R.id.conversation_input);
+		String messageContent = mTextInput.getText().toString();
 
 		// if content is blank and no song is selected don't do anything
 		if (Utility.isStringBlank(messageContent) && mSelectedLyricoo == null) {
@@ -246,83 +268,56 @@ public class ConversationActivity extends LyricooActivity {
 
 		// send message
 		Session.getConversationManager().sendMessage(newMessage, mContact);
-	}
 
-	// When the lyricoo title is clicked
-	public void selectedLyricooClicked(View v) {
-		// play/pause the selected lyricoo if there is one
-		if (mSelectedLyricoo == null)
-			return;
-
-		// play selected song
-		playSong(mSelectedLyricoo);
-	}
-
-	private void playSong(Song song) {
-		// TODO: Handle pausing if player is currently playing
-		// TODO: Show some indication of song playing.
-		// TODO: Cache song so it doesn't have to load every time
-		mPlayer.loadSongFromUrl(song.getUrl(), null);
+		// Clear out the input text
+		mTextInput.setText("");
 	}
 
 	// the button to select a lyricoo to include
 	public void lyricooButtonClicked(View v) {
 		// Launch LyricooSelectionActivity for a result
-		Intent i = new Intent(this, LyricooSelectionActivity.class);
+		Intent i = new Intent(this, CategoriesActivity.class);
 		startActivityForResult(i,
-				LyricooSelectionActivity.SELECT_LYRICOO_REQUEST);
+				CategoriesActivity.SELECT_LYRICOO_REQUEST);
 	}
 
 	/**
-	 * Handle a long click on the selected lyricoo
+	 * Called when a play button is pressed
 	 * 
+	 * @param v
 	 */
-	private void onLyricooTitleLongClick() {
-		// if a lyricoo isn't currently selected do nothing
-		if (mSelectedLyricoo == null)
-			return;
+	public void playButtonClicked(View v) {
+		PlayButton playButton = (PlayButton) v;
 
-		// otherwise show an option to remove the lyricoo
+		// if a new play button was hit, stop the old one and start the new one
+		if (!playButton.equals(mMessagePlayButton)) {
+			if (mMessagePlayButton != null) {
+				mMessagePlayButton.stop();
+			}
+			mMessagePlayButton = playButton;
+			mMessagePlayButton.play();
+		}
 
-		// the options to show in the dialog list
-		String[] options = { "Remove Lyricoo" };
-		// create a new dialog
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		// set the title to be the song name
-		builder.setTitle(mSelectedLyricoo.getTitle())
-		// add the options to the list
-				.setItems(options, new DialogInterface.OnClickListener() {
-					// handle clicking on an option
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-						// "Remove Lyricoo" is the first option in the array
-						case 0:
-							removeLyricoo();
-							break;
-						default:
-							break;
-						}
-					}
-				});
-		builder.create().show();
+		// otherwise the same button was hit so toggle it's state
+		else {
+			playButton.toggle();
+		}
 	}
 
 	protected void removeLyricoo() {
 		// Remove the currently selected lyricoo from the user's message
 		mSelectedLyricoo = null;
-
-		// update lyricoo text
-		mLyricooTitle.setText("No Lyricoo Selected");
 	}
 
 	// After returning from the LyricooSelectionActivity this is called
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (requestCode == LyricooSelectionActivity.SELECT_LYRICOO_REQUEST) {
+		if (requestCode == CategoriesActivity.SELECT_LYRICOO_REQUEST) {
 
 			if (resultCode == RESULT_OK) {
 				String songJson = data.getStringExtra("lyricoo");
 				attachSong(songJson);
+
 			}
 			if (resultCode == RESULT_CANCELED) {
 				// Don't do anything if a lyricoo wasn't selected
@@ -350,52 +345,20 @@ public class ConversationActivity extends LyricooActivity {
 		if (song == null) {
 			// TODO: Record this error
 			mSelectedLyricoo = null;
-			mLyricooTitle.setText("No Lyricoo Selected");
 			return;
 		}
 
 		// save the result as a private instance variable
 		mSelectedLyricoo = song;
 
-		// update display to show song
-		mLyricooTitle.setText(mSelectedLyricoo.getTitle());
-	}
-
-	/**
-	 * When the keyboard pops up to write a message the view size is changed and
-	 * the bottom of the message list is hidden. We can listen for the keyboard
-	 * and update the view accordingly
-	 */
-	private boolean isKeyboardShown = false;
-
-	private void attachKeyboardListener() {
-		final View activityRootView = findViewById(R.id.root_view);
-		activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new OnGlobalLayoutListener() {
-					@Override
-					public void onGlobalLayout() {
-						// if the height changes enough the keyboard was
-						// probably introduced
-						int heightDiff = activityRootView.getRootView()
-								.getHeight() - activityRootView.getHeight();
-						if (heightDiff > 100) { // if more than 100 pixels, its
-												// probably a keyboard...
-
-							// if the keyboard was just shown, scroll the
-							// messages down to the bottom
-							if (!isKeyboardShown) {
-								isKeyboardShown = true;
-								scrollToBottom();
-							}
-						}
-						// keep track of whether or not the keyboard was just
-						// shown. For some reason this callback is called even
-						// when the layout doesn't seem to change much and this
-						// prevents duplicate calls
-						else {
-							isKeyboardShown = false;
-						}
-					}
-				});
+		// show play button and hide button to attach lyricoo
+		RelativeLayout buttonContainer = (RelativeLayout) findViewById(R.id.song_selection_container);
+		ImageView button = (ImageView) buttonContainer
+				.findViewById(R.id.add_song_button);
+		button.setVisibility(View.GONE);
+		PlayButton playButton = (PlayButton) buttonContainer
+				.findViewById(R.id.play_button);
+		playButton.setVisibility(View.VISIBLE);
+		playButton.setSong(mSelectedLyricoo);
 	}
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.music.Song;
+import com.lyricoo.ui.PlayButton;
 
 /**
  * This class is used to create a listview of the user's messages based on each
@@ -98,12 +99,12 @@ public class InboxAdapter extends BaseAdapter {
 		contactName.setText(contact);
 
 		// set the time
-		setTime(time, msg.getTime());
+		time.setText(msg.getDisplayableTime());
 
 		// if there is a song, show the play button, otherwise show the
 		// contact's initial
 		Song song = msg.getSong();
-		ImageView playButton = (ImageView) rowView
+		PlayButton playButton = (PlayButton) rowView
 				.findViewById(R.id.play_button);
 		TextView contactInitial = (TextView) rowView
 				.findViewById(R.id.username_letter);
@@ -113,7 +114,7 @@ public class InboxAdapter extends BaseAdapter {
 
 			// Place the song data in the view tag so it can be accessed on
 			// click
-			playButton.setTag(song);
+			playButton.setSong(song);
 		} else {
 			contactInitial.setVisibility(View.VISIBLE);
 			playButton.setVisibility(View.GONE);
@@ -126,16 +127,6 @@ public class InboxAdapter extends BaseAdapter {
 		}
 
 		return rowView;
-	}
-
-	/**
-	 * Populate the text view with the given time
-	 * 
-	 * @param time
-	 * @param date
-	 */
-	private void setTime(TextView time, Date date) {
-		time.setText(DateUtils.getRelativeTimeSpanString(date.getTime()));
 	}
 
 	/**

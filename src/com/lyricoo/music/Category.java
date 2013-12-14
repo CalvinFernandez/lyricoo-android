@@ -5,24 +5,23 @@ import org.json.JSONObject;
 
 import com.lyricoo.api.LyricooModel;
 
-
 public class Category extends LyricooModel {
-	
+
 	private Integer mId;
 	private String mName;
 	private Integer mPhotoId;
-	
+
 	private boolean mCached = false;
-	
+
 	private static String baseUrl = "categories";
-	
+
 	public Category(Integer id, String title) {
 		super();
 		mId = id;
 		mName = title;
 		mPhotoId = CategoryHelper.mapToImage(mId);
 	}
-	
+
 	public Category(JSONObject json) {
 		super();
 		try {
@@ -40,20 +39,32 @@ public class Category extends LyricooModel {
 		mPhotoId = CategoryHelper.mapToImage(mId);
 		setBaseUrl(baseUrl + "/" + mId);
 	}
-	
+
 	public String name() {
 		return mName;
 	}
-	
+
 	public int id() {
 		return mId;
 	}
-	
-	public Integer photo() {
-		return mPhotoId;
-	}
-	
-	public boolean equals(Category category) {
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof Category)) {
+			return false;
+		}
+
+		// songs are equal if they have the same id
+		Category category = (Category) obj;
+
 		if (category.mId != null && mId != null) {
 			return category.mId == mId;
 		} else if (mName != null) {
@@ -63,14 +74,19 @@ public class Category extends LyricooModel {
 		}
 	}
 	
+	public int photo(){
+		return mPhotoId;
+	}
+
+	@Override
 	public int hashCode() {
 		return Integer.valueOf(mId).hashCode();
 	}
-	
+
 	public boolean isCached() {
 		return mCached;
 	}
-	
+
 	public void setCached(boolean cached) {
 		mCached = cached;
 	}

@@ -31,7 +31,7 @@ public class LyricooPlayer {
 		mContext = context;
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
+		
 		// set volume according to the user's settings
 		AudioManager audioManager = (AudioManager) context
 				.getSystemService(Context.AUDIO_SERVICE);

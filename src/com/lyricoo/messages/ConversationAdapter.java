@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.lyricoo.R;
 import com.lyricoo.music.Song;
+import com.lyricoo.ui.PlayButton;
 
 
 public class ConversationAdapter extends ArrayAdapter<Message> {
@@ -31,6 +32,7 @@ public class ConversationAdapter extends ArrayAdapter<Message> {
 		if (msg.isSent()) {
 			rowView = inflater.inflate(R.layout.conversation_item_sent, parent,
 					false);
+			
 		} else {
 			rowView = inflater.inflate(R.layout.conversation_item_received, parent,
 					false);
@@ -41,12 +43,17 @@ public class ConversationAdapter extends ArrayAdapter<Message> {
 				.findViewById(R.id.message_content);
 		content.setText(msg.getContent());
 		
-		// set the attached lyricoo title if applicable
+		// set the time
+		TextView time = (TextView) rowView.findViewById(R.id.time);
+		time.setText(msg.getDisplayableTime());
+		
+		// set the attached song if there is one, otherwise hide the play button
+		PlayButton playButton = (PlayButton) rowView.findViewById(R.id.play_button);
 		Song song = msg.getSong();
 		if(song != null){
-			TextView lyricoo = (TextView) rowView
-					.findViewById(R.id.attached_lyricoo_title);
-			lyricoo.setText(song.getTitle());
+			playButton.setSong(song);
+		} else {
+			playButton.setVisibility(View.INVISIBLE);
 		}
 		
 		return rowView;

@@ -20,6 +20,9 @@ import com.lyricoo.music.MusicManager.MusicHandler;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 public class CategoriesActivity extends LyricooActivity {
+	// Request code when launched for result
+	public static final int SELECT_LYRICOO_REQUEST = 0;
+
 	private Context mContext;
 	private ArrayList<Category> mCategories;
 
@@ -47,12 +50,15 @@ public class CategoriesActivity extends LyricooActivity {
 					public void onItemClick(AdapterView<?> parent, View v,
 							int position, long id) {
 						Category category = mCategories.get(position);
-						Intent i = new Intent(mContext, CategoryActivity.class);
-						
+						Intent i = new Intent(mContext, CategoryActivity.class);						
 						i.putExtra("category", Utility.toJson(category));
-						i.putExtra("position", position);
 						
-						startActivity(i);
+						if (getCallingActivity() != null) {
+							startActivityForResult(i, CategoriesActivity.SELECT_LYRICOO_REQUEST);
+						} else {
+							startActivity(i);
+						}
+
 					}
 
 				});
@@ -67,5 +73,22 @@ public class CategoriesActivity extends LyricooActivity {
 
 		});
 
+	}
+
+	// After returning from the CategoryActivity this is called
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == CategoriesActivity.SELECT_LYRICOO_REQUEST) {
+
+			if (resultCode == RESULT_OK) {
+				Intent returnIntent = new Intent();
+				returnIntent.putExtra("lyricoo", data.getStringExtra("lyricoo"));
+				setResult(RESULT_OK, returnIntent);
+				finish();
+			}
+			if (resultCode == RESULT_CANCELED) {
+				// Don't do anything if a lyricoo wasn't selected
+			}
+		}
 	}
 }

@@ -1,4 +1,5 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lyricoo="http://schemas.android.com/apk/res/com.lyricoo"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -7,63 +8,82 @@
 
     <RelativeLayout
         android:id="@+id/root_view"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".ConversationActivity" >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
-        <ListView
+        <com.lyricoo.messages.MessageList
             android:id="@+id/messages_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lyricoo_button"
-            android:layout_alignParentTop="true" >
-        </ListView>
+            android:layout_above="@+id/message_bar"
+            android:layout_alignParentTop="true"
+            android:divider="@color/transparent"
+            android:dividerHeight="10dp" />
 
-        <TextView
-            android:id="@+id/lyricoo_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/lyricoo_button"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/lyricoo_button"
-            android:longClickable="true"
-            android:onClick="selectedLyricooClicked"
-            android:text="No Lyricoo Selected"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <Button
-            android:id="@+id/lyricoo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/conversation_submit"
-            android:layout_alignParentRight="true"
-            android:onClick="lyricooButtonClicked"
-            android:text="Lyricoos" />
-
-        <EditText
-            android:id="@+id/conversation_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/conversation_submit"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/conversation_submit"
-            android:ems="10"
-            android:hint="@string/conversation_input"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/conversation_submit"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/message_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:onClick="sendMessage"
-            android:text="@string/conversation_submit" />
+            android:background="@color/background2" >
+
+            <ImageView
+                android:id="@+id/send_button"
+                android:layout_width="@dimen/conversation_send_button_size"
+                android:layout_height="@dimen/conversation_send_button_size"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/conversation_send_button_right_margin"
+                android:onClick="sendMessage"
+                android:src="@drawable/ic_conversation_send" />
+
+            <EditText
+                android:id="@+id/conversation_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/conversation_text_input_left_margin"
+                android:layout_marginRight="@dimen/conversation_text_input_right_margin"
+                android:layout_marginTop="@dimen/conversation_text_input_top_margin"
+                android:layout_toLeftOf="@+id/send_button"
+                android:layout_toRightOf="@+id/song_selection_container"
+                android:background="@layout/conversation_edit_text"
+                android:ems="10"
+                android:hint="@string/conversation_input"
+                android:inputType="text|textMultiLine"
+                android:maxLines="3"
+                android:paddingLeft="@dimen/conversation_text_input_side_padding"
+                android:paddingRight="@dimen/conversation_text_input_side_padding" />
+
+            <RelativeLayout
+                android:id="@+id/song_selection_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/conversation_add_song_button_left_margin" >
+
+                <ImageView
+                    android:id="@+id/add_song_button"
+                    android:layout_width="@dimen/conversation_add_song_button_size"
+                    android:layout_height="@dimen/conversation_add_song_button_size"
+                    android:layout_centerInParent="true"
+                    android:onClick="lyricooButtonClicked"
+                    android:src="@drawable/ic_conversation_add_music" />
+
+                <com.lyricoo.ui.PlayButton
+                    android:id="@+id/play_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    lyricoo:showSongTitle="true"
+                    lyricoo:size="100dp"
+                    lyricoo:songTitleColor="@color/white"
+                    android:layout_centerInParent="true"
+                    android:onClick="playButtonClicked"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
     <!-- The navigation drawer -->
