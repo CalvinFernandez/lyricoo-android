@@ -3,18 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView
+    <com.lyricoo.music.CategoryGridImage
         android:id="@+id/category_thumb_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/shadow_layer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/category_thumb_image"
         android:layout_alignBottom="@id/category_thumb_image"
+        android:layout_alignTop="@id/category_thumb_image"
         android:background="@drawable/inner_shadow" />
 
     <TextView
@@ -22,10 +22,10 @@
         style="@android:style/TextAppearance.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="5.0px"
-        android:paddingRight="5.0px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:paddingLeft="5.0px"
+        android:paddingRight="5.0px"
         android:textColor="@color/lyricoo_white" />
 
 </RelativeLayout>
