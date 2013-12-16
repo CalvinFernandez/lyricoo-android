@@ -7,10 +7,4 @@
         android:summary="Receive new message notifications"
         android:title="Notifications" />
 
-    <SeekBarPreference
-        android:defaultValue="70"
-        android:key="pref_volume"
-        android:max="100"
-        android:title="Volume" />
-
 </PreferenceScreen>

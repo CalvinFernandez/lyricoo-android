@@ -33,11 +33,6 @@ public class LyricooPlayer {
 		mContext = context;
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-		// set volume according to the user's preferences
-		AudioManager audioManager = (AudioManager) context
-				.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, getVolume(), 0);
 	}
 
 	/**
@@ -178,27 +173,4 @@ public class LyricooPlayer {
 	public void destroy() {
 		mPlayer.release();
 	}
-
-	/**
-	 * Get the volume level the user specified in preferences
-	 * 
-	 * @return
-	 */
-	private int getVolume() {
-		// volume preference is stored as a percentage. Convert that to a usable
-		// int based on the system's max volume level
-		AudioManager audioManager = (AudioManager) mContext
-				.getSystemService(Context.AUDIO_SERVICE);
-		int maxVolume = audioManager
-				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-
-		SharedPreferences sharedPref = PreferenceManager
-				.getDefaultSharedPreferences(mContext);
-		int volumeAsPercent = sharedPref.getInt("pref_volume", -1);
-
-		int volume = (int) ((volumeAsPercent / 100.0) * maxVolume);
-
-		return volume;
-	}
-
 }

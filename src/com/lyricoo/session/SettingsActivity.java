@@ -22,6 +22,8 @@ public class SettingsActivity extends LyricooActivity {
 		setContentView(R.layout.activity_settings);
 		
 		SlidingMenuHelper.addMenuToActivity(this);	
+		
+		
 	}
 
 	@Override
