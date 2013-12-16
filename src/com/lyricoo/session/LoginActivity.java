@@ -28,7 +28,6 @@ import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApi;
 import com.lyricoo.api.LyricooApiResponseHandler;
 import com.lyricoo.messages.InboxActivity;
-import com.lyricoo.music.LyricooSelectionActivity;
 
 /**
  * This activity is called on launch and handles logging the user into the app.

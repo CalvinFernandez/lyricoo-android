@@ -10,14 +10,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.messages.MessageList.onSizeChangedListener;
 import com.lyricoo.music.CategoriesActivity;
-import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.music.Song;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
