@@ -3,29 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView
+    <com.lyricoo.music.CategoryGridImage
         android:id="@+id/category_thumb_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
 
     <TextView
-        android:id="@+id/shadow_layer"
+        android:id="@+id/category_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/category_thumb_image"
-        android:layout_alignBottom="@id/category_thumb_image"
-        android:background="@drawable/inner_shadow" />
-
-    <TextView
-        android:id="@+id/name"
-        style="@android:style/TextAppearance.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5.0px"
-        android:paddingRight="5.0px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/lyricoo_white" />
+        android:paddingLeft="@dimen/category_grid_item_padding_left"
+        android:paddingRight="@dimen/category_grid_item_padding_right"
+        android:paddingBottom="@dimen/category_grid_item_padding_bottom"
+        android:paddingTop="@dimen/category_grid_item_padding_top"
+        android:textSize="@dimen/category_grid_item_font_size"
+        android:textColor="@color/lyricoo_white" 
+        android:background="@drawable/inner_shadow"/>   
 
 </RelativeLayout>

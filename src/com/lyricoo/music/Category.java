@@ -90,4 +90,8 @@ public class Category extends LyricooModel {
 	public void setCached(boolean cached) {
 		mCached = cached;
 	}
+
+	public String getName() {
+		return mName;
+	}
 }

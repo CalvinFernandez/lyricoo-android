@@ -26,9 +26,9 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 		Category category = getItem(position);
 		
 		View gridItem = inflater.inflate(R.layout.category_grid_item, parent, false);
-		TextView name = (TextView) gridItem.findViewById(R.id.name);
+		TextView name = (TextView) gridItem.findViewById(R.id.category_name);
 		
-		ImageView thumb = (ImageView) gridItem.findViewById(R.id.category_thumb_image);
+		CategoryGridImage thumb = (CategoryGridImage) gridItem.findViewById(R.id.category_thumb_image);
 		thumb.setImageResource(category.photo());
 		
 		name.setText(category.name());
