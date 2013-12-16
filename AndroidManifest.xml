@@ -57,10 +57,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.lyricoo.music.LyricooSelectionActivity"
-            android:label="@string/title_activity_lyricoo_selection" >
-        </activity>
-        <activity
             android:name="com.lyricoo.friends.ContactsActivity"
             android:label="@string/title_activity_contacts" >
         </activity>

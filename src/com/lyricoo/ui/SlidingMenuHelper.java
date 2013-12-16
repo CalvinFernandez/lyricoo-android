@@ -3,9 +3,7 @@ package com.lyricoo.ui;
 import java.util.ArrayList;
 
 import android.content.Intent;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -16,7 +14,6 @@ import com.lyricoo.R;
 import com.lyricoo.friends.FriendsActivity;
 import com.lyricoo.messages.InboxActivity;
 import com.lyricoo.music.CategoriesActivity;
-import com.lyricoo.music.LyricooSelectionActivity;
 import com.lyricoo.session.SettingsActivity;
 
 public class SlidingMenuHelper {
