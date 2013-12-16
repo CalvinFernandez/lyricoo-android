@@ -123,28 +123,12 @@ public class ConversationManager {
 		notifyDataUpdate(contact);
 
 		// send a post request to server to create message
-		RequestParams params = new RequestParams();
-		params.put("contact_id", Integer.toString(message.getContactId()));
-		params.put("content", message.getContent());
-		params.put("sent", "true");
-		if (message.getSong() != null) {
-			params.put("song_id", Integer.toString(message.getSong().getId()));
-		}
-
+		RequestParams params = message.parameterize();
 		mUser.post("messages", params, new LyricooApiResponseHandler() {
 
 			@Override
 			public void onSuccess(Object responseJson) {
 				message.update((JSONObject) responseJson);
-				// TODO: Cleaner way to mark a sent message as read with the
-				// server
-				message.read();
-				message.put(new LyricooApiResponseHandler() {
-					public void onSuccess(Object responseJson) {
-						message.read();
-						notifyDataUpdate(contact);
-					}
-				});
 				sortConversations(mConversations);
 				notifyDataUpdate(contact);
 			}
