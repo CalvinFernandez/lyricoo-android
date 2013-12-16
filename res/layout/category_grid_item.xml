@@ -21,10 +21,7 @@
         android:paddingBottom="@dimen/category_grid_item_padding_bottom"
         android:paddingTop="@dimen/category_grid_item_padding_top"
         android:textSize="@dimen/category_grid_item_font_size"
-        android:text="Lets get it on"
         android:textColor="@color/lyricoo_white" 
-        android:background="@drawable/inner_shadow"/>
-    
-    
+        android:background="@drawable/inner_shadow"/>   
 
 </RelativeLayout>

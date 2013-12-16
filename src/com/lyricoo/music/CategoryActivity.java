@@ -50,8 +50,6 @@ public class CategoryActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category);
 		mContext = this;
-		
-		SlidingMenuHelper.addMenuToActivity(this);
 
 		mSongListView = (ListView) findViewById(R.id.category_song_list);
 

@@ -1,88 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:lyricoo="http://schemas.android.com/apk/res/com.lyricoo"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/category_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <!-- Main content view -->
+    <ListView
+        android:id="@+id/category_song_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/song_options"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" >
+    </ListView>
 
     <RelativeLayout
-        android:id="@+id/category_view"
+        android:id="@+id/song_options"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background2"
+        android:visibility="gone" >
 
-        <ListView
-            android:id="@+id/category_song_list"
-            android:layout_width="match_parent"
+        <com.lyricoo.ui.PlayButton
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/song_options"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" >
-        </ListView>
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/category_play_button_margin_bottom"
+            android:layout_marginLeft="@dimen/category_play_button_margin_left"
+            android:layout_marginRight="@dimen/category_play_button_margin_right"
+            android:layout_marginTop="@dimen/category_play_button_margin_top"
+            android:onClick="playClicked"
+            lyricoo:size="@dimen/category_play_button_size" />
+
+        <ImageView
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/category_send_button_margin_bottom"
+            android:layout_marginLeft="@dimen/category_send_button_margin_left"
+            android:layout_marginRight="@dimen/category_send_button_margin_right"
+            android:layout_marginTop="@dimen/category_send_button_margin_top"
+            android:onClick="sendClicked"
+            android:src="@drawable/ic_conversation_send" />
+
+        <!-- To center song title between send button and play button we have to do some hacky stuff -->
 
         <RelativeLayout
-            android:id="@+id/song_options"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/background2"
-            android:visibility="gone" >
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/send_button"
+            android:layout_toRightOf="@+id/play_button" >
 
-            <com.lyricoo.ui.PlayButton
-                android:id="@+id/play_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="@dimen/category_play_button_margin_bottom"
-                android:layout_marginLeft="@dimen/category_play_button_margin_left"
-                android:layout_marginRight="@dimen/category_play_button_margin_right"
-                android:layout_marginTop="@dimen/category_play_button_margin_top"
-                android:onClick="playClicked"
-                lyricoo:size="@dimen/category_play_button_size" />
-
-            <ImageView
-                android:id="@+id/send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="@dimen/category_send_button_margin_bottom"
-                android:layout_marginLeft="@dimen/category_send_button_margin_left"
-                android:layout_marginRight="@dimen/category_send_button_margin_right"
-                android:layout_marginTop="@dimen/category_send_button_margin_top"
-                android:onClick="sendClicked"
-                android:src="@drawable/ic_conversation_send" />
-
-            <!-- To center song title between send button and play button we have to do some hacky stuff -->
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/song_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/send_button"
-                android:layout_toRightOf="@+id/play_button" >
-
-                <TextView
-                    android:id="@+id/song_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/category_selected_song_text_size" />
-            </RelativeLayout>
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/category_selected_song_text_size" />
         </RelativeLayout>
     </RelativeLayout>
 
-    <!-- The navigation drawer -->
-
-    <include
-        android:id="@+id/sliding_menu_list"
-        layout="@layout/sliding_menu" >
-    </include>
-
-</android.support.v4.widget.DrawerLayout>
+</RelativeLayout>
