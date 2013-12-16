@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_notifications"
+        android:summary="Receive new message notifications"
+        android:title="Notifications" />
+
+    <SeekBarPreference
+        android:defaultValue="70"
+        android:key="pref_volume"
+        android:max="100"
+        android:title="Volume" />
+
+</PreferenceScreen>

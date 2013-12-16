@@ -2,9 +2,12 @@ package com.lyricoo.messages;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.lyricoo.Utility;
 import com.lyricoo.session.Session;
 
 public class GcmIntentService extends IntentService {
@@ -32,16 +35,17 @@ public class GcmIntentService extends IntentService {
 			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
 					.equals(messageType)) {
 				// error
-				sendNotification("Send error: " + extras.toString());
+				Utility.log("Send error: " + extras.toString());
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
 					.equals(messageType)) {
 				// error
-				sendNotification("Deleted messages on server: "
+				Utility.log("Deleted messages on server: "
 						+ extras.toString());
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
 					.equals(messageType)) {
 				// Regular message hooray!
-				sendNotification("Received: " + extras.toString());
+				
+				// Pass the received message to the ConversationManager
 				String contact = null;
 				try {
 					if (extras.containsKey("contact")) {
@@ -53,12 +57,20 @@ public class GcmIntentService extends IntentService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				// send a system notification if the user hasn't disabled them in their preferences
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+				boolean showNotifications = sharedPref.getBoolean("pref_notifications", false);
+				if(showNotifications){
+					sendNotification();	
+				}		
+				
 			}
 		}
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
 
-	private void sendNotification(String msg) {
+	private void sendNotification() {
 		try {
 			int numUnread = Session.getConversationManager().getUnreadCount();
 			LyricooNotificationManager.newMessageNotification(
