@@ -6,48 +6,23 @@
     <!-- The main content view -->
 
     <RelativeLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".SettingsActivity" >
+        android:layout_height="match_parent" >
 
-        <ToggleButton
-            android:id="@+id/notification_toggle"
+        <fragment
+            android:id="@+id/settings_fragment"
+            android:name="com.lyricoo.session.SettingsFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:onClick="notificationToggleClicked"
-            android:textOff="Notifications Off"
-            android:textOn="Notifications On" />
-
-        <TextView
-            android:id="@+id/volume_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/notification_toggle"
-            android:layout_marginTop="16dp"
-            android:text="Lyricoo Volume"
-            android:textSize="20sp" />
-
-        <SeekBar
-            android:id="@+id/volume_seek"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/volume_label" />
+            android:layout_alignParentTop="true" />
 
         <Button
             android:id="@+id/log_out_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/volume_seek"
+            android:layout_below="@+id/settings_fragment"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20sp"
+            android:layout_marginTop="20dp"
             android:onClick="logoutClicked"
             android:text="Log Out" />
     </RelativeLayout>
