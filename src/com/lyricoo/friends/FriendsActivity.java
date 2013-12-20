@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
@@ -29,7 +29,7 @@ import com.lyricoo.ui.SlidingMenuHelper;
 
 public class FriendsActivity extends LyricooActivity {
 	private ArrayList<User> mFriends;
-	private ListView mList;
+	private StickyListHeadersListView mList;
 	private Context mContext;
 	private PullToRefreshLayout mPullToRefreshLayout;
 
@@ -45,7 +45,7 @@ public class FriendsActivity extends LyricooActivity {
 		mContext = this;
 
 		// get list view
-		mList = (ListView) findViewById(R.id.friends_list);
+		mList = (StickyListHeadersListView) findViewById(R.id.friends_list);
 
 		// load and display friends
 		loadFriendsList();
