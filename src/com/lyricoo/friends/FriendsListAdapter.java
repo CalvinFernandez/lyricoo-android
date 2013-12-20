@@ -42,18 +42,27 @@ public class FriendsListAdapter extends ArrayAdapter<User> implements StickyList
 
 	@Override
 	public View getHeaderView(int position, View convertView, ViewGroup parent) {
+		HeaderViewHolder holder;
 		if (convertView == null) {
+			holder = new HeaderViewHolder();
 			convertView = mInflater.inflate(R.layout.friends_list_header, parent, false);
-			TextView headerText = (TextView) convertView.findViewById(R.id.friends_list_header_text);
-			String headerVal = "" + getItem(position).friendlyId().subSequence(0, 1).charAt(0);
-			headerText.setText(headerVal);
+			holder.text = (TextView) convertView.findViewById(R.id.friends_list_header_text);
+			convertView.setTag(holder);
+		} else {
+			holder = (HeaderViewHolder) convertView.getTag();
 		}
+		String headerText = "" + getItem(position).friendlyId().subSequence(0, 1).charAt(0);
+		holder.text.setText(headerText.toUpperCase());
 		return convertView;
 	}
 
 	@Override
 	public long getHeaderId(int position) {
 		User friend = getItem(position);
-		return friend.friendlyId().subSequence(0, 1).charAt(0);
+		return friend.friendlyId().toLowerCase().subSequence(0, 1).charAt(0);
 	}
+	
+    class HeaderViewHolder {
+        TextView text;
+    }
 }
