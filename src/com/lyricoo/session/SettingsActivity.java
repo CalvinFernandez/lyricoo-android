@@ -4,13 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.ToggleButton;
 
 import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
-import com.lyricoo.messages.InboxActivity;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 public class SettingsActivity extends LyricooActivity {
