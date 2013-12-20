@@ -87,9 +87,6 @@ public class FriendManager {
 					// code
 					// and error
 					handler.onFailure(statusCode, responseBody, error);
-					// create error toast
-					String toast = "Error retrieving friends";
-					Utility.makeBasicToast(mContext, toast);
 				}
 			});
 		} else {

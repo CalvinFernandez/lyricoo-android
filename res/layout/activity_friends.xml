@@ -29,23 +29,6 @@
                 android:layout_below="@+id/add_friend" />
         </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
 
-        <Button
-            android:id="@+id/add_friend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:onClick="addFriendClicked"
-            android:text="Add a Friend" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/add_friend"
-            android:layout_alignParentLeft="true"
-            android:text="Your Friends"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>
 
     <!-- The navigation drawer -->
