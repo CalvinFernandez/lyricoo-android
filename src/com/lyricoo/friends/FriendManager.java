@@ -62,6 +62,51 @@ public class FriendManager {
 	}
 
 	/**
+	 * Get all friends from the server. Boolean refresh if true calls server, if
+	 * false pulls from local
+	 * 
+	 * @param handler
+	 * @param refresh
+	 */
+	public void getFriends(final LyricooApiResponseHandler handler,
+			boolean refresh) {
+		if (refresh == true) {
+			mUser.get("friends", new LyricooApiResponseHandler() {
+				@Override
+				public void onSuccess(Object responseJson) {
+					// update the friend list with the response data
+					setFriendList((JSONArray) responseJson);
+					handler.onSuccess(mFriends);
+				}
+
+				@Override
+				public void onFailure(int statusCode, String responseBody,
+						Throwable error) {
+
+					// TODO: Create specific error messages based on response
+					// code
+					// and error
+					handler.onFailure(statusCode, responseBody, error);
+					// create error toast
+					String toast = "Error retrieving friends";
+					Utility.makeBasicToast(mContext, toast);
+				}
+			});
+		} else {
+			handler.onSuccess(mFriends);
+		}
+	}
+
+	/**
+	 * Get all friends, defaulting to cached friend list.
+	 * 
+	 * @param handler
+	 */
+	public void getFriends(LyricooApiResponseHandler handler) {
+		getFriends(handler, false);
+	}
+
+	/**
 	 * Attempt to add a friend to the user's friend list. This will fail if the
 	 * user is already a friend or the username isn't valid
 	 * 
@@ -215,19 +260,19 @@ public class FriendManager {
 		for (User friend : newData) {
 			mFriends.add(friend);
 		}
-		
+
 		// sort alphabetically by username
 		Collections.sort(mFriends, new FriendComparator());
 	}
-	
+
 	/**
 	 * Basic comparator to sort friends list alphabetically by username
-	 *
+	 * 
 	 */
-	private class FriendComparator implements Comparator<User>{
+	private class FriendComparator implements Comparator<User> {
 		public int compare(User left, User right) {
-	        return left.getUsername().compareTo(right.getUsername());
-	    }
+			return left.getUsername().compareTo(right.getUsername());
+		}
 	}
 
 	/**
