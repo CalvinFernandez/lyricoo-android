@@ -268,7 +268,7 @@ public class FriendManager {
 	 */
 	private class FriendComparator implements Comparator<User> {
 		public int compare(User left, User right) {
-			return left.getUsername().compareTo(right.getUsername());
+			return left.getUsername().toLowerCase().compareTo(right.getUsername().toLowerCase());
 		}
 	}
 
