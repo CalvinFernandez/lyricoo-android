@@ -14,30 +14,34 @@ import android.widget.TextView;
 import com.lyricoo.R;
 import com.lyricoo.session.User;
 
-
-public class FriendsListAdapter extends ArrayAdapter<User> implements StickyListHeadersAdapter {
+public class FriendsListAdapter extends ArrayAdapter<User> implements
+		StickyListHeadersAdapter {
 
 	private LayoutInflater mInflater;
-	
-	public FriendsListAdapter(Context context, int resource, ArrayList<User> friends) {
+
+	public FriendsListAdapter(Context context, int resource,
+			ArrayList<User> friends) {
 		super(context, resource, friends);
 		mInflater = LayoutInflater.from(context);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);				
-		
-		View rowView = inflater.inflate(R.layout.friend_list_item, parent,
-				false);
+		ViewHolder viewHolder;
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.friend_list_item, parent,
+					false);
 
-		TextView friendName = (TextView) rowView
-				.findViewById(R.id.friend_name);
-		
+			viewHolder = new ViewHolder();
+			viewHolder.text = (TextView) convertView
+					.findViewById(R.id.friend_name);
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
 		User friend = getItem(position);
-		friendName.setText(friend.getUsername());
-
-		return rowView;
+		viewHolder.text.setText(friend.friendlyId());
+		return convertView;
 	}
 
 	@Override
@@ -45,13 +49,16 @@ public class FriendsListAdapter extends ArrayAdapter<User> implements StickyList
 		HeaderViewHolder holder;
 		if (convertView == null) {
 			holder = new HeaderViewHolder();
-			convertView = mInflater.inflate(R.layout.friends_list_header, parent, false);
-			holder.text = (TextView) convertView.findViewById(R.id.friends_list_header_text);
+			convertView = mInflater.inflate(R.layout.friends_list_header,
+					parent, false);
+			holder.text = (TextView) convertView
+					.findViewById(R.id.friends_list_header_text);
 			convertView.setTag(holder);
 		} else {
 			holder = (HeaderViewHolder) convertView.getTag();
 		}
-		String headerText = "" + getItem(position).friendlyId().subSequence(0, 1).charAt(0);
+		String headerText = ""
+				+ getItem(position).friendlyId().subSequence(0, 1).charAt(0);
 		holder.text.setText(headerText.toUpperCase());
 		return convertView;
 	}
@@ -61,8 +68,12 @@ public class FriendsListAdapter extends ArrayAdapter<User> implements StickyList
 		User friend = getItem(position);
 		return friend.friendlyId().toLowerCase().subSequence(0, 1).charAt(0);
 	}
-	
-    class HeaderViewHolder {
-        TextView text;
-    }
+
+	class HeaderViewHolder {
+		TextView text;
+	}
+
+	class ViewHolder {
+		TextView text;
+	}
 }
