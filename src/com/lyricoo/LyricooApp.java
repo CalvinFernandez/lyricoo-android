@@ -4,15 +4,14 @@ import java.util.ArrayList;
 
 import org.apache.http.Header;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+
 import com.lyricoo.messages.LyricooPollingService;
 import com.lyricoo.music.Category;
 import com.lyricoo.music.MusicManager;
 import com.lyricoo.music.Song;
-import com.lyricoo.session.LyricooSettings;
-
-import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
 
 /*
  * The LyricooApp class provides a global storage area for
@@ -26,9 +25,6 @@ public class LyricooApp extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
-		// Initialize user settings
-		LyricooSettings.initUserSettings(getApplicationContext());
 		
 		// do an initial sync of songs
 		loadSongs();

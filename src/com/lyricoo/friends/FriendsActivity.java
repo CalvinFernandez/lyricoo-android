@@ -2,6 +2,10 @@ package com.lyricoo.friends;
 
 import java.util.ArrayList;
 
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +30,7 @@ public class FriendsActivity extends LyricooActivity {
         private ArrayList<User> mFriends;
         private ListView mList;
         private Context mContext;
+        private PullToRefreshLayout mPullToRefreshLayout;
 
         // Our listener for when friends is updated. Don't make this anonymous so it
         // can be removed onDestroy
@@ -57,6 +62,25 @@ public class FriendsActivity extends LyricooActivity {
 
                 Session.getFriendManager().registerOnFriendsUpdatedListener(
                                 mFriendListener);
+                
+             // Now find the PullToRefreshLayout to setup
+                mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+                
+                // Now setup the PullToRefreshLayout
+                ActionBarPullToRefresh.from(this)
+                        // Mark All Children as pullable
+                        .allChildrenArePullable()
+                        // Set the OnRefreshListener
+                        .listener(new OnRefreshListener() {
+							
+							@Override
+							public void onRefreshStarted(View view) {
+								Utility.log("refresh");
+								
+							}
+						})
+                        // Finally commit the setup to our PullToRefreshLayout
+                        .setup(mPullToRefreshLayout);
         }
 
         @Override

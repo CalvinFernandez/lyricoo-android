@@ -2,12 +2,14 @@ package com.lyricoo.music;
 
 import java.io.IOException;
 
-import com.lyricoo.session.LyricooSettings;
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.preference.PreferenceManager;
+
+import com.lyricoo.Utility;
 
 /**
  * Handles the playing of a song. Basically acts as a wrapper for the
@@ -31,12 +33,6 @@ public class LyricooPlayer {
 		mContext = context;
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		
-		// set volume according to the user's settings
-		AudioManager audioManager = (AudioManager) context
-				.getSystemService(Context.AUDIO_SERVICE);
-		int volume = LyricooSettings.getUserSettings().getVolume();
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 	}
 
 	/**
@@ -84,12 +80,13 @@ public class LyricooPlayer {
 		} catch (IllegalStateException e) {
 		}
 	}
-	
+
 	/**
 	 * Get the last url that was loaded
+	 * 
 	 * @return The last url loaded using loadSongFromUrl()
 	 */
-	public String getUrl(){
+	public String getUrl() {
 		return mUrl;
 	}
 
@@ -176,5 +173,4 @@ public class LyricooPlayer {
 	public void destroy() {
 		mPlayer.release();
 	}
-
 }
