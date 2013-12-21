@@ -68,12 +68,12 @@ public class SlidingMenuHelper {
 		drawerList.setAdapter(new SlidingMenuAdapter(activity,
 				SlidingMenuHelper.getMenuEntries()));
 
-		addClickListener(activity, drawerList);
+		addClickListener(activity, drawerLayout, drawerList);
 		addDrawerListener(activity, drawerLayout);
 	}
 
 	private static void addClickListener(final LyricooActivity activity,
-			final ListView drawerList) {
+			final DrawerLayout drawerLayout, final ListView drawerList) {
 		// Add click listener to change activities when an item is clicked
 		drawerList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -83,12 +83,14 @@ public class SlidingMenuHelper {
 				SlidingMenuItem item = (SlidingMenuItem) parent
 						.getItemAtPosition(position);
 
-				drawerList.setItemChecked(position, true);
-
-				// load the selected activity
-				activity.startActivity(new Intent(activity, item
+				// close drawer before starting the activity so that the drawer
+				// isn't open if they come back. The close animation isn't
+				// instant, so we need to wait for onClose to get called in the
+				// listener before we can switch activities. Set the intent in
+				// the tag and the onClose listener will check for it
+				drawerLayout.closeDrawers();
+				drawerLayout.setTag(new Intent(activity, item
 						.getActivityToStart()));
-
 			}
 		});
 	}
@@ -100,7 +102,7 @@ public class SlidingMenuHelper {
 	 * @param drawerLayout
 	 */
 	private static void addDrawerListener(final LyricooActivity activity,
-			DrawerLayout drawerLayout) {
+			final DrawerLayout drawerLayout) {
 		// interaction
 		// between the action bar and drawer. To do this, the actionbar
 		// needs a drawer icon
@@ -113,6 +115,14 @@ public class SlidingMenuHelper {
 			public void onDrawerClosed(View view) {
 				// change title back to activity name
 				activity.getSupportActionBar().setTitle(title);
+
+				// if the drawer was closed because an option was selected,
+				// start that activity
+				Intent intent = (Intent) drawerLayout.getTag();
+				if (intent != null) {
+					drawerLayout.setTag(null);
+					activity.startActivity(intent);
+				}
 			}
 
 			/** Called when a drawer has settled in a completely open state. */
