@@ -94,8 +94,8 @@ public class SlidingMenuHelper {
 				// the tag and the onClose listener will check for itr
 				drawerLayout.setTag(new Intent(activity, item
 						.getActivityToStart()));
-				}
-				drawerLayout.closeDrawers();				
+				drawerLayout.closeDrawers();
+			}
 		});
 	}
 
@@ -158,7 +158,7 @@ public class SlidingMenuHelper {
 			}
 
 		};
-		
+
 		toggle.setDrawerIndicatorEnabled(showIcon);
 
 		drawerLayout.setDrawerListener(toggle);
