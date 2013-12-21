@@ -10,94 +10,91 @@ import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooModel;
 import com.lyricoo.friends.PhoneContact;
 
-/** The User class stores all data pertaining
- * to a logged in user.
+/**
+ * The User class stores all data pertaining to a logged in user.
  */
 public class User extends LyricooModel {
-	
+
 	// TODO: Change backend to support username and other contact info
 	private String mUsername;
 	private String mEmail;
 	private int mUserId;
 	private String mPhoneNumber;
-	
+
 	private static String baseUrl = "users";
 	public static LyricooModel REST = new LyricooModel(baseUrl);
-	
-	
-	
+
 	public User(JSONObject json) {
 		super();
-		
+
 		// TODO: Handle exceptions
 		try {
 			mUserId = json.getInt("id");
 			setBaseUrl(baseUrl + "/" + mUserId);
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			mEmail = json.getString("email");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			mUsername = json.getString("username");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
-			// TODO: Probably need to use getInt. Need to decide which form to use on server.
+			// TODO: Probably need to use getInt. Need to decide which form to
+			// use on server.
 			mPhoneNumber = json.getString("phone_number");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public User(String user) throws JSONException {
 		this(new JSONObject(user));
 	}
-	
+
 	public User() {
 		this(new JSONObject());
 	}
-	
-	
-	public String getEmail(){
+
+	public String getEmail() {
 		return mEmail;
 	}
-	
-	public String getUsername(){
+
+	public String getUsername() {
 		return mUsername;
-	}	
-	
+	}
 
 	public int getUserId() {
 		return mUserId;
 	}
 
-
-	/** Parse a json array of users into an ArrayList<User>
+	/**
+	 * Parse a json array of users into an ArrayList<User>
 	 * 
 	 * @param json
 	 * @return
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	public static ArrayList<User> parseUserJsonArray(JSONArray json) {
 		// initialize arraylist to hold results
 		ArrayList<User> result = new ArrayList<User>();
-		
+
 		// loop through json array
 		int userCount = json.length();
-		for(int i = 0; i < userCount; i++){
+		for (int i = 0; i < userCount; i++) {
 			JSONObject userJson = null;
 			try {
 				userJson = json.getJSONObject(i);
@@ -105,60 +102,82 @@ public class User extends LyricooModel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			if(userJson != null){
+
+			if (userJson != null) {
 				User user = new User(userJson);
 				result.add(user);
-			}			
+			}
 		}
-		
-		return result;		
+
+		return result;
 	}
 
-	/** Check if the given contact has matching user credentials to this user
+	/**
+	 * Check if the given contact has matching user credentials to this user
 	 * 
 	 * @param contact
 	 * @return
 	 */
 	public boolean isContactMatch(PhoneContact contact) {
-		// only checking phone numbers. Could check email addresses if we wanted to. 
-		
+		// only checking phone numbers. Could check email addresses if we wanted
+		// to.
+
 		// Check each phone number of the contact
-		for(String number : contact.getNumbers()){
-			if(Utility.isPhoneNumberEqual(mPhoneNumber, number)){
+		for (String number : contact.getNumbers()) {
+			if (Utility.isPhoneNumberEqual(mPhoneNumber, number)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Test if one user object is the same as another
+	 * 
 	 * @param user
-	 */	
+	 */
 	@Override
-	public boolean equals(Object object){
+	public boolean equals(Object object) {
 		// if object is null it is unequal by default
-		if(object == null){
+		if (object == null) {
 			return false;
 		}
-		
+
 		if (object == this) {
 			return true;
 		}
-		
+
 		// Make sure the object is a User
-		if (!(object instanceof User)){
-            return false;
+		if (!(object instanceof User)) {
+			return false;
 		}
-		
-		User user = (User) object;		
-		
+
+		User user = (User) object;
+
 		// the only thing we have to look at is user id
 		return (user.getUserId() == mUserId);
 	}
-	// TODO: Since we are overriding equals() we should also override hashCode() or bugs could pop up
-	
-	
+
+	// TODO: Since we are overriding equals() we should also override hashCode()
+	// or bugs could pop up
+
+	/**
+	 * Returns best user-readable id.
+	 * 
+	 * @return By availability will return username -> email -> phonenumber ->
+	 *         "lyricoo_user_userid"
+	 */
+	public String friendlyId() {
+		if (!Utility.isStringBlank(mUsername)) {
+			return mUsername;
+		} else if (!Utility.isStringBlank(mEmail)) {
+			return mEmail;
+		} else if (!Utility.isStringBlank(mPhoneNumber)) {
+			return mPhoneNumber;
+		} else {
+			return "lyricoo_user_" + mUserId;
+		}
+	}
+
 }
