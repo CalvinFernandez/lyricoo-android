@@ -2,6 +2,7 @@ package com.lyricoo.messages;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,7 +59,9 @@ public class ConversationActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
-		SlidingMenuHelper.addMenuToActivity(this);
+		
+		SlidingMenuHelper.addMenuToActivity(this, false);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// get the User who we are talking to
 		String contactAsJson = getIntent().getStringExtra("contact");
@@ -153,31 +156,28 @@ public class ConversationActivity extends LyricooActivity {
 			// thrown if conversation manager if null
 		}
 	}
-	
-	@Override 
-	protected void onSaveInstanceState(Bundle outState){
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		// save the lyricoo that was selected
-		if(mSelectedLyricoo != null){
+		if (mSelectedLyricoo != null) {
 			outState.putString("lyricoo", Utility.toJson(mSelectedLyricoo));
 		}
 	}
-	
+
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState){
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		
-		//  check for a previously attached song
+
+		// check for a previously attached song
 		String songJson = savedInstanceState.getString("lyricoo");
-		
-		if(songJson != null){
+
+		if (songJson != null) {
 			attachSong(songJson);
-		}		
+		}
 	}
-	
-	
-	
 
 	/**
 	 * Tell the adapter that the data has changed and it needs to update the
@@ -275,8 +275,7 @@ public class ConversationActivity extends LyricooActivity {
 	public void lyricooButtonClicked(View v) {
 		// Launch LyricooSelectionActivity for a result
 		Intent i = new Intent(this, CategoriesActivity.class);
-		startActivityForResult(i,
-				CategoriesActivity.SELECT_LYRICOO_REQUEST);
+		startActivityForResult(i, CategoriesActivity.SELECT_LYRICOO_REQUEST);
 	}
 
 	/**

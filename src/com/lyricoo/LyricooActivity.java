@@ -1,28 +1,28 @@
 package com.lyricoo;
 
-import com.lyricoo.music.LyricooPlayer;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
+
 import com.lyricoo.session.LoginActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.SignUpActivity;
-import com.lyricoo.ui.SlidingMenuAdapter;
-import com.lyricoo.ui.SlidingMenuHelper;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.widget.ListView;
 
 public class LyricooActivity extends ActionBarActivity {
+	// we need to be able to access the drawer toggle at certain points in the
+	// activity's life
+	protected ActionBarDrawerToggle mDrawerToggle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		checkSession();	
-	
-	}
+		checkSession();
+
+	}	
 
 	@Override
 	protected void onResume() {
@@ -44,6 +44,35 @@ public class LyricooActivity extends ActionBarActivity {
 		super.onStop();
 
 	}
+	
+	@Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if(mDrawerToggle != null){
+        	mDrawerToggle.syncState();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(mDrawerToggle != null){
+        	mDrawerToggle.onConfigurationChanged(newConfig);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 	/**
 	 * Make sure the user is properly signed in. If they aren't return to the
@@ -60,6 +89,10 @@ public class LyricooActivity extends ActionBarActivity {
 			Intent i = new Intent(this, LoginActivity.class);
 			startActivity(i);
 		}
+	}
+	
+	public void setDrawerToggle(ActionBarDrawerToggle toggle){
+		mDrawerToggle = toggle;
 	}
 
 }
