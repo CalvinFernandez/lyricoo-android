@@ -42,6 +42,8 @@ public class FriendsActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends);
 		SlidingMenuHelper.addMenuToActivity(this);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 		mContext = this;
 
 		// get list view

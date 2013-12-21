@@ -35,6 +35,8 @@ public class ContactsActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_contacts);
 		SlidingMenuHelper.addMenuToActivity(this);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 		loadContacts();
 	}
 

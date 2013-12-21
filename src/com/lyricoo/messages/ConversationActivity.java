@@ -59,11 +59,9 @@ public class ConversationActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
+		
 		SlidingMenuHelper.addMenuToActivity(this);
-
-		// show up button
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// get the User who we are talking to
 		String contactAsJson = getIntent().getStringExtra("contact");

@@ -61,15 +61,15 @@
             android:label="@string/title_activity_contacts" >
         </activity>
         <activity
+            android:name="com.lyricoo.messages.InboxActivity"
+            android:label="@string/title_activity_inbox" >
+        </activity>
+        <activity
             android:name="com.lyricoo.messages.ConversationActivity"
             android:label="@string/title_activity_conversation" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lyricoo.messages.InboxActivity" />
-        </activity>
-        <activity
-            android:name="com.lyricoo.messages.InboxActivity"
-            android:label="@string/title_activity_inbox" >
         </activity>
         <activity
             android:name="com.lyricoo.friends.FriendsActivity"

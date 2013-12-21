@@ -3,6 +3,7 @@ package com.lyricoo.ui;
 import java.util.ArrayList;
 
 import android.content.Intent;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,12 +19,9 @@ import com.lyricoo.session.SettingsActivity;
 
 public class SlidingMenuHelper {
 	// TODO: Hide contextual action buttons on drawer show
-	// TODO: Show app name in action bar on drawer show
 	// TODO: Drawer tutorial
 	// TODO: Highlight activity name when drawer opens in that activity
 	// TODO: Show messages count next to Messages label
-	// TODO: Make actionbar icon trigger drawer
-	// TODO: Add actionbar icon to indicate drawer
 
 	/**
 	 * Get a list of the items to place in the sliding menu
@@ -106,7 +104,9 @@ public class SlidingMenuHelper {
 		// interaction
 		// between the action bar and drawer. To do this, the actionbar
 		// needs a drawer icon
-		drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(activity,
+				drawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
 			private String title = "Lyricoo";
 
 			/**
@@ -122,6 +122,9 @@ public class SlidingMenuHelper {
 				if (intent != null) {
 					drawerLayout.setTag(null);
 					activity.startActivity(intent);
+				} else {
+					// Redraw action bar icons now that drawer is closed
+					activity.supportInvalidateOptionsMenu();
 				}
 			}
 
@@ -133,10 +136,9 @@ public class SlidingMenuHelper {
 				title = activity.getSupportActionBar().getTitle().toString();
 				activity.getSupportActionBar().setTitle("Lyricoo");
 
-				// TODO: Need to close contextual action views. Normally
-				// this is
-				// done with invalidateOptionsMenu(), but that is only
-				// available in API 11+
+				// Redraw action bar to hide contextual actions while drawer is
+				// open
+				activity.supportInvalidateOptionsMenu();
 			}
 
 			@Override
@@ -149,7 +151,10 @@ public class SlidingMenuHelper {
 
 			}
 
-		});
-	}
+		};
 
+		drawerLayout.setDrawerListener(toggle);
+
+		activity.setDrawerToggle(toggle);
+	}
 }

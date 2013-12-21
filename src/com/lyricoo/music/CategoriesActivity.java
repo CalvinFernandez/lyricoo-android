@@ -30,9 +30,13 @@ public class CategoriesActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_categories);
+		
+		SlidingMenuHelper.addMenuToActivity(this);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		final GridView gridview = (GridView) findViewById(R.id.categories_grid);
 		mContext = this;
-		SlidingMenuHelper.addMenuToActivity(this);
+		
 
 		MusicManager.getAllCategories(new MusicHandler() {
 

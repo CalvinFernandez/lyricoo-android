@@ -18,7 +18,8 @@ public class SettingsActivity extends LyricooActivity {
 		setContentView(R.layout.activity_settings);
 		
 		SlidingMenuHelper.addMenuToActivity(this);	
-		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);	
 		
 	}
 

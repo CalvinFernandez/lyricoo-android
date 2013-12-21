@@ -55,6 +55,9 @@ public class InboxActivity extends LyricooActivity {
 
 		setContentView(R.layout.activity_inbox);
 		SlidingMenuHelper.addMenuToActivity(this);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
 		mContext = this;
 
 		// load conversation data
