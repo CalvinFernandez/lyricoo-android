@@ -31,7 +31,7 @@ public class CategoriesActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_categories);
 		
-		SlidingMenuHelper.addMenuToActivity(this);
+		SlidingMenuHelper.addMenuToActivity(this, true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		final GridView gridview = (GridView) findViewById(R.id.categories_grid);

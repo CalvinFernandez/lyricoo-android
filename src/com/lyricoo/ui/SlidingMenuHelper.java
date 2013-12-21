@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,8 +50,11 @@ public class SlidingMenuHelper {
 	 * 
 	 * @param activity
 	 *            The activity to add the menu to
+	 * @param showIcon
+	 *            Whether or not to show the drawer icon in the action bar
 	 */
-	public static void addMenuToActivity(final LyricooActivity activity) {
+	public static void addMenuToActivity(final LyricooActivity activity,
+			boolean showIcon) {
 		final DrawerLayout drawerLayout = (DrawerLayout) activity
 				.findViewById(R.id.drawer_layout);
 
@@ -67,7 +71,9 @@ public class SlidingMenuHelper {
 				SlidingMenuHelper.getMenuEntries()));
 
 		addClickListener(activity, drawerLayout, drawerList);
-		addDrawerListener(activity, drawerLayout);
+		addDrawerListener(activity, drawerLayout, showIcon);
+
+		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
 	}
 
 	private static void addClickListener(final LyricooActivity activity,
@@ -85,7 +91,7 @@ public class SlidingMenuHelper {
 				// isn't open if they come back. The close animation isn't
 				// instant, so we need to wait for onClose to get called in the
 				// listener before we can switch activities. Set the intent in
-				// the tag and the onClose listener will check for it
+				// the tag and the onClose listener will check for itr
 				drawerLayout.closeDrawers();
 				drawerLayout.setTag(new Intent(activity, item
 						.getActivityToStart()));
@@ -100,10 +106,10 @@ public class SlidingMenuHelper {
 	 * @param drawerLayout
 	 */
 	private static void addDrawerListener(final LyricooActivity activity,
-			final DrawerLayout drawerLayout) {
+			final DrawerLayout drawerLayout, boolean showIcon) {
 		// interaction
 		// between the action bar and drawer. To do this, the actionbar
-		// needs a drawer icon
+		// needs a drawer ico
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(activity,
 				drawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
@@ -152,6 +158,8 @@ public class SlidingMenuHelper {
 			}
 
 		};
+		
+		toggle.setDrawerIndicatorEnabled(showIcon);
 
 		drawerLayout.setDrawerListener(toggle);
 

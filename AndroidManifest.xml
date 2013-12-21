@@ -66,7 +66,9 @@
         </activity>
         <activity
             android:name="com.lyricoo.messages.ConversationActivity"
-            android:label="@string/title_activity_conversation" >
+            android:label="@string/title_activity_conversation" 
+            android:parentActivityName="com.lyricoo.messages.InboxActivity" >
+            
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lyricoo.messages.InboxActivity" />
@@ -88,7 +90,8 @@
             android:name="com.lyricoo.music.CategoriesActivity"
             android:label="@string/categories_activity_title" >
         </activity>
-        <activity android:name="com.lyricoo.music.CategoryActivity" >
+        <activity android:name="com.lyricoo.music.CategoryActivity" 
+            android:parentActivityName="com.lyricoo.music.CategoriesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lyricoo.music.CategoriesActivity" />

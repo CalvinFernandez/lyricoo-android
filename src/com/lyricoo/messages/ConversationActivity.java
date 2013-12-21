@@ -60,7 +60,7 @@ public class ConversationActivity extends LyricooActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
 		
-		SlidingMenuHelper.addMenuToActivity(this);
+		SlidingMenuHelper.addMenuToActivity(this, false);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// get the User who we are talking to
