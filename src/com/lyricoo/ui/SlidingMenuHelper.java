@@ -92,10 +92,10 @@ public class SlidingMenuHelper {
 				// instant, so we need to wait for onClose to get called in the
 				// listener before we can switch activities. Set the intent in
 				// the tag and the onClose listener will check for itr
-				drawerLayout.closeDrawers();
 				drawerLayout.setTag(new Intent(activity, item
 						.getActivityToStart()));
-			}
+				}
+				drawerLayout.closeDrawers();				
 		});
 	}
 
