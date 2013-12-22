@@ -11,6 +11,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,6 +36,7 @@ public class FriendsActivity extends LyricooActivity {
 	private StickyListHeadersListView mList;
 	private Context mContext;
 	private PullToRefreshLayout mPullToRefreshLayout;
+	NewFriendPagerAdapter nFPAdapter;
 
 	// Our listener for when friends is updated. Don't make this anonymous so it
 	// can be removed onDestroy
@@ -41,16 +46,16 @@ public class FriendsActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends);
-		SlidingMenuHelper.addMenuToActivity(this, true);
+		//SlidingMenuHelper.addMenuToActivity(this, true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		mContext = this;
 
 		// get list view
-		mList = (StickyListHeadersListView) findViewById(R.id.friends_list);
+		//mList = (StickyListHeadersListView) findViewById(R.id.friends_list);
 
 		// load and display friends
-		loadFriendsList();
+		//loadFriendsList();
 
 		// register callback for when friends list is updated
 		mFriendListener = new FriendManager.OnFriendsUpdatedListener() {
@@ -66,9 +71,9 @@ public class FriendsActivity extends LyricooActivity {
 		Session.getFriendManager().getFriends(new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object responseJson) {
-				loadFriendsList();
+				//loadFriendsList();
 			}
-			
+
 			@Override
 			public void onFailure(int statusCode, String responseBody,
 					Throwable error) {
@@ -76,7 +81,7 @@ public class FriendsActivity extends LyricooActivity {
 				Utility.makeBasicToast(mContext, toast);
 			}
 		}, true);
-
+/*
 		// Now find the PullToRefreshLayout to setup
 		mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
 
@@ -95,6 +100,10 @@ public class FriendsActivity extends LyricooActivity {
 				})
 				// Finally commit the setup to our PullToRefreshLayout
 				.setup(mPullToRefreshLayout);
+*/
+		nFPAdapter = new NewFriendPagerAdapter(getSupportFragmentManager());
+		ViewPager vPager = (ViewPager) findViewById(R.id.pager);
+		vPager.setAdapter(nFPAdapter);
 	}
 
 	@Override
@@ -197,6 +206,42 @@ public class FriendsActivity extends LyricooActivity {
 			}
 
 		});
+
+	}
+
+	/**
+	 * Private adapter for handling new friend fragment. Can just use basic
+	 * fragment pager adapter as this is specifically intended for navigating
+	 * between two screens (friends list <-> add new friend)
+	 * 
+	 * @author Lyricoo
+	 * 
+	 */
+	private class NewFriendPagerAdapter extends FragmentPagerAdapter {
+		private int FRIENDS_VIEW = 0;
+		private int NEW_FRIENDS_VIEW = 1;
+		
+		
+		
+		public NewFriendPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int arg0) {
+			if (arg0 == FRIENDS_VIEW) {
+				return new FriendsFragment();
+			} else if (arg0 == NEW_FRIENDS_VIEW) {
+				return new NewFriendFragment();
+			} else {
+				return null;
+			}
+		}
+
+		@Override
+		public int getCount() {
+			return 2;
+		}
 
 	}
 
