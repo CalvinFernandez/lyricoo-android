@@ -31,8 +31,7 @@ import com.lyricoo.session.User;
 import com.lyricoo.ui.PlayButton;
 
 public class CategoryFragment extends Fragment {
-	// TODO: Save state of selected song when changing fragments
-	
+
 	private ListView mSongListView;
 	private Song mSelectedSong;
 	private Category mCategory;
@@ -68,7 +67,8 @@ public class CategoryFragment extends Fragment {
 		});
 
 		// listener for send button
-		ImageView sendButton = (ImageView) rootView.findViewById(R.id.send_button);
+		ImageView sendButton = (ImageView) rootView
+				.findViewById(R.id.send_button);
 		sendButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -108,8 +108,29 @@ public class CategoryFragment extends Fragment {
 			}
 
 		});
+		
+		// restore any previous state
+		if (savedInstanceState != null) {
+			
+			// check for a previously selected song
+            String songJson = savedInstanceState.getString("selectedSong");
+            if(songJson != null){
+            	Song song = Utility.fromJson(songJson, Song.class);
+            	selectSong(song);
+            }
+        }
 
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		// if the user has a song selected save it so we can keep it displayed
+		// if the user swipes away from this category and comes back
+		if (mSelectedSong != null) {
+			outState.putString("selectedSong", Utility.toJson(mSelectedSong));
+		}
 	}
 
 	// The button to send this lyricoo to a friend triggers this call
@@ -186,33 +207,46 @@ public class CategoryFragment extends Fragment {
 				// need to subtract 1 from position because the first item is
 				// the header
 				Song song = (Song) adapter.getItem(position - 1);
-				mSelectedSong = song;
-
-				// show the play button, title of selected song, and option to
-				// send the song. Start playing song.
-				showSongOptions();
-				mPlayButton.setSong(song);
+				selectSong(song);
 				mPlayButton.play();
 			}
 		});
+	}
+
+	/**
+	 * Save the selected song and start playing it
+	 * 
+	 * @param song
+	 */
+	private void selectSong(Song song) {
+		mSelectedSong = song;
+
+		// show the play button, title of selected song, and option to
+		// send the song. Start playing song.
+		showSongOptions();
+		mPlayButton.setSong(song);		
 	}
 
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
 
+		// If the user swipes away from the fragment stop the music. We can
+		// detect this when the visible hint changes
+
 		// Make sure that we are currently visible
 		if (this.isVisible()) {
-			// If we are becoming invisible, then...
+			// If we are becoming invisible, then stop music
 			if (!isVisibleToUser) {
 				mPlayButton.stop();
 			}
 		}
 	}
-	
+
 	@Override
-	public void onPause(){
+	public void onPause() {
 		super.onPause();
+		// stop music when the activity changes
 		mPlayButton.stop();
 	}
 
@@ -220,7 +254,8 @@ public class CategoryFragment extends Fragment {
 	public void onDestroyView() {
 		super.onDestroyView();
 
-		// TODO: Clean up any music stuff to save memory
+		// release song resources
+		mPlayButton.destroy();
 	}
 
 }

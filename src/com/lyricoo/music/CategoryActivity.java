@@ -23,7 +23,6 @@ import com.lyricoo.Utility;
 import com.lyricoo.music.MusicManager.MusicHandler;
 
 public class CategoryActivity extends LyricooActivity {
-	private Category mStartingCategory;
 	private ArrayList<Category> mCategories;
 	private ViewPager mPager;
 	private PagerAdapter mPagerAdapter;
@@ -39,12 +38,15 @@ public class CategoryActivity extends LyricooActivity {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
+		// get the categories to show
 		MusicManager.getAllCategories(new MusicHandler() {
 
 			@Override
 			public void onSuccess(ArrayList<Song> songs,
 					ArrayList<Category> categories) {
+				// save the categories and setup paging for them
 				mCategories = categories;
+				setupCategoryPaging();
 			}
 
 			@Override
@@ -55,12 +57,20 @@ public class CategoryActivity extends LyricooActivity {
 			}
 		});
 
-		int startingCategoryIndex = getIntent().getIntExtra("categoryIndex", 0);
+	}
 
+	/**
+	 * Setup the category paging adapter and show the selected category
+	 */
+	private void setupCategoryPaging() {
+		
+		// setup paging adapter
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mPagerAdapter);
-		
+
+		// move to the selected category
+		int startingCategoryIndex = getIntent().getIntExtra("categoryIndex", 0);
 		mPager.setCurrentItem(startingCategoryIndex);
 	}
 
@@ -72,17 +82,17 @@ public class CategoryActivity extends LyricooActivity {
 		@Override
 		public Fragment getItem(int position) {
 			Category category = mCategories.get(position);
-			
+
 			// update title to category name
 			getSupportActionBar().setTitle(category.getName());
-			
-			CategoryFragment frag = new CategoryFragment();			
-			
+
+			CategoryFragment frag = new CategoryFragment();
+
 			// let the fragment know which category they are supposed to show
 			Bundle args = new Bundle();
 			args.putString("category", Utility.toJson(category));
 			frag.setArguments(args);
-			
+
 			return frag;
 		}
 
@@ -91,17 +101,19 @@ public class CategoryActivity extends LyricooActivity {
 			return mCategories.size();
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        } else {
-            // Otherwise, select the previous step.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
+			// If the user is currently looking at the first step, allow the
+			// system to handle the
+			// Back button. This calls finish() on this activity and pops the
+			// back stack.
+			super.onBackPressed();
+		} else {
+			// Otherwise, select the previous step.
+			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+		}
 	}
 
 }
