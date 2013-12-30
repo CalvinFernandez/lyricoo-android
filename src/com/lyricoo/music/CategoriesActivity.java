@@ -53,9 +53,8 @@ public class CategoriesActivity extends LyricooActivity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View v,
 							int position, long id) {
-						Category category = mCategories.get(position);
 						Intent i = new Intent(mContext, CategoryActivity.class);						
-						i.putExtra("category", Utility.toJson(category));
+						i.putExtra("categoryIndex", position);
 						
 						if (getCallingActivity() != null) {
 							startActivityForResult(i, CategoriesActivity.SELECT_LYRICOO_REQUEST);
