@@ -1,4 +1,5 @@
-package com.lyricoo.messages;
+package com.lyricoo.sync;
+
 
 import android.app.Activity;
 import android.content.ComponentName;

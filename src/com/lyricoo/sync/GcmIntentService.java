@@ -1,4 +1,4 @@
-package com.lyricoo.messages;
+package com.lyricoo.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.lyricoo.Utility;
+import com.lyricoo.messages.Message;
+import com.lyricoo.messages.MessageException;
 import com.lyricoo.session.Session;
 
 public class GcmIntentService extends IntentService {

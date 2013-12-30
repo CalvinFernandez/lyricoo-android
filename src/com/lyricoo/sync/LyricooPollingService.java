@@ -1,9 +1,10 @@
-package com.lyricoo.messages;
+package com.lyricoo.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 
+import com.lyricoo.messages.ConversationManager;
 import com.lyricoo.session.Session;
 
 /**
