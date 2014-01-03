@@ -77,8 +77,6 @@ public class FriendsFragment extends Fragment {
 		mList = (StickyListHeadersListView) friendsView.findViewById(R.id.friends_list);
 		mContext = getActivity();
 		
-		SlidingMenuHelper.addMenuToActivity((LyricooActivity) getActivity(), true);
-		
 		Session.getFriendManager().getFriends(new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object responseJson) {
