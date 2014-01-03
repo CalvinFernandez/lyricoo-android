@@ -11,6 +11,7 @@ import android.content.Intent;
 import com.lyricoo.music.Category;
 import com.lyricoo.music.MusicManager;
 import com.lyricoo.music.Song;
+import com.lyricoo.session.Session;
 import com.lyricoo.sync.LyricooPollingService;
 
 /*
@@ -84,7 +85,7 @@ public class LyricooApp extends Application {
 	 * 
 	 */
 	public void resume() {
-		if (!mIsGcmRegistered) {
+		if (!mIsGcmRegistered && Session.isLoggedIn()) {
 			setPollingStatus(true);
 		}
 	}

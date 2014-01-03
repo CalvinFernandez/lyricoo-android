@@ -1,6 +1,5 @@
 package com.lyricoo.api;
 
-import org.json.JSONArray;
 
 public class LyricooApiResponseHandler {
 	/**

@@ -70,48 +70,12 @@ public class Session {
 					final String regid = gcm.register(SENDER_ID);
 					msg = "Device registered, registration ID=" + regid;
 
-					// You should send the registration ID to your server over
-					// HTTP, so it
-					// can use GCM/HTTP or CCS to send messages to your app.
+					// Store the id so we don't have to register again
+					storeRegistration(context, regid);
+					
+					// attach the id to the user on the server so we can get updates
+					attachGcmIdToUser(regid);
 
-					// For this demo: we don't need to send it because the
-					// device will send
-					// upstream messages to a server that echo back the message
-					// using the
-					// 'from' address in the message.
-
-					if (isLoggedIn()) {
-						RequestParams p = new RequestParams();
-						p.put("gcm_id", regid);
-
-						currentUser().put(p, new LyricooApiResponseHandler() {
-							@Override
-							public void onSuccess(Object json) {
-								// TODO: DO something here (maybe just UI
-								// indication of
-								// registration success ..
-								Utility.log("Success user registered");
-								((LyricooApp) mContext.getApplicationContext())
-										.setIsGcmRegistered(true);
-
-								// Persist the regID - no need to register
-								// again.
-								storeRegistration(context, regid);
-							}
-
-							@Override
-							public void onFailure(int statusCode,
-									String responseBody, Throwable error) {
-								Utility.log("Error! User unable to register!");
-								((LyricooApp) mContext.getApplicationContext())
-										.setIsGcmRegistered(false);
-							}
-
-						});
-					} else {
-						Log.i("GCM",
-								"Encountered a problem, user is not logged in.");
-					}
 				} catch (IOException ex) {
 					msg = "Error :" + ex.getMessage();
 					// If there is an error, don't just keep trying to register.
@@ -126,20 +90,60 @@ public class Session {
 			@Override
 			protected void onPostExecute(String msg) {
 				Log.i("GCM", msg);
-				// mDisplay.append(msg + "\n");
 			}
 		}.execute(null, null, null);
 	}
 
+	/**
+	 * Get the gcm id for the app and associate it with the logged in user
+	 * 
+	 * @param context
+	 */
 	public static void registerGCM(Context context) {
 		gcm = GoogleCloudMessaging.getInstance(context);
+		// Check if we have already have an id for this device
 		String regID = getRegistrationId(context);
+
+		// if not get a new one, otherwise attach it to the logged in user on
+		// the server
 		if (Utility.isStringBlank(regID)) {
 			registerInBackground(context);
 		} else {
-			((LyricooApp) mContext.getApplicationContext())
-					.setIsGcmRegistered(true);
+			attachGcmIdToUser(regID);
 		}
+	}
+
+	/**
+	 * Attach the given gcm Id to the currently logged in user. This will allow
+	 * the server to send message updates to the user
+	 * 
+	 * @param gcmId
+	 */
+	public static void attachGcmIdToUser(String gcmId) {
+		if (!isLoggedIn()) {
+			Log.i("GCM", "Encountered a problem, user is not logged in.");
+			return;
+		}
+		RequestParams p = new RequestParams();
+		p.put("gcm_id", gcmId);
+
+		currentUser().put(p, new LyricooApiResponseHandler() {
+			@Override
+			public void onSuccess(Object json) {
+				Utility.log("Success user gcm registered");
+				((LyricooApp) mContext.getApplicationContext())
+						.setIsGcmRegistered(true);				
+			}
+
+			@Override
+			public void onFailure(int statusCode, String responseBody,
+					Throwable error) {
+				Utility.log("Error registering gcm id on server");
+				((LyricooApp) mContext.getApplicationContext())
+						.setIsGcmRegistered(false);
+			}
+
+		});
 	}
 
 	public static User currentUser() {
@@ -171,18 +175,28 @@ public class Session {
 
 		return mCurrentUser;
 	}
+	
+	public static void logout(LyricooApiResponseHandler responseHandler){
+		RequestParams params = new RequestParams();
+		params.put("email", currentUser().getEmail());
+		Utility.log(params.toString());
+		User.REST.post("sign_out", params, responseHandler);
+	}
 
 	/**
-	 * Delete the current user's session, if applicable
+	 * Delete the current user's local session info
 	 */
-	public static void destroy() {
+	public static void destroy() {			
+		// clear local session data
 		mCurrentUser = null;
 		mLoggedIn = false;
 		mAuthToken = null;
 
 		// delete all local message data
-		mConversationManager.destroy();
-		mConversationManager = null;
+		if(mConversationManager != null){
+			mConversationManager.destroy();
+			mConversationManager = null;
+		}		
 
 		// remove stored friends
 		mFriendManager = null;
