@@ -1,4 +1,4 @@
-package com.lyricoo.messages;
+package com.lyricoo.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.lyricoo.Utility;
+import com.lyricoo.messages.Message;
+import com.lyricoo.messages.MessageException;
 import com.lyricoo.session.Session;
 
 public class GcmIntentService extends IntentService {
@@ -39,32 +41,40 @@ public class GcmIntentService extends IntentService {
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
 					.equals(messageType)) {
 				// error
-				Utility.log("Deleted messages on server: "
-						+ extras.toString());
+				Utility.log("Deleted messages on server: " + extras.toString());
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
 					.equals(messageType)) {
 				// Regular message hooray!
-				
-				// Pass the received message to the ConversationManager
-				String contact = null;
-				try {
-					if (extras.containsKey("contact")) {
-						contact = extras.getString("contact");
+
+				// only try to receive a message if the user is logged in
+				if (Session.isLoggedIn()) {
+
+					// Pass the received message to the ConversationManager
+					String contact = null;
+					try {
+						if (extras.containsKey("contact")) {
+							contact = extras.getString("contact");
+						}
+						Session.getConversationManager().receiveMessage(
+								new Message(extras), contact);
+					} catch (MessageException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch(NullPointerException e){
+						// if conversation manager is null for some reason we're in trouble
 					}
-					Session.getConversationManager().receiveMessage(
-							new Message(extras), contact);
-				} catch (MessageException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+					// send a system notification if the user hasn't disabled
+					// them in their preferences
+					SharedPreferences sharedPref = PreferenceManager
+							.getDefaultSharedPreferences(this);
+					boolean showNotifications = sharedPref.getBoolean(
+							"pref_notifications", false);
+					if (showNotifications) {
+						sendNotification();
+					}
+
 				}
-				
-				// send a system notification if the user hasn't disabled them in their preferences
-				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-				boolean showNotifications = sharedPref.getBoolean("pref_notifications", false);
-				if(showNotifications){
-					sendNotification();	
-				}		
-				
 			}
 		}
 		GcmBroadcastReceiver.completeWakefulIntent(intent);

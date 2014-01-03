@@ -1,7 +1,8 @@
-package com.lyricoo.messages;
+package com.lyricoo.sync;
 
 import com.lyricoo.R;
 import com.lyricoo.R.drawable;
+import com.lyricoo.messages.InboxActivity;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

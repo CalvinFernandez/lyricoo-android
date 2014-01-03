@@ -32,7 +32,7 @@
             android:value="@integer/google_play_services_version" />
 
         <receiver
-            android:name="com.lyricoo.messages.GcmBroadcastReceiver"
+            android:name="com.lyricoo.sync.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -41,9 +41,9 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.lyricoo.messages.GcmIntentService" />
+        <service android:name="com.lyricoo.sync.GcmIntentService" />
         <service
-            android:name="com.lyricoo.messages.LyricooPollingService"
+            android:name="com.lyricoo.sync.LyricooPollingService"
             android:exported="false" />
 
         <activity
