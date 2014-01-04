@@ -8,10 +8,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
-import com.lyricoo.messages.LyricooPollingService;
 import com.lyricoo.music.Category;
 import com.lyricoo.music.MusicManager;
 import com.lyricoo.music.Song;
+import com.lyricoo.session.Session;
+import com.lyricoo.sync.LyricooPollingService;
 
 /*
  * The LyricooApp class provides a global storage area for
@@ -84,7 +85,7 @@ public class LyricooApp extends Application {
 	 * 
 	 */
 	public void resume() {
-		if (!mIsGcmRegistered) {
+		if (!mIsGcmRegistered && Session.isLoggedIn()) {
 			setPollingStatus(true);
 		}
 	}

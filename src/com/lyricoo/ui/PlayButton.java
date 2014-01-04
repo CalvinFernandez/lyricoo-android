@@ -188,6 +188,10 @@ public class PlayButton extends RelativeLayout {
 	 * Clear any song that has been set
 	 */
 	public void clearSong() {
+		if(mPlayer != null){
+			mPlayer.stop();
+		}
+		
 		mLoaded = false;
 		mPlaying = false;
 		mSong = null;
@@ -286,7 +290,7 @@ public class PlayButton extends RelativeLayout {
 	 * plays if it was stopped
 	 */
 	public void toggle() {
-		if (mPlayer.isPlaying()) {
+		if (mPlayer != null && mPlayer.isPlaying()) {
 			stop();
 		} else {
 			play();
@@ -296,5 +300,15 @@ public class PlayButton extends RelativeLayout {
 	private int dpToPixel(int dp) {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				getResources().getDisplayMetrics());
+	}
+	
+	/**
+	 * Release all music resources held by this player
+	 */
+	public void destroy(){
+		clearSong();
+		if(mPlayer != null){
+			mPlayer.destroy();
+		}		
 	}
 }
