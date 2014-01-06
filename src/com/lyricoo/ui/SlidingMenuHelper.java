@@ -162,7 +162,6 @@ public class SlidingMenuHelper {
 		toggle.setDrawerIndicatorEnabled(showIcon);
 
 		drawerLayout.setDrawerListener(toggle);
-
 		activity.setDrawerToggle(toggle);
 	}
 }
