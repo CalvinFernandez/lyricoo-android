@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -63,11 +64,33 @@ public class CategoryActivity extends LyricooActivity {
 	 * Setup the category paging adapter and show the selected category
 	 */
 	private void setupCategoryPaging() {
-		
 		// setup paging adapter
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mPagerAdapter);
+
+		// listen for fragment page changes
+		mPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int position) {
+				// change title to this category
+				getSupportActionBar().setTitle(
+						mCategories.get(position).getName());
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		// move to the selected category
 		int startingCategoryIndex = getIntent().getIntExtra("categoryIndex", 0);
@@ -82,9 +105,6 @@ public class CategoryActivity extends LyricooActivity {
 		@Override
 		public Fragment getItem(int position) {
 			Category category = mCategories.get(position);
-
-			// update title to category name
-			getSupportActionBar().setTitle(category.getName());
 
 			CategoryFragment frag = new CategoryFragment();
 
