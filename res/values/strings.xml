@@ -27,6 +27,7 @@
     
     <!--  Action Bar -->
     <string name="action_compose">New Message</string>
+    <string name="action_new_friend">New Friend</string>
     <string name="drawer_open">Open navigation menu</string>
     <string name="drawer_close">Close navigation menu</string>
 

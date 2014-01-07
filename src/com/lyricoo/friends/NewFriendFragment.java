@@ -20,7 +20,6 @@ public class NewFriendFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		//TODO: Turn off drawer slider
-		
 		View newFriendView = inflater.inflate(R.layout.new_friend_fragment, container, false);
 		new_friend_info = (EditText) newFriendView.findViewById(R.id.new_friend_info);
 		add_friend = (Button) newFriendView.findViewById(R.id.add_friend);

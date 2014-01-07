@@ -14,8 +14,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,7 +40,11 @@ public class FriendsActivity extends LyricooActivity {
 	private StickyListHeadersListView mList;
 	private Context mContext;
 	private PullToRefreshLayout mPullToRefreshLayout;
+	
 	NewFriendPagerAdapter nFPAdapter;
+	ViewPager vPager;
+	Menu mMenu;
+	DrawerLayout drawerLayout;
 
 	// Our listener for when friends is updated. Don't make this anonymous so it
 	// can be removed onDestroy
@@ -46,7 +54,10 @@ public class FriendsActivity extends LyricooActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends);
+		
 		SlidingMenuHelper.addMenuToActivity(this, true);
+		drawerLayout = (DrawerLayout)this.findViewById(R.id.drawer_layout);
+		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		mContext = this;
@@ -102,9 +113,36 @@ public class FriendsActivity extends LyricooActivity {
 				.setup(mPullToRefreshLayout);
 */
 		nFPAdapter = new NewFriendPagerAdapter(getSupportFragmentManager());
-		ViewPager vPager = (ViewPager) findViewById(R.id.pager);
+		vPager = (ViewPager) findViewById(R.id.pager);
 		vPager.setAdapter(nFPAdapter);
+		vPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				if (position == 0) {
+					mMenu.findItem(R.id.action_new_friend).setVisible(true);
+					drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+				} else if (position == 1) {
+					mMenu.findItem(R.id.action_new_friend).setVisible(false);
+					drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+				}
+			}
+			
+		});
 	}
+	
 
 	@Override
 	public void onDestroy() {
@@ -121,8 +159,21 @@ public class FriendsActivity extends LyricooActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		mMenu = menu;
 		getMenuInflater().inflate(R.menu.friends, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_new_friend:
+			vPager.setCurrentItem(1, true);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	// Start an activity where the user can add friends to their list
