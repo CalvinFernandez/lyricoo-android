@@ -67,20 +67,6 @@ public class FriendsActivity extends LyricooActivity {
 				adapter.notifyDataSetChanged();
 			}
 		};
-
-		Session.getFriendManager().getFriends(new LyricooApiResponseHandler() {
-			@Override
-			public void onSuccess(Object responseJson) {
-				//loadFriendsList();
-			}
-
-			@Override
-			public void onFailure(int statusCode, String responseBody,
-					Throwable error) {
-				String toast = "Error retrieving friends";
-				Utility.makeBasicToast(mContext, toast);
-			}
-		}, true);
 /*
 		// Now find the PullToRefreshLayout to setup
 		mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
