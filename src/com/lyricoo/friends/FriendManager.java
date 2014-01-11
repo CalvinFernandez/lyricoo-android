@@ -52,6 +52,9 @@ public class FriendManager {
 		sync(null);
 	}
 
+	public ArrayList<User> cloneFriends() {
+		return (ArrayList<User>) mFriends.clone();
+	}
 	/**
 	 * Get all friends of the user
 	 * 
@@ -59,6 +62,27 @@ public class FriendManager {
 	 */
 	public ArrayList<User> getFriends() {
 		return mFriends;
+	}
+
+	/**
+	 * Get all friends matching the filter
+	 * 
+	 * @param filter
+	 * @return a filtered list of friends
+	 */
+	public ArrayList<User> getFriends(String filter) {
+		ArrayList<User> temp = new ArrayList<User>();
+		if (Utility.isStringBlank(filter)) {
+			return mFriends;
+		}
+
+		for (User friend : mFriends) {
+			if (friend.friendlyId().toLowerCase()
+					.contains(filter.toLowerCase())) {
+				temp.add(friend);
+			}
+		}
+		return temp;
 	}
 
 	/**
@@ -268,7 +292,8 @@ public class FriendManager {
 	 */
 	private class FriendComparator implements Comparator<User> {
 		public int compare(User left, User right) {
-			return left.getUsername().toLowerCase().compareTo(right.getUsername().toLowerCase());
+			return left.getUsername().toLowerCase()
+					.compareTo(right.getUsername().toLowerCase());
 		}
 	}
 

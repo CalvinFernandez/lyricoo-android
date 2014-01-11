@@ -132,7 +132,8 @@ public class ContactsActivity extends LyricooActivity {
 
 	private void populateContactsList() {
 		// Create adapter for the list view
-		ContactsListAdapter adapter = new ContactsListAdapter(this, mContacts);
+		ContactsListAdapter adapter = new ContactsListAdapter(this,
+				R.layout.contacts_list_item, mContacts);
 		ListView list = (ListView) findViewById(R.id.contacts_list);
 		list.setAdapter(adapter);
 

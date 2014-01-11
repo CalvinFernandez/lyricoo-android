@@ -2,19 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-	
-    <EditText 
-        android:id="@+id/new_friend_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/new_friend_hint"/>
-    
-    <Button 
-        android:id="@+id/add_friend"
+
+    <ProgressBar
+        android:id="@+id/contacts_loading_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/new_friend_info"
-        android:text="Add Friend"/>
-    
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <ListView
+        android:id="@+id/contacts_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username_field" >
+    </ListView>
 
 </RelativeLayout>

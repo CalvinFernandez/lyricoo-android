@@ -6,46 +6,28 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lyricoo.R;
 
-public class ContactsListAdapter extends BaseAdapter {
-	private ArrayList<ContactsListViewEntry> mContacts;
-	private Context mContext;
+public class ContactsListAdapter extends ArrayAdapter<ContactsListViewEntry> {
 
-	public ContactsListAdapter(Context context,
+	public ContactsListAdapter(Context context, int resource,
 			ArrayList<ContactsListViewEntry> contacts) {
-		mContacts = contacts;
-		mContext = context;
-	}
-
-	@Override
-	public int getCount() {
-		// two lists of data plus a header for each list (2 headers total)
-		return mContacts.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return mContacts.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
+		super(context, resource, contacts);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) mContext
+		LayoutInflater inflater = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		View rowView = inflater.inflate(R.layout.contacts_list_item, parent,
 				false);
 
-		ContactsListViewEntry entry = mContacts.get(position);
+		ContactsListViewEntry entry = getItem(position);
 
 		// Set the name
 		TextView name = (TextView) rowView.findViewById(R.id.contact_name);

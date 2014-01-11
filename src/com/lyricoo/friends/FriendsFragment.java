@@ -33,16 +33,20 @@ public class FriendsFragment extends Fragment {
 	private ArrayList<User> mFriends;
 	private StickyListHeadersListView mList;
 	private Context mContext;
-	
+	private FriendsListAdapter mAdapter;
+
 	private void loadFriendsList() {
 
-		mFriends = Session.getFriendManager().getFriends();
+		/* We want to shallow copy the friends so that we can filter this list
+		 * without changing the underlying data.
+		 */
+		mFriends = Session.getFriendManager().cloneFriends();
 
 		// Create adapter for the list view
-		FriendsListAdapter adapter = new FriendsListAdapter(mContext,
+		mAdapter = new FriendsListAdapter(mContext,
 				R.layout.friend_list_item, mFriends);
 
-		mList.setAdapter(adapter);
+		mList.setAdapter(mAdapter);
 
 		// on long click show a list of options to the user
 		mList.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -73,7 +77,7 @@ public class FriendsFragment extends Fragment {
 		});
 
 	}
-	
+
 	// shows options for interacting with the given friend
 	// in a dialog popup
 	private void showOptions(final User friend) {
@@ -99,7 +103,7 @@ public class FriendsFragment extends Fragment {
 				});
 		builder.create().show();
 	}
-	
+
 	// Load the conversation with this friend
 	private void loadConversation(User friend) {
 		// Pass the friend so conversationActivity knows whose conversation to
@@ -111,16 +115,18 @@ public class FriendsFragment extends Fragment {
 		i.putExtra("contact", friendAsJson);
 		startActivity(i);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		View friendsView = inflater.inflate(R.layout.friends_fragment, container, false);
+
+		View friendsView = inflater.inflate(R.layout.friends_fragment,
+				container, false);
 		// get list view
-		mList = (StickyListHeadersListView) friendsView.findViewById(R.id.friends_list);
+		mList = (StickyListHeadersListView) friendsView
+				.findViewById(R.id.friends_list);
 		mContext = getActivity();
-		
+
 		Session.getFriendManager().getFriends(new LyricooApiResponseHandler() {
 			@Override
 			public void onSuccess(Object responseJson) {
@@ -130,12 +136,18 @@ public class FriendsFragment extends Fragment {
 			@Override
 			public void onFailure(int statusCode, String responseBody,
 					Throwable error) {
-				//String toast = "Error retrieving friends";
-				//Utility.makeBasicToast(mContext, toast);
+				// String toast = "Error retrieving friends";
+				// Utility.makeBasicToast(mContext, toast);
 			}
 		}, true);
-		
-		
+
 		return friendsView;
+	}
+
+	public void filter(String term) {
+		mFriends = Session.getFriendManager().getFriends(term);
+		mAdapter.clear();
+		mAdapter.addAll(mFriends);
+		mAdapter.notifyDataSetChanged();
 	}
 }
