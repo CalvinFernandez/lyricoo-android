@@ -8,6 +8,7 @@ import com.lyricoo.LyricooActivity;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.friends.FriendsActivity.SearchListener;
 import com.lyricoo.messages.ConversationActivity;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
@@ -75,7 +76,21 @@ public class FriendsFragment extends Fragment {
 			}
 
 		});
+		
+		((FriendsActivity)getActivity()).registerSearchListener(new SearchListener() {
 
+			@Override
+			public void onQueryTextChange(String text) {
+				filter(text);	
+			}
+
+			@Override
+			public void onQueryTextSubmit(String text) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 
 	// shows options for interacting with the given friend

@@ -42,11 +42,17 @@ import com.lyricoo.session.User;
 import com.lyricoo.ui.SlidingMenuHelper;
 
 public class FriendsActivity extends LyricooActivity implements OnQueryTextListener{
+	private ArrayList<SearchListener> mSearchListeners;
 	private ArrayList<User> mFriends;
 	private StickyListHeadersListView mList;
 	private Context mContext;
 	private PullToRefreshLayout mPullToRefreshLayout;
 
+    public interface SearchListener {
+    	public void onQueryTextChange(String text);
+    	public void onQueryTextSubmit(String text);
+    }
+    
 	NewFriendPagerAdapter nFPAdapter;
 	ViewPager vPager;
 	Menu mMenu;
@@ -59,6 +65,9 @@ public class FriendsActivity extends LyricooActivity implements OnQueryTextListe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mSearchListeners = new ArrayList<SearchListener>();
+		
 		setContentView(R.layout.activity_friends);
 
 		SlidingMenuHelper.addMenuToActivity(this, true);
@@ -84,21 +93,7 @@ public class FriendsActivity extends LyricooActivity implements OnQueryTextListe
 				adapter.notifyDataSetChanged();
 			}
 		};
-		/*
-		 * // Now find the PullToRefreshLayout to setup mPullToRefreshLayout =
-		 * (PullToRefreshLayout) findViewById(R.id.ptr_layout);
-		 * 
-		 * // Now setup the PullToRefreshLayout
-		 * ActionBarPullToRefresh.from(this) // Mark All Children as pullable
-		 * .allChildrenArePullable() // Set the OnRefreshListener .listener(new
-		 * OnRefreshListener() {
-		 * 
-		 * @Override public void onRefreshStarted(View view) {
-		 * Utility.log("refresh");
-		 * 
-		 * } }) // Finally commit the setup to our PullToRefreshLayout
-		 * .setup(mPullToRefreshLayout);
-		 */
+		
 		nFPAdapter = new NewFriendPagerAdapter(getSupportFragmentManager());
 		vPager = (ViewPager) findViewById(R.id.pager);
 		vPager.setAdapter(nFPAdapter);
@@ -216,28 +211,26 @@ public class FriendsActivity extends LyricooActivity implements OnQueryTextListe
 		}
 
 	}
+	
+	public void registerSearchListener(SearchListener searchListener) {
+		mSearchListeners.add(searchListener);
+	}
 
 	@Override
 	public boolean onQueryTextChange(String text) {
-		// TODO Speed this up!
-		// There has to be a better way of getting
-		// the current fragment.
-		FragmentManager fragmentManager = (FragmentManager) getSupportFragmentManager();
-		int currentFragment = vPager.getCurrentItem();
-		Fragment fragment = fragmentManager
-				.getFragments().get(currentFragment);
-		
-		if (fragment instanceof FriendsFragment) {
-			((FriendsFragment) fragment).filter(text);
-		} else if (fragment instanceof NewFriendFragment) {
-			((NewFriendFragment) fragment).filter(text);
+		for (SearchListener searchListener : mSearchListeners) {
+			searchListener.onQueryTextChange(text);
 		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean onQueryTextSubmit(String arg0) {
-		// TODO Auto-generated method stub
+		for (SearchListener searchListener : mSearchListeners) {
+			searchListener.onQueryTextSubmit(arg0);
+		}
+		
 		return false;
 	}
 

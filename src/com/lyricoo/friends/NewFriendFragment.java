@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import com.lyricoo.R;
 import com.lyricoo.Utility;
 import com.lyricoo.api.LyricooApiResponseHandler;
+import com.lyricoo.friends.FriendsActivity.SearchListener;
 import com.lyricoo.session.Session;
 import com.lyricoo.session.User;
 
@@ -42,7 +43,21 @@ public class NewFriendFragment extends Fragment {
 		mNewFriendView = inflater.inflate(R.layout.new_friend_fragment,
 				container, false);
 		loadContacts();
+		
+		((FriendsActivity)getActivity()).registerSearchListener(new SearchListener() {
 
+			@Override
+			public void onQueryTextChange(String text) {
+				filter(text);	
+			}
+
+			@Override
+			public void onQueryTextSubmit(String text) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		return mNewFriendView;
 	}
 
